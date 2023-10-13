@@ -74,7 +74,7 @@ impl Deadweight {
     fn empty_spatiums(&self) -> Vec<Spatium> {
         let length_spatiums = self.ship_dimensions.length_spatium();
         let mut spatiums = vec![];
-        let mut current_coordinate = self.ship_dimensions.coordinate_stern();
+        let mut current_coordinate = self.ship_dimensions.coordinate_aft();
         for _ in 0..self.ship_dimensions.number_spatiums() {
             let end_coordinate = current_coordinate + length_spatiums;
             let spatium = Spatium::new(current_coordinate, end_coordinate, 0.0, 0.);

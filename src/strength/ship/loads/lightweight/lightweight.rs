@@ -46,7 +46,7 @@ impl Lightweight {
     pub fn lightweight_intensity(&self) -> Output {
         let mut spatiums = vec![];
         let half_length_spatium = self.ship_dimensions.length_spatium() / 2.0;
-        let mut current_coord = self.ship_dimensions.coordinate_stern() + half_length_spatium;
+        let mut current_coord = self.ship_dimensions.coordinate_aft() + half_length_spatium;
         for _i in 0..self.ship_dimensions.number_spatiums() {
             let spatium = self.spatium(current_coord, half_length_spatium);
             spatiums.push(spatium);
@@ -65,11 +65,11 @@ impl Lightweight {
         let intensity_load = |parametr: f64| {
             ((self.lightweight / self.ship_dimensions.number_spatiums() as f64) * parametr) / self.ship_dimensions.length_spatium()
         };
-        if current_coord > self.ship_dimensions.coordinate_stern() && current_coord < (self.ship_dimensions.coordinate_stern() + self.ship_dimensions.length_between_perpendiculars() / 3.0) {
-            let parametr = a + ((b - a) * (self.ship_dimensions.length_between_perpendiculars() / 2.0 - current_coord.abs()))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
+        if current_coord > self.ship_dimensions.coordinate_aft() && current_coord < (self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0) {
+            let parametr = a + ((b - a) * ((self.ship_dimensions.length_between_perpendiculars() / 2.0) - current_coord.abs()))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
             let intensity_load = intensity_load(parametr);
             Spatium::new(start_coord, end_coord, intensity_load, intensity_load)
-        } else if current_coord >= self.ship_dimensions.coordinate_stern() + self.ship_dimensions.length_between_perpendiculars() / 3.0 && current_coord < (self.ship_dimensions.coordinate_nose() - self.ship_dimensions.length_between_perpendiculars() / 3.0) {
+        } else if current_coord >= self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0 && current_coord < (self.ship_dimensions.coordinate_bow() - self.ship_dimensions.length_between_perpendiculars() / 3.0) {
             let intensity_load = intensity_load(b);
             Spatium::new(start_coord, end_coord, intensity_load, intensity_load)
         } else {
