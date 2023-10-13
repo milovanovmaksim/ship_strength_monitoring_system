@@ -27,9 +27,9 @@ impl ShipDimensions {
 
     pub fn lightweight_intensity_parameters(&self) -> (f64, f64, f64) {
         if self.completeness_coefficient  <= 0.7 {
-            (0.65, 1.20, 0.57)
+            (0.64, 1.20, 0.56)
         } else {
-            (0.71, 1.17, 0.6)
+            (0.72, 1.17, 0.6)
         }
     }
 
@@ -55,11 +55,15 @@ impl ShipDimensions {
         }
     }
 
-    pub fn coordinate_nose(&self) -> f64 {
+    ///
+    /// Returns the bow (nose) cordinate of the ship
+    pub fn coordinate_bow(&self) -> f64 {
         self.length_between_perpendiculars / 2.0
     }
 
-    pub fn coordinate_stern(&self) -> f64 {
+    ///
+    /// Returns the aft cordinate of the ship
+    pub fn coordinate_aft(&self) -> f64 {
         - self.length_between_perpendiculars / 2.0
     }
 
