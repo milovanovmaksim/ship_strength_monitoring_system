@@ -31,13 +31,13 @@ impl DeckCargo {
     }
 
     ///
-    /// Returns the coordinate aft of the deck cargo relative to the amidships(the middle of a ship)
+    /// Returns the aft coordinate of the deck cargo relative to the midships (middle of the ship)
     fn aft(&self) -> f64 {
         self.longitudinal_center_gravity() - (self.length / 2.0)
     }
 
     ///
-    /// Returns the coordinate bow of the deck cargo relative to the amidships(the middle of a ship)
+    /// Returns the bow coordinate of the deck cargo relative to the amidships(the middle of a ship)
     fn bow(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
