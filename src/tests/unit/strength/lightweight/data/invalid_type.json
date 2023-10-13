@@ -1,0 +1,12 @@
+{
+    "lightweight": "invalid_type",
+    "ship_dimensions": {
+        "length_between_perpendiculars": 125,
+        "number_spatiums": 20,
+        "width_design_waterline": 15.2,
+        "completeness_coefficient": 0.65
+    },
+    "ship_name": "Сухогруз ТКЗ",
+    "max_displacement_tonnage": 5448,
+    "draft": 3.5
+}
