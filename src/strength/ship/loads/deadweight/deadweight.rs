@@ -1,19 +1,19 @@
 use log::{debug, warn};
 use serde::Deserialize;
-use crate::{core::json_file::JsonFile, strength::ship::{spatium::Spatium, ship_dimensions::ShipDimensions, loads::deck_cargo::deck_cargo::DeckCargo}};
+use crate::{core::json_file::JsonFile, strength::ship::{spatium::Spatium, ship_dimensions::ShipDimensions, loads::load::load::Load}};
 
 
 
 #[derive(Deserialize, Debug)]
 pub struct Deadweight {
-    deck_cargoes: Option<Vec<DeckCargo>>,
+    loads: Option<Vec<Load>>,
     ship_dimensions: ShipDimensions,
 }
 
 
 impl Deadweight {
-    pub fn new(loads: Vec<DeckCargo>, ship_metrics: ShipDimensions) -> Self {
-        Deadweight { deck_cargoes: Some(loads) , ship_dimensions: ship_metrics }
+    pub fn new(loads: Vec<Load>, ship_metrics: ShipDimensions) -> Self {
+        Deadweight { loads: Some(loads) , ship_dimensions: ship_metrics }
     }
 
     ///
@@ -45,7 +45,7 @@ impl Deadweight {
     /// Each the spatium in the vector contains intensity of deadweight.
     ///  The intensity of dadweight mesured ton/meter.
     pub fn deadweight_intensity(&self) -> Vec<Spatium> {
-        match &self.deck_cargoes {
+        match &self.loads {
             Some(loads) => {
                 debug!("Deadweight.deadweight_intensity() | Deadweight intensity hase been computed successfully.");
                 self.fill_spatiums(loads)
@@ -58,7 +58,7 @@ impl Deadweight {
     }
     ///
     /// Fill empty spatiums deadweight intensity.
-    fn fill_spatiums(&self, loads: &Vec<DeckCargo>) -> Vec<Spatium> {
+    fn fill_spatiums(&self, loads: &Vec<Load>) -> Vec<Spatium> {
         let mut spatiums = self.empty_spatiums();
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_spatium = self.ship_dimensions.length_spatium();
@@ -85,11 +85,11 @@ impl Deadweight {
     }
 
     pub fn deadweight(&self) -> f64 {
-        match &self.deck_cargoes {
+        match &self.loads {
             Some(loads) => {
                 let mut deadweight = 0.0;
                 for load in loads {
-                    deadweight += load.weight()
+                    deadweight += load.value()
                 }
                 deadweight
             }
