@@ -23,13 +23,13 @@ impl Load {
     }
 
     ///
-    /// Returns the aft coordinate of the load relative to the midships (middle of the ship)
+    /// Returns the coordinate of the start of the load relative to the amidships(the middle of a ship).
     fn aft(&self) -> f64 {
         self.longitudinal_center_gravity() - (self.length / 2.0)
     }
 
     ///
-    /// Returns the bow coordinate of the load relative to the amidships(the middle of a ship)
+    /// Returns the coordinate of the start of the load relative to the amidships(the middle of a ship)
     fn bow(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
@@ -54,7 +54,7 @@ impl Load {
     }
 
     ///
-    /// Returns load length.
+    /// Returns load value in tons.
     pub fn value(&self) -> f64 {
         self.value
     }
