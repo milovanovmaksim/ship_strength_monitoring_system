@@ -47,11 +47,11 @@ impl Output {
 
     pub fn integral(&self) -> f64 {
         // TODO: Напиcать класс, который будет интегрировать шпации.
-        let mut weight = 0.0;
+        let mut integral = 0.0;
         for spatium in &self.spatiums {
-            weight += spatium.square();
+            integral += spatium.square();
         }
-        weight
+        integral
     }
 
     pub fn type_output(&self) -> TypeOutput {
