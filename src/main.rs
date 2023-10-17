@@ -14,7 +14,7 @@ fn main() {
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
     let lightweight = 17501.0;
-    let ship_metrics = ShipDimensions::new(256.13,20, 0.78);
+    let ship_metrics = ShipDimensions::new(256.13, 20, 0.78);
     let test_lightweight = Deadweight::from_json_file("./input_data/data.json".to_string()).unwrap();
     let output = test_lightweight.deadweight_intensity();
 }
