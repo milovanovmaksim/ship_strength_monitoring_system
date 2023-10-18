@@ -1,1 +1,1 @@
-pub mod lightweight_test;
+pub mod lightweight_intensity_test;

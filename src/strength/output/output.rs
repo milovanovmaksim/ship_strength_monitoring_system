@@ -49,7 +49,7 @@ impl Output {
         // TODO: Напиcать класс, который будет интегрировать шпации.
         let mut integral = 0.0;
         for spatium in &self.spatiums {
-            integral += spatium.square();
+            integral += spatium.integral();
         }
         integral
     }

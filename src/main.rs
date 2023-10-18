@@ -4,7 +4,9 @@ mod tests;
 mod cross_section_properties;
 use std::env;
 
-use strength::ship::{loads::{deadweight::deadweight::Deadweight, lightweight::lightweight::Lightweight}, ship_dimensions::ShipDimensions};
+use strength::ship::{ship_dimensions::ShipDimensions, deadweight::deadweight::Deadweight};
+
+use crate::strength::ship::deadweight::deadweight_intensity::DeadweightIntensity;
 
 
 
@@ -15,8 +17,9 @@ fn main() {
     env_logger::init();
     let lightweight = 17501.0;
     let ship_metrics = ShipDimensions::new(256.13, 20, 0.78);
-    let test_lightweight = Deadweight::from_json_file("./input_data/data.json".to_string()).unwrap();
-    let output = test_lightweight.deadweight_intensity();
+    let test_lightweight = DeadweightIntensity::from_json_file("./input_data/data.json".to_string()).unwrap();
+    test_lightweight.deadweight_intensity();
+
 }
 
 // Solution{
