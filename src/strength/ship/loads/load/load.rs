@@ -75,7 +75,7 @@ impl Load {
 
         } else if spatium_end_index - spatium_start_index > 0 {
             debug!("The load component spreads whitin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The deck cargo: {:#?}", self);
+            debug!("The load component: {:#?}", self);
         } else if spatium_end_index - spatium_start_index == 0 {
             debug!("The load component spreads whitin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("The load component: {:#?}", self);
