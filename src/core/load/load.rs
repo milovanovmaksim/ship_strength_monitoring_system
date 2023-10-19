@@ -8,18 +8,18 @@ use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
 #[derive(Deserialize, Debug)]
-pub struct Load {
+pub struct LoadComponent {
     value: f64,
     center_gravity: Point,
     length: f64,
 }
 
-impl Load {
+impl LoadComponent {
 
     ///
     /// Create a new object.
     pub fn new(value: f64, center_gravity: Point, length: f64) -> Self {
-        Load { value, center_gravity, length }
+        LoadComponent { value, center_gravity, length }
     }
 
     ///
