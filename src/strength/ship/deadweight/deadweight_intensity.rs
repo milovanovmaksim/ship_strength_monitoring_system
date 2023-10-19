@@ -58,7 +58,6 @@ impl DeadweightIntensity {
         let mut spatiums = vec![];
         let mut current_coordinate = self.ship_dimensions.coordinate_aft();
         for id in 0..self.ship_dimensions.number_spatiums() {
-            debug!("{}", id);
             let end_coordinate = current_coordinate + length_spatiums;
             let spatium = Spatium::new(id, current_coordinate, end_coordinate, 0.0, 0.0);
             spatiums.push(spatium);
