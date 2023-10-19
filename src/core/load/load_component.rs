@@ -76,9 +76,10 @@ impl LoadComponent {
                 let c_right = (self.longitudinal_center_gravity() - spatium_end_coordinate).abs();
 
                 // Ближе к правому шпангоуту теоретической шпации.
-                if (c_left > c_right) && (spatium_index + 1 < ship_demensions.number_spatiums() - 1) {
+                if (c_left > c_right) && (spatium_index - 1 >= 0)  {
+                    debug!("Ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", c_right, c_left);
                     let mut spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_right), max_intensity(c_right))];
-                    let spatium_index = spatium_index + 1;
+                    let spatium_index = spatium_index - 1;
                     let spatium_start_coordinate = spatium_end_coordinate;
                     let spatium_end_coordinate = spatium_start_coordinate + ship_demensions.length_spatium();
                     let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_right), min_intensity(c_right));
@@ -86,15 +87,17 @@ impl LoadComponent {
                     return  spatiums;
 
                 // Ближе к левому шпангоуту теоретической шпации
-                } else if (c_right > c_left ) && (spatium_index - 1 >= 0) {
+                } else if (c_right > c_left ) && (spatium_index + 1 <= ship_demensions.number_spatiums() - 1){
+                    debug!("Ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let mut spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_left), max_intensity(c_left))];
-                    let spatium_index = spatium_index - 1;
+                    let spatium_index = spatium_index + 1;
                     let spatium_end_coordinate = spatium_start_coordinate;
                     let spatium_start_coordinate = spatium_start_coordinate - ship_demensions.length_spatium();
                     let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_left), min_intensity(c_left));
                     spatiums.push(spatium);
                     return spatiums;
                 } else {
+                    debug!("На крайней шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let f_x = self.value / ship_demensions.length_spatium();
                     let spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, f_x, f_x)];
                     return spatiums;
