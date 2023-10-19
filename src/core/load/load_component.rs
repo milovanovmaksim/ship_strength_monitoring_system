@@ -5,10 +5,10 @@ use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions
 use super::load_spread::LoadSpread;
 
 
-/// Load created by the weight of cargo, ballast, tanks, deck cargo, etc.
-/// value - load value in tons.
-/// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
-/// length - load length.
+/// LoadComponent - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
+/// value - load component value in tons.
+/// center_gravity -  the center gravity of the load component relative to the amidships(the middle of a ship).
+/// length - load component length.
 #[derive(Deserialize, Debug)]
 pub struct LoadComponent {
     value: f64,
@@ -82,7 +82,6 @@ impl LoadComponent {
             LoadSpread::OutsideRightmostFrame => {
                 let mut spatiums = vec![];
                 spatiums
-            
             }
         };
         spatiums
