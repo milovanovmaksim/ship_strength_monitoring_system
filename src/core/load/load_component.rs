@@ -31,13 +31,13 @@ impl LoadComponent {
     }
 
     ///
-    /// Returns the coordinate of the start of the load component relative to the amidships(the middle of a ship)
+    /// Returns the coordinate of the start of the load component relative to the amidships(the middle of a ship).
     fn bow(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
 
     ///
-    /// Longitudinal center of gravity (LCG)  - the load component longitudinal center of gravity relative to the amidships(the middle of a ship)
+    /// Longitudinal center of gravity (LCG)  - the load component longitudinal center of gravity relative to the amidships(the middle of a ship).
     fn longitudinal_center_gravity(&self) -> f64 {
         self.center_gravity.x()
     }
@@ -122,7 +122,7 @@ impl LoadComponent {
     }
 
     ///
-    /// Determine spread of load component
+    /// Determine spread of load component.
     /// Returns enum LoadSpread.
     fn spread(&self, ship_demensions: &ShipDimensions) -> LoadComponentSpread {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
@@ -133,16 +133,16 @@ impl LoadComponent {
             LoadComponentSpread::OutsideLeftmostFrame
         } else if spatium_end_index > ship_demensions.number_spatiums() - 1 && spatium_start_index > ship_demensions.number_spatiums() - 1 {
             debug!("LoadComponent.spread | The load component is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("LoadComponent.spread | The load component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadComponentSpread::OutsideRightmostFrame
 
         } else if spatium_end_index - spatium_start_index > 0 {
             debug!("LoadComponent.spread | The load component spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("LoadComponent.spread | The load component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadComponentSpread::WithinManySpatiums
         } else {
             debug!("LoadComponent.spread | The load component spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("LoadComponent.spread | The load component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadComponentSpread::WithinOneSpatium
         }
 
