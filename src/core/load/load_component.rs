@@ -76,29 +76,32 @@ impl LoadComponent {
 
                 // Ближе к правому шпангоуту теоретической шпации.
                 if (c_left > c_right) && (spatium_index + 1 <= ship_demensions.number_spatiums() - 1) {
-                    debug!("Ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", c_right, c_left);
+                    debug!("LoadComponent.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", c_right, c_left);
                     let mut spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_right), max_intensity(c_right))];
                     let spatium_index = spatium_index + 1;
                     let spatium_start_coordinate = spatium_end_coordinate;
                     let spatium_end_coordinate = spatium_start_coordinate + ship_demensions.length_spatium();
                     let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_right), min_intensity(c_right));
                     spatiums.push(spatium);
+                    debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", spatiums);
                     return  spatiums;
 
                 // Ближе к левому шпангоуту теоретической шпации
                 } else if (c_right > c_left ) && (spatium_index - 1 >= 0) {
-                    debug!("Ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", c_right, c_left);
+                    debug!("LoadComponent.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let mut spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_left), max_intensity(c_left))];
                     let spatium_index = spatium_index - 1;
                     let spatium_end_coordinate = spatium_start_coordinate;
                     let spatium_start_coordinate = spatium_start_coordinate - ship_demensions.length_spatium();
                     let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_left), min_intensity(c_left));
                     spatiums.push(spatium);
+                    debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", spatiums);
                     return spatiums;
                 } else {
-                    debug!("На крайней шпации. c_right = {}, c_left = {}", c_right, c_left);
+                    debug!("LoadComponent.intensity | Груз расположен на крайней шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let f_x = self.value / ship_demensions.length_spatium();
                     let spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, f_x, f_x)];
+                    debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", spatiums);
                     return spatiums;
                 }
 
@@ -125,21 +128,21 @@ impl LoadComponent {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_end_index = self.spatium_end_index(ship_demensions);
         if spatium_end_index < 0 && spatium_start_index < 0 {
-            debug!("The load component is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The lad component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("LoadComponent.spread | he lad component: {:#?}", self);
             LoadComponentSpread::OutsideLeftmostFrame
         } else if spatium_end_index > ship_demensions.number_spatiums() - 1 && spatium_start_index > ship_demensions.number_spatiums() - 1 {
-            debug!("The load component is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The load component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("LoadComponent.spread | The load component: {:#?}", self);
             LoadComponentSpread::OutsideRightmostFrame
 
         } else if spatium_end_index - spatium_start_index > 0 {
-            debug!("The load component spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The load component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("LoadComponent.spread | The load component: {:#?}", self);
             LoadComponentSpread::WithinManySpatiums
         } else {
-            debug!("The load component spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The load component: {:#?}", self);
+            debug!("LoadComponent.spread | The load component spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("LoadComponent.spread | The load component: {:#?}", self);
             LoadComponentSpread::WithinOneSpatium
         }
 
