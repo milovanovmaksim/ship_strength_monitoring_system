@@ -53,22 +53,16 @@ mod tests {
     }
 
     #[test]
-    fn test_type_output() {
-        call_once();
-        let ship_dimensions = ShipDimensions::new(125.0,20, 0.7);
-        let lightweight = LightweightIntensity::new(1750.0, ship_dimensions);
-        let output = lightweight.lightweight_intensity();
-         assert_eq!(output.type_output(), TypeOutput::LightweightIntensity);
-    }
-
-    #[test]
     fn test_lightweight_intensity() {
         call_once();
         let test_weight = 13575.73;
-        let ship_dimensions = ShipDimensions::new(235.03, 20, 0.65);
+        let ship_dimensions = ShipDimensions::new(235.03, 20, 0.77);
         let test_lightweight = LightweightIntensity::new(test_weight, ship_dimensions);
         let output = test_lightweight.lightweight_intensity();
-        let computed_weight = output.integral();
+        let mut computed_weight = 0.0;
+        for spatium in &output {
+            computed_weight += spatium.integral();
+        }
         let err = {
             if computed_weight > test_weight {
                 ((computed_weight - test_weight) / test_weight) * 100.0
