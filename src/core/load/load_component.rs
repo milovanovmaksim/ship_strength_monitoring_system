@@ -61,15 +61,45 @@ impl LoadComponent {
         self.value
     }
 
-
     ///
     /// Computes load component intensity for a spatium.
     pub fn intensity(&self, ship_demensions: &ShipDimensions) -> Vec<Spatium> {
 
-        let spatiums = match self.spread(ship_demensions) {
+        match self.spread(ship_demensions) {
             LoadComponentSpread::WithinOneSpatium => {
-                let mut spatiums = vec![];
-                spatiums
+                let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
+                let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
+                let spatium_index = self.spatium_start_index(ship_demensions);
+                let spatium_start_coordinate = spatium_index as f64 * ship_demensions.length_spatium() - (ship_demensions.length_between_perpendiculars() / 2.0);
+                let spatium_end_coordinate = spatium_start_coordinate + ship_demensions.length_spatium();
+                let c_left = (self.longitudinal_center_gravity() - spatium_start_coordinate).abs();
+                let c_right = (self.longitudinal_center_gravity() - spatium_end_coordinate).abs();
+
+                // Ближе к правому шпангоуту теоретической шпации.
+                if (c_left > c_right) && (spatium_index + 1 < ship_demensions.number_spatiums() - 1) {
+                    let mut spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_right), max_intensity(c_right))];
+                    let spatium_index = spatium_index + 1;
+                    let spatium_start_coordinate = spatium_end_coordinate;
+                    let spatium_end_coordinate = spatium_start_coordinate + ship_demensions.length_spatium();
+                    let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_right), min_intensity(c_right));
+                    spatiums.push(spatium);
+                    return  spatiums;
+
+                // Ближе к левому шпангоуту теоретической шпации
+                } else if (c_right > c_left ) && (spatium_index - 1 >= 0) {
+                    let mut spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_left), max_intensity(c_left))];
+                    let spatium_index = spatium_index - 1;
+                    let spatium_end_coordinate = spatium_start_coordinate;
+                    let spatium_start_coordinate = spatium_start_coordinate - ship_demensions.length_spatium();
+                    let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_left), min_intensity(c_left));
+                    spatiums.push(spatium);
+                    return spatiums;
+                } else {
+                    let f_x = self.value / ship_demensions.length_spatium();
+                    let spatiums = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, f_x, f_x)];
+                    return spatiums;
+                }
+
             },
             LoadComponentSpread::WithinManySpatiums => {
                 let mut spatiums = vec![];
@@ -83,12 +113,11 @@ impl LoadComponent {
                 let mut spatiums = vec![];
                 spatiums
             }
-        };
-        spatiums
+        }
     }
 
     ///
-    /// Determine spread of load component 
+    /// Determine spread of load component
     /// Returns enum LoadSpread.
     fn spread(&self, ship_demensions: &ShipDimensions) -> LoadComponentSpread {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
