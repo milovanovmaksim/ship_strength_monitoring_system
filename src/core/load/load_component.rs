@@ -2,7 +2,7 @@ use log::debug;
 use serde::Deserialize;
 use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium::Spatium}};
 
-use super::load_spread::LoadComponentSpread;
+use super::load_component_spread::LoadComponentSpread;
 
 
 /// LoadComponent - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
