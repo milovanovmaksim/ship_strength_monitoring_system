@@ -45,7 +45,6 @@ impl DeadweightIntensity {
                 let deadweight_intensity = self.spatiums_filled_zero();
                 for load in loads {
                     let load_intensity = load.intensity(&self.ship_dimensions);
-                    debug!("{:?}", load_intensity);
                 }
                 Some(deadweight_intensity)
             },
