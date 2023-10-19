@@ -2,7 +2,7 @@ use log::debug;
 use serde::Deserialize;
 use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium::Spatium}};
 
-use super::load_spread::LoadSpread;
+use super::load_spread::LoadComponentSpread;
 
 
 /// LoadComponent - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
@@ -67,19 +67,19 @@ impl LoadComponent {
     pub fn intensity(&self, ship_demensions: &ShipDimensions) -> Vec<Spatium> {
 
         let spatiums = match self.spread(ship_demensions) {
-            LoadSpread::WithinOneSpatium => {
+            LoadComponentSpread::WithinOneSpatium => {
                 let mut spatiums = vec![];
                 spatiums
             },
-            LoadSpread::WithinManySpatiums => {
+            LoadComponentSpread::WithinManySpatiums => {
                 let mut spatiums = vec![];
                 spatiums
             },
-            LoadSpread::OutsideLeftmostFrame => {
+            LoadComponentSpread::OutsideLeftmostFrame => {
                 let mut spatiums = vec![];
                 spatiums
             }
-            LoadSpread::OutsideRightmostFrame => {
+            LoadComponentSpread::OutsideRightmostFrame => {
                 let mut spatiums = vec![];
                 spatiums
             }
@@ -90,26 +90,26 @@ impl LoadComponent {
     ///
     /// Determine spread of load component 
     /// Returns enum LoadSpread.
-    fn spread(&self, ship_demensions: &ShipDimensions) -> LoadSpread {
+    fn spread(&self, ship_demensions: &ShipDimensions) -> LoadComponentSpread {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_end_index = self.spatium_end_index(ship_demensions);
         if spatium_end_index < 0 && spatium_start_index < 0 {
             debug!("The load component is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("The lad component: {:#?}", self);
-            LoadSpread::OutsideLeftmostFrame
+            LoadComponentSpread::OutsideLeftmostFrame
         } else if spatium_end_index > ship_demensions.number_spatiums() - 1 && spatium_start_index > ship_demensions.number_spatiums() - 1 {
             debug!("The load component is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("The load component: {:#?}", self);
-            LoadSpread::OutsideRightmostFrame
+            LoadComponentSpread::OutsideRightmostFrame
 
         } else if spatium_end_index - spatium_start_index > 0 {
             debug!("The load component spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("The load component: {:#?}", self);
-            LoadSpread::WithinManySpatiums
+            LoadComponentSpread::WithinManySpatiums
         } else {
             debug!("The load component spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("The load component: {:#?}", self);
-            LoadSpread::WithinOneSpatium
+            LoadComponentSpread::WithinOneSpatium
         }
 
     }
