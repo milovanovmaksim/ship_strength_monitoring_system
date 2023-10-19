@@ -65,23 +65,26 @@ impl LoadComponent {
     ///
     /// Computes load intensity for a spatium.
     pub fn intensity(&self, ship_demensions: &ShipDimensions) -> Vec<Spatium> {
-        let spatium_start_index = self.spatium_start_index(ship_demensions);
-        let spatium_end_index = self.spatium_end_index(ship_demensions);
-        let mut spatiums = vec![];
-        if spatium_end_index < 0 && spatium_start_index < 0 {
-            debug!("The load component is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The lad component: {:#?}", self);
-        } else if spatium_end_index > ship_demensions.number_spatiums() - 1 && spatium_start_index > ship_demensions.number_spatiums() - 1 {
-            debug!("The load component is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The load component: {:#?}", self);
 
-        } else if spatium_end_index - spatium_start_index > 0 {
-            debug!("The load component spreads whitin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The load component: {:#?}", self);
-        } else if spatium_end_index - spatium_start_index == 0 {
-            debug!("The load component spreads whitin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("The load component: {:#?}", self);
-        }
+        let spatiums = match self.spread(ship_demensions) {
+            LoadSpread::WithinOneSpatium => {
+                let mut spatiums = vec![];
+                spatiums
+            },
+            LoadSpread::WithinManySpatiums => {
+                let mut spatiums = vec![];
+                spatiums
+            },
+            LoadSpread::OutsideLeftmostFrame => {
+                let mut spatiums = vec![];
+                spatiums
+            }
+            LoadSpread::OutsideRightmostFrame => {
+                let mut spatiums = vec![];
+                spatiums
+            
+            }
+        };
         spatiums
     }
 
