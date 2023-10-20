@@ -103,7 +103,7 @@ impl LoadComponent {
                     debug!("LoadComponent.intensity | Груз расположен на крайней шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let f_x = self.value / ship_demensions.length_spatium();
                     let load_component_intensity = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, f_x, f_x)];
-                    debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", spatiums);
+                    debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", load_component_intensity);
                     return load_component_intensity;
                 }
 
