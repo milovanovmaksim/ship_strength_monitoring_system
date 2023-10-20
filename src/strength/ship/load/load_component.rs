@@ -126,9 +126,9 @@ impl LoadComponent {
             LoadComponentSpread::WithinManySpatiums => {
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let spatium_end_index = self.spatium_end_index(ship_demensions);
-                let inrensity_for_leftmost_spatium = self.intensity(spatium_start_index, ship_demensions, 0.0, 0.0);
-                let intesity_for_rigthmost_spatium = self.intensity(spatium_end_index, ship_demensions, 0.0, 0.0);
-                let mut load_component_intensity = vec![inrensity_for_leftmost_spatium, intesity_for_rigthmost_spatium];
+                let intensity_on_leftmost_spatium = self.intensity(spatium_start_index, ship_demensions, 0.0, 0.0);
+                let intesity_on_rightmost_spatium = self.intensity(spatium_end_index, ship_demensions, 0.0, 0.0);
+                let mut load_component_intensity = vec![intensity_on_leftmost_spatium, intesity_on_rightmost_spatium];
 
                 for id in spatium_start_index - 1..spatium_end_index {
                     debug!("{}", id);
