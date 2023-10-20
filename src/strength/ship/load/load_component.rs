@@ -126,10 +126,12 @@ impl LoadComponent {
                 let intesity_on_rightmost_spatium = self.filled_spatium(spatium_end_index, ship_demensions, 0.0, 0.0);
                 let mut load_component_intensity = vec![intensity_on_leftmost_spatium, intesity_on_rightmost_spatium];
 
-                for id in spatium_start_index - 1..spatium_end_index {
-                    debug!("{}", id);
+                for id in spatium_start_index + 1..spatium_end_index {
+                    let spatium = self.filled_spatium(id, ship_demensions, 1.0, 1.0);
+                    load_component_intensity.push(spatium);
 
                 }
+                debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", load_component_intensity);
                 load_component_intensity
 
             },
