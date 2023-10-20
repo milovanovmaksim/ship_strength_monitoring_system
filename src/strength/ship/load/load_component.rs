@@ -80,7 +80,7 @@ impl LoadComponent {
 
     ///
     /// Computes load component intensity for a spatium.
-    pub fn intensity(&self, ship_demensions: &ShipDimensions) -> Vec<Spatium> {
+    pub fn load_component_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<Spatium> {
         match self.spread(ship_demensions) {
             LoadComponentSpread::WithinOneSpatium => {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
@@ -126,9 +126,9 @@ impl LoadComponent {
             LoadComponentSpread::WithinManySpatiums => {
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let spatium_end_index = self.spatium_end_index(ship_demensions);
-                let inrensity_leftmost_spatium = self.intensity_for_spatium(spatium_start_index, ship_demensions, 0.0, 0.0);
-                let intesity_rigthmost_spatium = self.intensity_for_spatium(spatium_end_index, ship_demensions, 0.0, 0.0);
-                let mut load_component_intensity = vec![inrensity_leftmost_spatium, intesity_rigthmost_spatium];
+                let inrensity_for_leftmost_spatium = self.intensity_for_spatium(spatium_start_index, ship_demensions, 0.0, 0.0);
+                let intesity_for_rigthmost_spatium = self.intensity_for_spatium(spatium_end_index, ship_demensions, 0.0, 0.0);
+                let mut load_component_intensity = vec![inrensity_for_leftmost_spatium, intesity_for_rigthmost_spatium];
 
                 for id in spatium_start_index - 1..spatium_end_index {
                     debug!("{}", id);
