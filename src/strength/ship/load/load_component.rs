@@ -72,21 +72,10 @@ impl LoadComponent {
         self.value
     }
 
-    fn left_most_spatium(&self, ship_demensions: &ShipDimensions) -> Spatium {
-        let spatium_start_index = self.spatium_start_index(ship_demensions);
-        let spatium_start_coordinate = self.spatium_start_coordinate(spatium_start_index, ship_demensions);
-        let spatium_end_coordinate = self.spatium_end_coordinate(spatium_start_index, ship_demensions);
-
-        Spatium::new(spatium_start_index, spatium_start_coordinate, spatium_end_coordinate, 0.0, 0.0)
-    }
-
-    fn right_most_spatium(&self, ship_demensions: &ShipDimensions) -> Spatium {
-        let spatium_start_index = self.spatium_end_index(ship_demensions);
-        let spatium_start_coordinate = self.spatium_start_coordinate(spatium_start_index, ship_demensions);
-        let spatium_end_coordinate = self.spatium_end_coordinate(spatium_start_index, ship_demensions);
-
-        Spatium::new(spatium_start_index, spatium_start_coordinate, spatium_end_coordinate, 0.0, 0.0)
-
+    fn intensity_for_spatium(&self, spatium_id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Spatium {
+        let spatium_start_coordinate = self.spatium_start_coordinate(spatium_id, ship_demensions);
+        let spatium_end_coordinate = self.spatium_end_coordinate(spatium_id, ship_demensions);
+        Spatium::new(spatium_id, spatium_start_coordinate, spatium_end_coordinate, f_x1, f_x2)
     }
 
     ///
@@ -137,9 +126,9 @@ impl LoadComponent {
             LoadComponentSpread::WithinManySpatiums => {
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let spatium_end_index = self.spatium_end_index(ship_demensions);
-                let left_most_spatium = self.left_most_spatium(ship_demensions);
-                let rigth_most_spatium = self.right_most_spatium(ship_demensions);
-                let mut load_component_intensity = vec![left_most_spatium, rigth_most_spatium];
+                let inrensity_leftmost_spatium = self.intensity_for_spatium(spatium_start_index, ship_demensions, 0.0, 0.0);
+                let intesity_rigthmost_spatium = self.intensity_for_spatium(spatium_end_index, ship_demensions, 0.0, 0.0);
+                let mut load_component_intensity = vec![inrensity_leftmost_spatium, intesity_rigthmost_spatium];
 
                 for id in spatium_start_index - 1..spatium_end_index {
                     debug!("{}", id);
