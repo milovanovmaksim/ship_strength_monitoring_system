@@ -2,7 +2,7 @@ use log::debug;
 use serde::Deserialize;
 use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium::Spatium}};
 
-use super::load_component_spread::LoadComponentSpread;
+use crate::strength::ship::load::load_component_spread::LoadComponentSpread;
 
 
 
