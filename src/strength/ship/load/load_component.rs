@@ -72,7 +72,7 @@ impl LoadComponent {
         self.value
     }
 
-    fn intensity_for_spatium(&self, spatium_id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Spatium {
+    fn intensity(&self, spatium_id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Spatium {
         let spatium_start_coordinate = self.spatium_start_coordinate(spatium_id, ship_demensions);
         let spatium_end_coordinate = self.spatium_end_coordinate(spatium_id, ship_demensions);
         Spatium::new(spatium_id, spatium_start_coordinate, spatium_end_coordinate, f_x1, f_x2)
@@ -126,8 +126,8 @@ impl LoadComponent {
             LoadComponentSpread::WithinManySpatiums => {
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let spatium_end_index = self.spatium_end_index(ship_demensions);
-                let inrensity_for_leftmost_spatium = self.intensity_for_spatium(spatium_start_index, ship_demensions, 0.0, 0.0);
-                let intesity_for_rigthmost_spatium = self.intensity_for_spatium(spatium_end_index, ship_demensions, 0.0, 0.0);
+                let inrensity_for_leftmost_spatium = self.intensity(spatium_start_index, ship_demensions, 0.0, 0.0);
+                let intesity_for_rigthmost_spatium = self.intensity(spatium_end_index, ship_demensions, 0.0, 0.0);
                 let mut load_component_intensity = vec![inrensity_for_leftmost_spatium, intesity_for_rigthmost_spatium];
 
                 for id in spatium_start_index - 1..spatium_end_index {
