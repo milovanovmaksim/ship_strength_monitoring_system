@@ -57,10 +57,36 @@ impl LoadComponent {
 
     }
 
+    fn spatium_start_coordinate(&self, id: i64, ship_demensions: &ShipDimensions) -> f64 {
+        id as f64 * ship_demensions.length_spatium() - (ship_demensions.length_between_perpendiculars() / 2.0)
+    }
+
+    fn spatium_end_coordinate(&self, id: i64, ship_demensions: &ShipDimensions) -> f64 {
+        self.spatium_start_coordinate(id, ship_demensions) + ship_demensions.length_spatium()
+
+    }
+
     ///
     /// Returns load component value in tons.
     pub fn value(&self) -> f64 {
         self.value
+    }
+
+    fn left_most_spatium(&self, ship_demensions: &ShipDimensions) -> Spatium {
+        let spatium_start_index = self.spatium_start_index(ship_demensions);
+        let spatium_start_coordinate = self.spatium_start_coordinate(spatium_start_index, ship_demensions);
+        let spatium_end_coordinate = self.spatium_end_coordinate(spatium_start_index, ship_demensions);
+
+        Spatium::new(spatium_start_index, spatium_start_coordinate, spatium_end_coordinate, 0.0, 0.0)
+    }
+
+    fn right_most_spatium(&self, ship_demensions: &ShipDimensions) -> Spatium {
+        let spatium_start_index = self.spatium_end_index(ship_demensions);
+        let spatium_start_coordinate = self.spatium_start_coordinate(spatium_start_index, ship_demensions);
+        let spatium_end_coordinate = self.spatium_end_coordinate(spatium_start_index, ship_demensions);
+
+        Spatium::new(spatium_start_index, spatium_start_coordinate, spatium_end_coordinate, 0.0, 0.0)
+
     }
 
     ///
@@ -71,8 +97,8 @@ impl LoadComponent {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
                 let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
                 let spatium_index = self.spatium_start_index(ship_demensions);
-                let spatium_start_coordinate = spatium_index as f64 * ship_demensions.length_spatium() - (ship_demensions.length_between_perpendiculars() / 2.0);
-                let spatium_end_coordinate = spatium_start_coordinate + ship_demensions.length_spatium();
+                let spatium_start_coordinate = self.spatium_start_coordinate(spatium_index, ship_demensions);
+                let spatium_end_coordinate = self.spatium_end_coordinate(spatium_index, ship_demensions);
                 let c_left = (self.longitudinal_center_gravity() - spatium_start_coordinate).abs();
                 let c_right = (self.longitudinal_center_gravity() - spatium_end_coordinate).abs();
 
@@ -81,8 +107,8 @@ impl LoadComponent {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", c_right, c_left);
                     let mut load_component_intensity = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_right), max_intensity(c_right))];
                     let spatium_index = spatium_index + 1;
-                    let spatium_start_coordinate = spatium_end_coordinate;
-                    let spatium_end_coordinate = spatium_start_coordinate + ship_demensions.length_spatium();
+                    let spatium_start_coordinate = self.spatium_start_coordinate(spatium_index, ship_demensions);
+                    let spatium_end_coordinate = self.spatium_end_coordinate(spatium_index, ship_demensions);
                     let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_right), min_intensity(c_right));
                     load_component_intensity.push(spatium);
                     debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", load_component_intensity);
@@ -93,8 +119,8 @@ impl LoadComponent {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let mut load_component_intensity = vec![Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_left), max_intensity(c_left))];
                     let spatium_index = spatium_index - 1;
-                    let spatium_end_coordinate = spatium_start_coordinate;
-                    let spatium_start_coordinate = spatium_start_coordinate - ship_demensions.length_spatium();
+                    let spatium_start_coordinate = self.spatium_start_coordinate(spatium_index, ship_demensions);
+                    let spatium_end_coordinate = self.spatium_end_coordinate(spatium_index, ship_demensions);
                     let spatium = Spatium::new(spatium_index, spatium_start_coordinate, spatium_end_coordinate, min_intensity(c_left), min_intensity(c_left));
                     load_component_intensity.push(spatium);
                     debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", load_component_intensity);
@@ -109,8 +135,18 @@ impl LoadComponent {
 
             },
             LoadComponentSpread::WithinManySpatiums => {
-                let mut load_component_intensity = vec![];
+                let spatium_start_index = self.spatium_start_index(ship_demensions);
+                let spatium_end_index = self.spatium_end_index(ship_demensions);
+                let left_most_spatium = self.left_most_spatium(ship_demensions);
+                let rigth_most_spatium = self.right_most_spatium(ship_demensions);
+                let mut load_component_intensity = vec![left_most_spatium, rigth_most_spatium];
+
+                for id in spatium_start_index - 1..spatium_end_index {
+                    debug!("{}", id);
+
+                }
                 load_component_intensity
+
             },
             LoadComponentSpread::OutsideLeftmostFrame => {
                 let mut load_component_intensity = vec![];
