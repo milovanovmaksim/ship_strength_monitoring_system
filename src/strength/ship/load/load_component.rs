@@ -97,8 +97,6 @@ impl LoadComponent {
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let (distance_left, distance_right) = self.distances(ship_demensions);
                 let mut load_component_intensity = vec![];
-
-                // Ближе к правому шпангоуту теоретической шпации.
                 if (distance_left > distance_right) && (spatium_start_index + 1 <= ship_demensions.number_spatiums() - 1) {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                     let f_x = max_intensity(distance_right);
@@ -109,9 +107,6 @@ impl LoadComponent {
                     load_component_intensity.push(spatium_function);
                     debug!("Saptium are under the load {:#?}", load_component_intensity);
                     load_component_intensity
-
-
-                // Ближе к левому шпангоуту теоретической шпации
                 } else if (distance_right > distance_left ) && (spatium_start_index - 1 >= 0) {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
                     let f_x = max_intensity(distance_left);
@@ -122,13 +117,12 @@ impl LoadComponent {
                     load_component_intensity.push(spatium_function);
                     debug!("Saptium are under the load {:#?}", load_component_intensity);
                     load_component_intensity
-
                 } else {
                     debug!("LoadComponent.intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                     let f_x = self.value / ship_demensions.length_spatium();
                     let spatium_function = self.load_intensity_for_spatium(spatium_start_index, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
-                    debug!("Saptium are under the load {:#?}", load_component_intensity);   
+                    debug!("Saptium are under the load {:#?}", load_component_intensity);
                     load_component_intensity
                 }
 
@@ -160,7 +154,6 @@ impl LoadComponent {
             debug!("LoadComponent.spread | The load component is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("LoadComponent.spread | The load component: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadComponentSpread::OutsideRightmostFrame
-
         } else if spatium_end_index - spatium_start_index > 0 {
             debug!("LoadComponent.spread | The load component spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("LoadComponent.spread | The load component: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
@@ -170,6 +163,5 @@ impl LoadComponent {
             debug!("LoadComponent.spread | The load component: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadComponentSpread::WithinOneSpatium
         }
-
     }
 }
