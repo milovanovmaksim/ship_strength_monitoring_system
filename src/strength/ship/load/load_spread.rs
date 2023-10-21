@@ -1,4 +1,4 @@
-pub enum LoadComponentSpread {
+pub enum LoadSpread {
     WithinOneSpatium,
     WithinManySpatiums,
     OutsideLeftmostFrame,
