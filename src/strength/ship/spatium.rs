@@ -1,7 +1,6 @@
 
 #[derive(Debug)]
 pub struct Spatium {
-    id: i64,
     x1: f64,
     x2: f64,
     f_x1: f64,
@@ -10,11 +9,11 @@ pub struct Spatium {
 }
 
 impl Spatium {
-    pub fn new(id: i64, x1: f64,
+    pub fn new(id: u64, x1: f64,
         x2: f64,
         f_x1: f64,
         f_x2: f64,) -> Self {
-        Spatium { id, x1, x2, f_x1, f_x2 }
+        Spatium { x1, x2, f_x1, f_x2 }
     }
 
     pub fn integral(&self) -> f64 {
@@ -37,5 +36,4 @@ impl Spatium {
         self.f_x2
     }
 
-    pub fn id(&self) -> i64 { self.id }
 }
