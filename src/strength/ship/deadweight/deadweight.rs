@@ -1,18 +1,18 @@
 use log::{debug, warn};
 use serde::Deserialize;
-use crate::{core::{json_file::JsonFile}, strength::ship::load::load_component::LoadComponent};
+use crate::{core::{json_file::JsonFile}, strength::ship::load::load_component::Load};
 
 
 
 #[derive(Deserialize, Debug)]
 pub struct Deadweight {
-    loads: Option<Vec<LoadComponent>>,
+    loads: Option<Vec<Load>>,
 
 }
 
 
 impl Deadweight {
-    pub fn new(loads: Option<Vec<LoadComponent>>) -> Self {
+    pub fn new(loads: Option<Vec<Load>>) -> Self {
         Deadweight { loads }
     }
 

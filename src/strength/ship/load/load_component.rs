@@ -7,53 +7,53 @@ use crate::strength::ship::load::load_component_spread::LoadComponentSpread;
 
 
 
-/// LoadComponent - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
+/// Load - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
 /// value - load component value in tons.
 /// center_gravity -  the center gravity of the load component relative to the amidships(the middle of a ship).
 /// length - load component length.
 #[derive(Deserialize, Debug)]
-pub struct LoadComponent {
+pub struct Load {
     value: f64,
     center_gravity: Point,
     length: f64,
 }
 
-impl LoadComponent {
+impl Load {
 
     ///
     /// Create a new object.
     pub fn new(value: f64, center_gravity: Point, length: f64) -> Self {
-        LoadComponent { value, center_gravity, length }
+        Load { value, center_gravity, length }
     }
 
     ///
-    /// Returns the coordinate of the start of the load component relative to the amidships(the middle of a ship).
-    fn aft(&self) -> f64 {
+    /// Returns the coordinate of the start of the load relative to the amidships(the middle of a ship).
+    fn load_start_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() - (self.length / 2.0)
     }
 
     ///
-    /// Returns the coordinate of the start of the load component relative to the amidships(the middle of a ship).
-    fn bow(&self) -> f64 {
+    /// Returns the coordinate of the end of the load relative to the amidships(the middle of a ship).
+    fn load_end_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
 
     ///
-    /// Longitudinal center of gravity (LCG)  - the load component longitudinal center of gravity relative to the amidships(the middle of a ship).
+    /// Longitudinal center of gravity (LCG)  - the load longitudinal center of gravity relative to the amidships(the middle of a ship).
     fn longitudinal_center_gravity(&self) -> f64 {
         self.center_gravity.x()
     }
 
     ///
-    /// Returns the index of the leftmost spatium that are under the load component.
+    /// Returns the index of the leftmost spatium that are under the load.
     fn spatium_start_index(&self, ship_demensions: &ShipDimensions) -> i64 {
-        ((self.aft() / ship_demensions.length_spatium()) + (ship_demensions.number_spatiums()) as f64 / 2.0) as i64
+        ((self.load_start_coordinate() / ship_demensions.length_spatium()) + (ship_demensions.number_spatiums()) as f64 / 2.0) as i64
     }
 
     ///
-    /// Returns the index of the rightmost spatium that are under the load component
+    /// Returns the index of the rightmost spatium that are under the load.
     fn spatium_end_index(&self, ship_demensions: &ShipDimensions) -> i64 {
-        ((self.bow() / ship_demensions.length_spatium()) + (ship_demensions.number_spatiums()) as f64 / 2.0) as i64
+        ((self.load_end_coordinate() / ship_demensions.length_spatium()) + (ship_demensions.number_spatiums()) as f64 / 2.0) as i64
 
     }
 
@@ -63,7 +63,6 @@ impl LoadComponent {
 
     fn spatium_end_coordinate(&self, id: i64, ship_demensions: &ShipDimensions) -> f64 {
         self.spatium_start_coordinate(id, ship_demensions) + ship_demensions.length_spatium()
-
     }
 
     ///
@@ -128,7 +127,18 @@ impl LoadComponent {
 
             },
             LoadComponentSpread::WithinManySpatiums => {
-                todo!();
+                let spatium_start_index = self.spatium_start_index(ship_demensions);
+                let spatium_end_index = self.spatium_end_index(ship_demensions);
+                if spatium_start_index < 0 {
+                    debug!("Часть груза выступает за границу крайнего левого шпангоута. Координата начала груза {}", self.load_start_coordinate());
+                    todo!();
+                } else if spatium_end_index >= ship_demensions.number_spatiums() {
+                    debug!("Часть груза выступает за границу крайнего правого шпангоута. Координата конца груза {}", self.load_end_coordinate());
+                    todo!();
+
+                } else {
+                    todo!();
+                }
 
             },
             LoadComponentSpread::OutsideLeftmostFrame => {
