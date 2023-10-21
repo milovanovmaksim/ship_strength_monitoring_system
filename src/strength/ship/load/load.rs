@@ -87,7 +87,7 @@ impl Load {
     }
 
     ///
-    /// Computes load component intensity.
+    /// Computes load intensity.
     pub fn load_component_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<SpatiumFunction> {
         match self.spread(ship_demensions) {
             LoadSpread::WithinOneSpatium => {
@@ -151,8 +151,8 @@ impl Load {
     }
 
     ///
-    /// Determine spread of load component.
-    /// Returns enum LoadComponentSpread.
+    /// Determine spread of load.
+    /// Returns enum LoadSpread.
     fn spread(&self, ship_demensions: &ShipDimensions) -> LoadSpread {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_end_index = self.spatium_end_index(ship_demensions);
