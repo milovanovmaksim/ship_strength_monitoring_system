@@ -9,7 +9,7 @@ pub struct Spatium {
 }
 
 impl Spatium {
-    pub fn new(id: u64, x1: f64,
+    pub fn new(x1: f64,
         x2: f64,
         f_x1: f64,
         f_x2: f64,) -> Self {
