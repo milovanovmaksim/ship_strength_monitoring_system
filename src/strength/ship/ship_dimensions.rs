@@ -12,12 +12,12 @@ use crate::core::json_file::JsonFile;
 #[derive(Deserialize, Debug, Clone, Copy)]
 pub struct ShipDimensions {
     length_between_perpendiculars: f64,
-    number_spatiums: i64,
+    number_spatiums: u64,
     completeness_coefficient: f64,
 }
 
 impl ShipDimensions {
-    pub fn new(length_between_perpendiculars: f64, number_spatiums: i64, completeness_coefficient: f64) -> Self {
+    pub fn new(length_between_perpendiculars: f64, number_spatiums: u64, completeness_coefficient: f64) -> Self {
         ShipDimensions { length_between_perpendiculars, number_spatiums, completeness_coefficient }
     }
 
@@ -67,11 +67,20 @@ impl ShipDimensions {
         - self.length_between_perpendiculars / 2.0
     }
 
-    pub fn number_spatiums(&self) -> i64 {
+    pub fn number_spatiums(&self) -> u64 {
         self.number_spatiums
     }
 
     pub fn length_between_perpendiculars(&self) -> f64 {
         self.length_between_perpendiculars
+    }
+
+
+    pub fn spatium_start_coordinate(&self, id: u64) -> f64 {
+        id as f64 * self.length_spatium() - (self.length_between_perpendiculars() / 2.0)
+    }
+
+    pub fn spatium_end_coordinate(&self, id: u64) -> f64 {
+        self.spatium_start_coordinate(id) + self.length_spatium()
     }
 }
