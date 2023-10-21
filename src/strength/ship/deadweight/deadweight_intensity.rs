@@ -1,7 +1,7 @@
 use log::{warn, debug};
 use serde::Deserialize;
 
-use crate::{strength::ship::{spatium::Spatium, ship_dimensions::ShipDimensions, load::load_component::LoadComponent}, core::json_file::JsonFile};
+use crate::{strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions, load::load_component::LoadComponent}, core::json_file::JsonFile};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
@@ -39,7 +39,7 @@ impl DeadweightIntensity {
         }
     }
 
-    pub fn deadweight_intensity(&self) -> Option<Vec<Spatium>> {
+    pub fn deadweight_intensity(&self) -> Option<Vec<SpatiumFunction>> {
         match &self.loads {
             Some(loads) => {
                 let deadweight_intensity = self.spatiums_filled_zero();
@@ -52,13 +52,13 @@ impl DeadweightIntensity {
         }
     }
 
-    fn spatiums_filled_zero(&self) -> Vec<Spatium> {
+    fn spatiums_filled_zero(&self) -> Vec<SpatiumFunction> {
         let length_spatiums = self.ship_dimensions.length_spatium();
         let mut spatiums = vec![];
         let mut current_coordinate = self.ship_dimensions.coordinate_aft();
         for id in 0..self.ship_dimensions.number_spatiums() {
             let end_coordinate = current_coordinate + length_spatiums;
-            let spatium = Spatium::new(current_coordinate, end_coordinate, 0.0, 0.0);
+            let spatium = SpatiumFunction::new(current_coordinate, end_coordinate, 0.0, 0.0);
             spatiums.push(spatium);
             current_coordinate += length_spatiums;
         }

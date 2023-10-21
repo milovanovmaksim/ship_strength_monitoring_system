@@ -1,6 +1,6 @@
 
 #[derive(Debug)]
-pub struct Spatium {
+pub struct SpatiumFunction {
     x1: f64,
     x2: f64,
     f_x1: f64,
@@ -8,12 +8,12 @@ pub struct Spatium {
 
 }
 
-impl Spatium {
+impl SpatiumFunction {
     pub fn new(x1: f64,
         x2: f64,
         f_x1: f64,
         f_x2: f64,) -> Self {
-        Spatium { x1, x2, f_x1, f_x2 }
+        SpatiumFunction { x1, x2, f_x1, f_x2 }
     }
 
     pub fn integral(&self) -> f64 {

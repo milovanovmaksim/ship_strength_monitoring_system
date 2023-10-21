@@ -1,18 +1,18 @@
 use plotly::{Scatter, common::{Mode, Line, LineShape, Font, Title}, Plot, Layout, layout::{Legend, Axis, RangeMode}};
 
-use crate::strength::ship::spatium::Spatium;
+use crate::strength::ship::spatium_function::SpatiumFunction;
 
 use super::type_output::TypeOutput;
 
 
 pub struct Output {
-    spatiums: Vec<Spatium>,
+    spatiums: Vec<SpatiumFunction>,
     type_output: TypeOutput,
 }
 
 
 impl Output {
-    pub fn new(spatiums: Vec<Spatium>, type_output: TypeOutput) -> Self {
+    pub fn new(spatiums: Vec<SpatiumFunction>, type_output: TypeOutput) -> Self {
         Output { spatiums, type_output }
 
     }

@@ -1,6 +1,6 @@
 use log::debug;
 use serde::Deserialize;
-use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium::Spatium}};
+use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction}};
 
 use crate::strength::ship::load::load_component_spread::LoadComponentSpread;
 
@@ -72,15 +72,15 @@ impl LoadComponent {
         self.value
     }
 
-    fn filled_spatium(&self, spatium_id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Spatium {
+    fn filled_spatium(&self, spatium_id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> SpatiumFunction {
         let spatium_start_coordinate = self.spatium_start_coordinate(spatium_id, ship_demensions);
         let spatium_end_coordinate = self.spatium_end_coordinate(spatium_id, ship_demensions);
-        Spatium::new(spatium_start_coordinate, spatium_end_coordinate, f_x1, f_x2)
+        SpatiumFunction::new(spatium_start_coordinate, spatium_end_coordinate, f_x1, f_x2)
     }
 
     ///
     /// Computes load component intensity.
-    pub fn load_component_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<Spatium> {
+    pub fn load_component_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<SpatiumFunction> {
         match self.spread(ship_demensions) {
             LoadComponentSpread::WithinOneSpatium => {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
@@ -94,7 +94,7 @@ impl LoadComponent {
                 // Ближе к правому шпангоуту теоретической шпации.
                 if (c_left > c_right) && (spatium_index + 1 <= ship_demensions.number_spatiums() - 1) {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", c_right, c_left);
-                    let mut load_component_intensity = vec![Spatium::new(spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_right), max_intensity(c_right))];
+                    let mut load_component_intensity = vec![SpatiumFunction::new(spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_right), max_intensity(c_right))];
                     let spatium_index = spatium_index + 1;
                     let spatium = self.filled_spatium(spatium_index, ship_demensions, min_intensity(c_right), min_intensity(c_right));
                     load_component_intensity.push(spatium);
@@ -104,7 +104,7 @@ impl LoadComponent {
                 // Ближе к левому шпангоуту теоретической шпации
                 } else if (c_right > c_left ) && (spatium_index - 1 >= 0) {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", c_right, c_left);
-                    let mut load_component_intensity = vec![Spatium::new(spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_left), max_intensity(c_left))];
+                    let mut load_component_intensity = vec![SpatiumFunction::new(spatium_start_coordinate, spatium_end_coordinate, max_intensity(c_left), max_intensity(c_left))];
                     let spatium_index = spatium_index - 1;
                     let spatium = self.filled_spatium(spatium_index, ship_demensions, min_intensity(c_left), min_intensity(c_left));
                     load_component_intensity.push(spatium);
@@ -113,7 +113,7 @@ impl LoadComponent {
                 } else {
                     debug!("LoadComponent.intensity | Груз расположен на крайней шпации. c_right = {}, c_left = {}", c_right, c_left);
                     let f_x = self.value / ship_demensions.length_spatium();
-                    let load_component_intensity = vec![Spatium::new(spatium_start_coordinate, spatium_end_coordinate, f_x, f_x)];
+                    let load_component_intensity = vec![SpatiumFunction::new(spatium_start_coordinate, spatium_end_coordinate, f_x, f_x)];
                     debug!("LoadComponent.intensity | Spatiums are under the load: {:#?}", load_component_intensity);
                     return load_component_intensity;
                 }
