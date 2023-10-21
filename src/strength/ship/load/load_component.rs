@@ -107,6 +107,7 @@ impl LoadComponent {
                     let f_x = min_intensity(distance_right);
                     let spatium_function = self.load_intensity_for_spatium(spatium_start_index + 1, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
+                    debug!("Saptium are under the load {:#?}", load_component_intensity);
                     load_component_intensity
 
 
@@ -119,6 +120,7 @@ impl LoadComponent {
                     let f_x = min_intensity(distance_left);
                     let spatium_function = self.load_intensity_for_spatium(spatium_start_index - 1, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
+                    debug!("Saptium are under the load {:#?}", load_component_intensity);
                     load_component_intensity
 
                 } else {
@@ -126,6 +128,7 @@ impl LoadComponent {
                     let f_x = self.value / ship_demensions.length_spatium();
                     let spatium_function = self.load_intensity_for_spatium(spatium_start_index, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
+                    debug!("Saptium are under the load {:#?}", load_component_intensity);   
                     load_component_intensity
                 }
 
