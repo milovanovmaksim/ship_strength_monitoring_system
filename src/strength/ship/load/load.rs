@@ -107,7 +107,7 @@ impl Load {
                 } else {
                     debug!("Load.intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                     let f_x = self.value / ship_demensions.length_spatium();
-                    let spatium_function =SpatiumFunction::from_ship_dimensions(spatium_start_index as u64, ship_demensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_ship_dimensions(spatium_start_index as u64, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", load_component_intensity);
                     load_component_intensity
