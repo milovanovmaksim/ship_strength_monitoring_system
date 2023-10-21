@@ -1,6 +1,6 @@
 use log::debug;
 use serde::Deserialize;
-use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, piecewise_defined_function::PiecewiseDefinedFunction}};
+use crate::{core::point::Point, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction}};
 
 use crate::strength::ship::load::load_component_spread::LoadComponentSpread;
 
@@ -81,6 +81,11 @@ impl LoadComponent {
         (distance_left, distance_right)
     }
 
+    fn load_intensity_for_spatium(&self, id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> SpatiumFunction {
+        let spatium_start_coordinate = self.spatium_start_coordinate(id, ship_demensions);
+        let spatium_end_coordinate = self.spatium_end_coordinate(id, ship_demensions);
+        SpatiumFunction::new(spatium_start_coordinate, spatium_end_coordinate, f_x1, f_x2)
+    }
 
     ///
     /// Computes load component intensity.
@@ -90,31 +95,38 @@ impl LoadComponent {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
                 let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
-                let number_spatiums = ship_demensions.number_spatiums();
-                let length_spatium = ship_demensions.length_spatium();
                 let (distance_left, distance_right) = self.distances(ship_demensions);
+                let mut load_component_intensity = vec![];
 
                 // Ближе к правому шпангоуту теоретической шпации.
-                if (distance_left > distance_right) && (spatium_start_index + 1 <= number_spatiums - 1) {
+                if (distance_left > distance_right) && (spatium_start_index + 1 <= ship_demensions.number_spatiums() - 1) {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
-                    let piecewise_defined_function = PiecewiseDefinedFunction::filled_zeros(number_spatiums, length_spatium);
-                    
-                    let spatium_next_index = spatium_start_index + 1;
-                    todo!()
+                    let f_x = max_intensity(distance_right);
+                    let spatium_function = self.load_intensity_for_spatium(spatium_start_index, ship_demensions, f_x, f_x);
+                    load_component_intensity.push(spatium_function);
+                    let f_x = min_intensity(distance_right);
+                    let spatium_function = self.load_intensity_for_spatium(spatium_start_index + 1, ship_demensions, f_x, f_x);
+                    load_component_intensity.push(spatium_function);
+                    load_component_intensity
+
 
                 // Ближе к левому шпангоуту теоретической шпации
                 } else if (distance_right > distance_left ) && (spatium_start_index - 1 >= 0) {
                     debug!("LoadComponent.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
-                    
-                    let spatium_previous_index = spatium_start_index - 1;
-                    todo!()
-                } else {
-                    debug!("LoadComponent.intensity | Вес груза распределяем на всю теоретическуб шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
-                    let f_x = self.value / length_spatium;
-                    
-  
-                    todo!();
+                    let f_x = max_intensity(distance_left);
+                    let spatium_function = self.load_intensity_for_spatium(spatium_start_index, ship_demensions, f_x, f_x);
+                    load_component_intensity.push(spatium_function);
+                    let f_x = min_intensity(distance_left);
+                    let spatium_function = self.load_intensity_for_spatium(spatium_start_index - 1, ship_demensions, f_x, f_x);
+                    load_component_intensity.push(spatium_function);
+                    load_component_intensity
 
+                } else {
+                    debug!("LoadComponent.intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
+                    let f_x = self.value / ship_demensions.length_spatium();
+                    let spatium_function = self.load_intensity_for_spatium(spatium_start_index, ship_demensions, f_x, f_x);
+                    load_component_intensity.push(spatium_function);
+                    load_component_intensity
                 }
 
             },
