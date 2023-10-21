@@ -57,7 +57,7 @@ impl LightweightIntensity {
     }
     ///
     /// Computes the lightweight intensity for the spatium.
-    fn spatium(&self, current_coord: f64, half_length_spatium: f64, id: i64) -> SpatiumFunction {
+    fn spatium(&self, current_coord: f64, half_length_spatium: f64, id: u64) -> SpatiumFunction {
         let (a, b, c) = self.ship_dimensions.lightweight_intensity_parameters();
         let end_coord = current_coord + half_length_spatium;
         let start_coord = current_coord - half_length_spatium;
