@@ -63,12 +63,13 @@ impl Load {
         self.value
     }
 
-    fn dictanse_left(&self, spatium_start_coordinate: f64) -> f64 {
-        (self.longitudinal_center_gravity() - spatium_start_coordinate).abs()
-    }
-
-    fn distance_right(&self, spatium_end_coordinate: f64) -> f64 {
-        (self.longitudinal_center_gravity() - spatium_end_coordinate).abs()
+    fn distance(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
+        let spatium_start_index = self.spatium_start_index(ship_demensions);
+        let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
+        let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
+        let distance_left = (self.longitudinal_center_gravity() - spatium_start_coordinate).abs();
+        let distance_right = (self.longitudinal_center_gravity() - spatium_end_coordinate).abs();
+        (distance_left, distance_right)
     }
 
     ///
@@ -78,11 +79,8 @@ impl Load {
             LoadSpread::WithinOneSpatium => {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
                 let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
+                let (distance_left, distance_right) = self.distance(ship_demensions);
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
-                let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
-                let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
-                let distance_left = self.dictanse_left(spatium_start_coordinate);
-                let distance_right = self.distance_right(spatium_end_coordinate);
                 let mut load_component_intensity = vec![];
                 if (distance_left > distance_right) && (self.longitudinal_center_gravity() + ship_demensions.length_spatium() < ship_demensions.coordinate_bow()) {
                     debug!("Load.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
@@ -115,10 +113,13 @@ impl Load {
 
             },
             LoadSpread::WithinManySpatiums => {
-                let spatium_start_index = self.spatium_start_index(ship_demensions);
-                let spatium_end_index = self.spatium_end_index(ship_demensions);
                 if self.load_start_coordinate() < ship_demensions.coordinate_aft() {
                     debug!("Часть груза выступает за границу крайнего левого шпангоута. Координата начала груза {}", self.load_start_coordinate());
+                    let length_load = self.load_start_coordinate().abs() - ship_demensions.coordinate_aft().abs();
+                    let longitudinal_center_gravity = ship_demensions.coordinate_aft() - (length_load / 2.0);
+                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
+                    let load_value = self.value;
+                    let load_outside_leftmost_frame = Load::new(load_value, center_gravity, length_load);
                     todo!();
                 } else if self.load_end_coordinate() > ship_demensions.coordinate_bow() {
                     debug!("Часть груза выступает за границу крайнего правого шпангоута. Координата конца груза {}", self.load_end_coordinate());
