@@ -148,11 +148,11 @@ impl Load {
             debug!("Load.spread | The load is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load component: {:#?}", self);
             LoadSpread::OutsideLeftmostFrame
-        } else if spatium_end_index as u64 > ship_demensions.number_spatiums() - 1 && spatium_start_index as u64 > ship_demensions.number_spatiums() - 1 {
+        } else if self.load_start_coordinate() > ship_demensions.coordinate_bow() && self.load_end_coordinate() > ship_demensions.coordinate_bow()  {
             debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load : {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::OutsideRightmostFrame
-        } else if spatium_end_index - spatium_start_index > 0 {
+        } else if self.load_end_coordinate() - self.load_start_coordinate() > ship_demensions.length_spatium() {
             debug!("Load.spread | The load spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::WithinManySpatiums
