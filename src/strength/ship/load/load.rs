@@ -8,9 +8,9 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 
 
 /// Load - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
-/// value - load component value in tons.
-/// center_gravity -  the center gravity of the load component relative to the amidships(the middle of a ship).
-/// length - load component length.
+/// value - load value in tons.
+/// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
+/// length - load length.
 #[derive(Deserialize, Debug)]
 pub struct Load {
     value: f64,
