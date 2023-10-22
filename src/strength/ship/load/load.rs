@@ -113,6 +113,15 @@ impl Load {
 
             },
             LoadSpread::WithinManySpatiums => {
+                let x_1 = self.load_start_coordinate();
+                let x_4 = self.load_end_coordinate();
+                
+                let spatium_start_index = self.spatium_start_index(ship_demensions);
+                let saptium_end_index = self.spatium_end_index(ship_demensions);
+                let x_2 = ship_demensions.spatium_end_coordinate(spatium_start_index);
+                let x_3 = ship_demensions.spatium_start_coordinate(saptium_end_index);
+                
+
                 if self.load_start_coordinate() < ship_demensions.coordinate_aft() {
                     let mut load_intensity = vec![];
                     debug!("Часть груза выступает за границу крайнего левого шпангоута. Координата начала груза {}", self.load_start_coordinate());
@@ -162,7 +171,7 @@ impl Load {
                     let intensity_from_load_within_one_spatium = load_within_one_spatium.load_intensity(ship_demensions);
 
                     let spatium_end_index = self.spatium_end_index(ship_demensions);
-                    
+
 
                     todo!();
                 }
