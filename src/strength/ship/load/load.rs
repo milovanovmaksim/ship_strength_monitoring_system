@@ -72,6 +72,15 @@ impl Load {
         (distance_left, distance_right)
     }
 
+    fn separated_load(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Load {
+        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
+        let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
+        let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
+        let load_value = (load_length / self.length) * self.value;
+        Load::new(longitudinal_center_gravity, center_gravity, load_value)
+
+    }
+
     ///
     /// Computes load intensity.
     pub fn load_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<SpatiumFunction> {
@@ -105,77 +114,40 @@ impl Load {
                 } else {
                     debug!("Load.intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                     let f_x = self.value / ship_demensions.length_spatium();
+                    debug!("{}", ship_demensions.spatium_start_coordinate(19));
                     let spatium_function = SpatiumFunction::from_ship_dimensions(spatium_start_index, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", load_component_intensity);
                     load_component_intensity
                 }
-
             },
             LoadSpread::WithinManySpatiums => {
                 let x_1 = self.load_start_coordinate();
                 let x_4 = self.load_end_coordinate();
-                
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let saptium_end_index = self.spatium_end_index(ship_demensions);
                 let x_2 = ship_demensions.spatium_end_coordinate(spatium_start_index);
                 let x_3 = ship_demensions.spatium_start_coordinate(saptium_end_index);
-                
-
-                if self.load_start_coordinate() < ship_demensions.coordinate_aft() {
-                    let mut load_intensity = vec![];
-                    debug!("Часть груза выступает за границу крайнего левого шпангоута. Координата начала груза {}", self.load_start_coordinate());
-                    let load_length = self.load_start_coordinate().abs() - ship_demensions.coordinate_aft().abs();
-                    let longitudinal_center_gravity = ship_demensions.coordinate_aft() - (load_length / 2.0);
-                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
-                    let load_value = (load_length / self.length) * self.value;
-                    let load_outside_leftmost_frame = Load::new(load_value, center_gravity, load_length);
-                    let intensity_from_load_outside_leftmost_frame = load_outside_leftmost_frame.load_intensity(ship_demensions);
-
-                    let load_length = ship_demensions.coordinate_aft().abs() - self.load_end_coordinate().abs();
-                    let longitudinal_center_gravity = self.load_end_coordinate() - load_length / 2.0;
-                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
-                    let load_value = (load_length / self.length) * self.value;
-                    let load_within_many_spatium = Load::new(load_value, center_gravity, load_length);
-                    let intensity_from_load_within_many_saptiums = load_within_many_spatium.load_intensity(ship_demensions);
-                    load_intensity.extend(intensity_from_load_outside_leftmost_frame);
-                    load_intensity.extend(intensity_from_load_within_many_saptiums);
-                    load_intensity
-                } else if self.load_end_coordinate() > ship_demensions.coordinate_bow() {
-                    let mut load_intensity = vec![];
-                    debug!("Часть груза выступает за границу крайнего правого шпангоута. Координата конца груза {}", self.load_end_coordinate());
-                    let load_length = self.load_end_coordinate() - ship_demensions.coordinate_bow();
-                    let longitudinal_center_gravity = ship_demensions.coordinate_bow() + load_length / 2.0;
-                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
-                    let load_value = (load_length / self.length) * self.value;
-                    let load_outside_rightmost_frame = Load::new(load_value, center_gravity, load_length);
-                    let intensity_from_load_outside_rightmost_frame = load_outside_rightmost_frame.load_intensity(ship_demensions);
-
-                    let load_length = ship_demensions.coordinate_bow() - self.load_start_coordinate();
-                    let longitudinal_center_gravity = self.load_start_coordinate() + load_length / 2.0;
-                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
-                    let load_value = (load_length / self.length) * self.value;
-                    let load_within_many_spatium = Load::new(load_value, center_gravity, load_length);
-                    let intensity_from_load_within_one_spatium = load_within_many_spatium.load_intensity(ship_demensions);
-                    load_intensity.extend(intensity_from_load_outside_rightmost_frame);
-                    load_intensity.extend(intensity_from_load_within_one_spatium);
-                    load_intensity
-                } else {
-                    let spatium_start_index = self.spatium_start_index(ship_demensions);
-                    let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
-                    let load_length = (spatium_end_coordinate.abs() - self.load_start_coordinate().abs()).abs();
-                    let longitudinal_center_gravity = self.load_start_coordinate() + load_length / 2.0;
-                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
-                    let load_value = self.value * (load_length / self.length);
-                    let load_within_one_spatium = Load::new(load_value, center_gravity, load_length);
-                    let intensity_from_load_within_one_spatium = load_within_one_spatium.load_intensity(ship_demensions);
-
-                    let spatium_end_index = self.spatium_end_index(ship_demensions);
-
-
-                    todo!();
+                let mut load_intensity: Vec<SpatiumFunction> = vec![];
+                if x_1.abs() - x_2.abs() > 0.0 {
+                    let load = self.separated_load(x_1, x_2);
+                    let spatium_functions = load.load_intensity(ship_demensions);
+                    load_intensity.extend(spatium_functions);
+                } else if x_3 - x_4 > 0.0 {
+                    let load = self.separated_load(x_3, x_4);
+                    let spatium_functions = load.load_intensity(ship_demensions);
+                    load_intensity.extend(spatium_functions);
                 }
-
+                let mut load_start_coordinate = x_2;
+                let mut load_end_coordinate = x_2 + ship_demensions.length_spatium();
+                while load_end_coordinate < x_3 {
+                    let load = self.separated_load(load_start_coordinate, load_end_coordinate);
+                    let spatium_functions = load.load_intensity(ship_demensions);
+                    load_intensity.extend(spatium_functions);
+                    load_start_coordinate += ship_demensions.length_spatium();
+                    load_end_coordinate += ship_demensions.length_spatium();
+                }
+                load_intensity
             },
             LoadSpread::OutsideLeftmostFrame => {
                 todo!();
