@@ -132,7 +132,7 @@ impl Load {
                     let load = self.separated_load(x_1, x_2);
                     let spatium_functions = load.load_intensity(ship_demensions);
                     load_intensity.extend(spatium_functions);
-                } else if (x_3.abs() - x_4.abs()).abs() > 0.0 {
+                } else if (x_4 - x_3).abs() > 0.0 {
                     let load = self.separated_load(x_3, x_4);
                     let spatium_functions = load.load_intensity(ship_demensions);
                     load_intensity.extend(spatium_functions);
