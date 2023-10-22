@@ -115,14 +115,27 @@ impl Load {
             LoadSpread::WithinManySpatiums => {
                 if self.load_start_coordinate() < ship_demensions.coordinate_aft() {
                     debug!("Часть груза выступает за границу крайнего левого шпангоута. Координата начала груза {}", self.load_start_coordinate());
-                    let length_load = self.load_start_coordinate().abs() - ship_demensions.coordinate_aft().abs();
-                    let longitudinal_center_gravity = ship_demensions.coordinate_aft() - (length_load / 2.0);
+                    let load_length = self.load_start_coordinate().abs() - ship_demensions.coordinate_aft().abs();
+                    let longitudinal_center_gravity = ship_demensions.coordinate_aft() - (load_length / 2.0);
                     let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
-                    let load_value = self.value;
-                    let load_outside_leftmost_frame = Load::new(load_value, center_gravity, length_load);
+                    let load_value = (load_length / self.length) * self.value;
+                    let load_outside_leftmost_frame = Load::new(load_value, center_gravity, load_length);
+
+                    let load_length = ship_demensions.coordinate_aft().abs() - self.load_end_coordinate().abs();
+                    let longitudinal_center_gravity = self.load_end_coordinate() - load_length / 2.0;
+                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
+                    let load_value = (load_length / self.length) * self.value;
+                    let load_within_many_spatium = Load::new(load_value, center_gravity, load_length);
                     todo!();
                 } else if self.load_end_coordinate() > ship_demensions.coordinate_bow() {
                     debug!("Часть груза выступает за границу крайнего правого шпангоута. Координата конца груза {}", self.load_end_coordinate());
+                    let load_length = self.load_end_coordinate() - ship_demensions.coordinate_bow();
+                    let longitudinal_center_gravity = ship_demensions.coordinate_bow() + load_length / 2.0;
+                    let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
+                    let load_value = (load_length / self.length) * self.value;
+                    let load_outside_rightmost_frame = Load::new(load_value, center_gravity, load_length);
+
+
                     todo!();
 
                 } else {
