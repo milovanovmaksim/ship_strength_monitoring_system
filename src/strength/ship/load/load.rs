@@ -152,6 +152,16 @@ impl Load {
                     load_intensity.extend(spatium_many_within_load_intensity);
                     load_intensity
                 } else {
+                    let spatium_start_index = self.spatium_start_index(ship_demensions);
+                    let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
+                    let load_length = (spatium_end_coordinate.abs() - self.load_start_coordinate().abs()).abs();
+                    
+
+
+
+
+                    let spatium_end_index = self.spatium_end_index(ship_demensions);
+
                     todo!();
                 }
 
