@@ -155,7 +155,7 @@ impl Load {
                 let f_x = ((1.5 + self.longitudinal_center_gravity() / ship_demensions.length_spatium()) * self.value) / ship_demensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_ship_dimensions(leftmost_spatium_id, ship_demensions, f_x, f_x);
 
-                let f_x = ((0.5 + self.longitudinal_center_gravity() / ship_demensions.length_spatium()) * self.value) / ship_demensions.length_spatium();
+                let f_x = -((0.5 + self.longitudinal_center_gravity() / ship_demensions.length_spatium()) * self.value) / ship_demensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_ship_dimensions(leftmost_spatium_id + 1, ship_demensions, f_x, f_x);
                 todo!()
             }
@@ -164,7 +164,7 @@ impl Load {
                 let f_x = ((1.5 + self.longitudinal_center_gravity() / ship_demensions.length_spatium()) * self.value) / ship_demensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_ship_dimensions(rightmost_spatium_id, ship_demensions, f_x, f_x);
 
-                let f_x = ((0.5 + self.longitudinal_center_gravity() / ship_demensions.length_spatium()) * self.value) / ship_demensions.length_spatium();
+                let f_x = -((0.5 + self.longitudinal_center_gravity() / ship_demensions.length_spatium()) * self.value) / ship_demensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_ship_dimensions(rightmost_spatium_id - 1, ship_demensions, f_x, f_x);
                 todo!();
             }
