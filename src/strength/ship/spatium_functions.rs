@@ -1,13 +1,13 @@
 
 use super::spatium_function::SpatiumFunction;
 
-pub struct PiecewiseDefinedFunction {
+pub struct SpatiumFunctions {
     functions: Vec<SpatiumFunction>
 }
 
-impl PiecewiseDefinedFunction {
+impl SpatiumFunctions {
     pub fn new(functions: Vec<SpatiumFunction>) -> Self {
-        PiecewiseDefinedFunction { functions }
+        SpatiumFunctions { functions }
     }
 
     pub fn filled_zeros(number_spatium: u64, length_spatium: f64) -> Self {
@@ -18,6 +18,6 @@ impl PiecewiseDefinedFunction {
             let spatium_function = SpatiumFunction::new(x1, x2, 0.0, 0.0);
             functions.push(spatium_function);
         }
-        PiecewiseDefinedFunction::new(functions)
+        SpatiumFunctions::new(functions)
     }
 }
