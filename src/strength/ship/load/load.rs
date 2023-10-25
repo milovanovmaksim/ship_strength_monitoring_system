@@ -41,19 +41,19 @@ impl Load {
     ///
     /// Longitudinal center of gravity (LCG)  - the load longitudinal center of gravity relative to the amidships(the middle of a ship).
     fn longitudinal_center_gravity(&self) -> f64 {
-        self.center_gravity.x()
+        self.center_gravity.x
     }
 
     ///
     /// Returns the index of the leftmost spatium that are under the load.
-    fn spatium_start_index(&self, ship_demensions: &ShipDimensions) -> u64 {
+    fn spatium_start_index(&self, ship_demensions: &ShipDimensions) -> i64 {
         let x = self.load_start_coordinate();
         ship_demensions.spatium_index_by_coordinate(x)
     }
 
     ///
     /// Returns the index of the rightmost spatium that are under the load.
-    fn spatium_end_index(&self, ship_demensions: &ShipDimensions) -> u64 {
+    fn spatium_end_index(&self, ship_demensions: &ShipDimensions) -> i64 {
         let x = self.load_end_coordinate();
         ship_demensions.spatium_index_by_coordinate(x)
 
@@ -77,7 +77,7 @@ impl Load {
     fn separated_load(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Load {
         let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
         let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
-        let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y(), self.center_gravity.z());
+        let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y, self.center_gravity.z);
         let load_value = (load_length / self.length) * self.value;
         Load::new(load_value, center_gravity, load_length)
 
@@ -169,11 +169,11 @@ impl Load {
                 let rightmost_spatium_id = ship_demensions.number_spatiums() - 1;
                 let f_x = ((1.5 + (self.longitudinal_center_gravity() / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
                 let mut load_intensity: Vec<SpatiumFunction> = vec![];
-                let spatium_function = SpatiumFunction::from_id(rightmost_spatium_id, ship_demensions, f_x, f_x);
+                let spatium_function = SpatiumFunction::from_id(rightmost_spatium_id as i64, ship_demensions, f_x, f_x);
                 load_intensity.push(spatium_function);
 
                 let f_x = -((0.5 + (self.longitudinal_center_gravity() / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
-                let spatium_function = SpatiumFunction::from_id(rightmost_spatium_id - 1, ship_demensions, f_x, f_x);
+                let spatium_function = SpatiumFunction::from_id((rightmost_spatium_id - 1) as i64, ship_demensions, f_x, f_x);
                 load_intensity.push(spatium_function);
                 debug!("Saptiums are under the load {:#?}", load_intensity);
                 load_intensity
