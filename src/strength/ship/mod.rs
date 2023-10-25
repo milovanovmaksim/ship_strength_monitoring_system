@@ -4,3 +4,4 @@ pub mod lightweight;
 pub mod deadweight;
 pub mod load;
 pub mod spatium_functions;
+mod deck_cargo;
