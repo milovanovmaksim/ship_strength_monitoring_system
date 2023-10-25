@@ -83,4 +83,8 @@ impl ShipDimensions {
     pub fn spatium_end_coordinate(&self, id: u64) -> f64 {
         self.spatium_start_coordinate(id) + self.length_spatium()
     }
+
+    pub fn spatium_index_by_coordinate(&self, x: f64) -> u64 {
+        ((x / self.length_spatium()) + (self.number_spatiums()) as f64 / 2.0) as u64
+    }
 }
