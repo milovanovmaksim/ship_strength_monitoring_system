@@ -67,8 +67,8 @@ impl Load {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
         let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
-        let distance_left = (self.longitudinal_center_gravity() - spatium_start_coordinate).abs();
-        let distance_right = (self.longitudinal_center_gravity() - spatium_end_coordinate).abs();
+        let distance_left = (self.longitudinal_center_gravity().abs() - spatium_start_coordinate.abs()).abs();
+        let distance_right = (self.longitudinal_center_gravity().abs() - spatium_end_coordinate.abs()).abs();
         (distance_left, distance_right)
     }
 
