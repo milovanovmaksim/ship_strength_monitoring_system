@@ -47,13 +47,15 @@ impl Load {
     ///
     /// Returns the index of the leftmost spatium that are under the load.
     fn spatium_start_index(&self, ship_demensions: &ShipDimensions) -> u64 {
-        ((self.load_start_coordinate() / ship_demensions.length_spatium()) + (ship_demensions.number_spatiums()) as f64 / 2.0) as u64
+        let x = self.load_start_coordinate();
+        ship_demensions.spatium_index_by_coordinate(x)
     }
 
     ///
     /// Returns the index of the rightmost spatium that are under the load.
     fn spatium_end_index(&self, ship_demensions: &ShipDimensions) -> u64 {
-        ((self.load_end_coordinate() / ship_demensions.length_spatium()) + (ship_demensions.number_spatiums()) as f64 / 2.0) as u64
+        let x = self.load_end_coordinate();
+        ship_demensions.spatium_index_by_coordinate(x)
 
     }
 
@@ -132,7 +134,7 @@ impl Load {
                     let load = self.separated_load(x_1, x_2);
                     let spatium_functions = load.load_intensity(ship_demensions);
                     load_intensity.extend(spatium_functions);
-                } else if (x_4 - x_3).abs() > 0.0 {
+                } else if (x_4.abs() - x_3.abs()).abs() > 0.0 {
                     let load = self.separated_load(x_3, x_4);
                     let spatium_functions = load.load_intensity(ship_demensions);
                     load_intensity.extend(spatium_functions);
