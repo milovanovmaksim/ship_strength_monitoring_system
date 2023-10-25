@@ -8,8 +8,6 @@ pub struct LoadSharing {
 }
 
 
-// {"value": 68, "center_gravity": {"x": 55, "y": 5.6, "z": 5.6}, "length": 1}
-
 impl LoadSharing {
     pub fn new(deck_cargoes: Vec<DeckCargo>, ship_dimensions: ShipDimensions) -> Self {
         LoadSharing { deck_cargoes, ship_dimensions }
