@@ -15,7 +15,7 @@ impl LoadSharing {
         LoadSharing { deck_cargoes, ship_dimensions }
     }
 
-    pub fn shared_loads(&self) -> Vec<ShipLoad> {
+    pub fn shared_shiploads(&self) -> Vec<ShipLoad> {
         let mut shared_loads: Vec<ShipLoad> = vec![];
         for deck_cargo in &self.deck_cargoes {
             let longitudinal_center_gravity = deck_cargo.center_gravity.x;
@@ -44,6 +44,10 @@ impl LoadSharing {
         }
         debug!("Shared shiploads {:#?}", shared_loads);
         shared_loads
+    }
+
+    fn _shared_shiploads(&self, shipload: ShipLoad) -> Vec<ShipLoad> {
+        todo!()
     }
 
     fn shipload(&self, shipload_start_coordinate: f64, shipload_end_coordinate: f64, deck_cargo: &DeckCargo) -> ShipLoad {
