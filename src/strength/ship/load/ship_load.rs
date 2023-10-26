@@ -74,15 +74,6 @@ impl ShipLoad {
         (distance_left, distance_right)
     }
 
-    fn separated_load(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> ShipLoad {
-        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
-        let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
-        let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y, self.center_gravity.z);
-        let load_value = (load_length / self.length) * self.value;
-        ShipLoad::new(load_value, center_gravity, load_length)
-
-    }
-
     ///
     /// Computes load intensity.
     pub fn load_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<SpatiumFunction> {
