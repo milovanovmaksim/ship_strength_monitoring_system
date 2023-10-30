@@ -163,20 +163,23 @@ impl ShipLoad {
                 shipload_intensity
             },
             LoadSpread::OutsideLeftmostFrame | LoadSpread::OutsideRightmostFrame => {
-                let (spatium_id, next_spatium_id) = {
+                let (spatium_id, next_spatium_id, distance) = {
                     if self.load_start_coordinate() < ship_demensions.coordinate_aft() && self.load_end_coordinate() <= ship_demensions.coordinate_aft() {
-                        (0, 1)
+                        let distance = (ship_demensions.coordinate_aft().abs() - self.longitudinal_center_gravity().abs()).abs();
+                        (0, 1, distance)
                     } else {
                         let rightmost_spatium_id = ship_demensions.number_spatiums() - 1;
-                        (rightmost_spatium_id, rightmost_spatium_id - 1)
+                        let distance = (ship_demensions.coordinate_bow().abs() - self.longitudinal_center_gravity().abs()).abs();
+                        (rightmost_spatium_id, rightmost_spatium_id - 1, distance)
                     }
                 };
-                let f_x = ((1.5 + (self.longitudinal_center_gravity() / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
+                let f_x = ((1.5 + (distance / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
                 let mut load_intensity: Vec<SpatiumFunction> = vec![];
                 let spatium_function = SpatiumFunction::from_id(spatium_id as i64, ship_demensions, f_x, f_x);
+                debug!("{:?}", spatium_function);
                 load_intensity.push(spatium_function);
 
-                let f_x = -((0.5 + (self.longitudinal_center_gravity() / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
+                let f_x = -((0.5 + (distance / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_id(next_spatium_id as i64, ship_demensions, f_x, f_x);
                 load_intensity.push(spatium_function);
                 debug!("Saptiums are under the load {:#?}", load_intensity);
