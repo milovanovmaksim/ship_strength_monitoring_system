@@ -134,7 +134,7 @@ impl ShipLoad {
                 } else if (distance_right > distance_left ) && (self.longitudinal_center_gravity() - ship_demensions.length_spatium()) > ship_demensions.coordinate_aft() {
                     debug!("Load.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
                     let f_x = max_intensity(distance_left);
-                     let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_demensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_demensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     let f_x = min_intensity(distance_left);
                     let spatium_function = SpatiumFunction::from_id(spatium_start_index - 1, ship_demensions, f_x, f_x);
@@ -197,7 +197,7 @@ impl ShipLoad {
             debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::OutsideRightmostFrame
-        } else if self.load_end_coordinate() - self.load_start_coordinate() > ship_demensions.length_spatium() {
+        } else if (self.load_end_coordinate().abs() - self.load_start_coordinate().abs()).abs() > ship_demensions.length_spatium() {
             debug!("Load.spread | The load spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::WithinManySpatiums
