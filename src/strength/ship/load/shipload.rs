@@ -80,7 +80,6 @@ impl ShipLoad {
         let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y, self.center_gravity.z);
         let load_value = (load_length / self.length) * self.value;
         ShipLoad::new(load_value, center_gravity, load_length)
-
     }
 
     fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<ShipLoad> {
@@ -89,13 +88,15 @@ impl ShipLoad {
         let x_4 = self.load_end_coordinate();
         let spatium_start_index = self.spatium_start_index(ship_dimensions);
         let saptium_end_index = self.spatium_end_index(ship_dimensions);
+        debug!("{}, {}", spatium_start_index, saptium_end_index);
         let x_2 = ship_dimensions.spatium_end_coordinate(spatium_start_index);
         let x_3 = ship_dimensions.spatium_start_coordinate(saptium_end_index);
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_1.abs() - x_2.abs()).abs() > 0.0 {
-            let load = self.shared_shipload(x_1, x_2);
+            let load = self.shared_shipload(x_1 + 0.001, x_2 - 0.001);
             shared_loads.push(load);
-        } else if (x_4.abs() - x_3.abs()).abs() > 0.0 {
+        }
+        if (x_4.abs() - x_3.abs()).abs() > 0.0 {
             let load = self.shared_shipload(x_3, x_4);
             shared_loads.push(load);
         }
@@ -103,7 +104,7 @@ impl ShipLoad {
         let mut load_end_coordinate = x_2 + ship_dimensions.length_spatium();
         let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / ship_dimensions.length_spatium()) as i64;
         for _ in 0..number_whole_spatiums_under_load {
-            let load = self.shared_shipload(load_start_coordinate, load_end_coordinate);
+            let load = self.shared_shipload(load_start_coordinate + 0.001, load_end_coordinate - 0.001);
             shared_loads.push(load);
             load_start_coordinate += ship_dimensions.length_spatium();
             load_end_coordinate += ship_dimensions.length_spatium();
@@ -162,8 +163,8 @@ impl ShipLoad {
                 shipload_intensity
             },
             LoadSpread::OutsideLeftmostFrame | LoadSpread::OutsideRightmostFrame => {
-                let (spatiums_id, next_spatium_id) = {
-                    if self.load_start_coordinate() < ship_demensions.coordinate_aft() && self.load_end_coordinate() < ship_demensions.coordinate_aft() {
+                let (spatium_id, next_spatium_id) = {
+                    if self.load_start_coordinate() < ship_demensions.coordinate_aft() && self.load_end_coordinate() <= ship_demensions.coordinate_aft() {
                         (0, 1)
                     } else {
                         let rightmost_spatium_id = ship_demensions.number_spatiums() - 1;
@@ -172,7 +173,7 @@ impl ShipLoad {
                 };
                 let f_x = ((1.5 + (self.longitudinal_center_gravity() / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
                 let mut load_intensity: Vec<SpatiumFunction> = vec![];
-                let spatium_function = SpatiumFunction::from_id(spatiums_id as i64, ship_demensions, f_x, f_x);
+                let spatium_function = SpatiumFunction::from_id(spatium_id as i64, ship_demensions, f_x, f_x);
                 load_intensity.push(spatium_function);
 
                 let f_x = -((0.5 + (self.longitudinal_center_gravity() / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
