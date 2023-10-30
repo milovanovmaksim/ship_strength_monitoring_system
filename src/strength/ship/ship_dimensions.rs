@@ -85,6 +85,10 @@ impl ShipDimensions {
     }
 
     pub fn spatium_index_by_coordinate(&self, x: f64) -> i64 {
-        ((x / self.length_spatium()) + (self.number_spatiums()) as f64 / 2.0) as i64
+        if x < self.coordinate_aft() {
+            ((x / self.length_spatium()) + (self.number_spatiums()) as f64 / 2.0) as i64 - 1
+        } else {
+            ((x / self.length_spatium()) + (self.number_spatiums()) as f64 / 2.0) as i64
+        }
     }
 }
