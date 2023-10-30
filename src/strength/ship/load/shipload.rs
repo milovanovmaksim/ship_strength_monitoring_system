@@ -46,16 +46,16 @@ impl ShipLoad {
 
     ///
     /// Returns the index of the leftmost spatium that are under the load.
-    fn spatium_start_index(&self, ship_demensions: &ShipDimensions) -> i64 {
+    fn spatium_start_index(&self, ship_dimensions: &ShipDimensions) -> i64 {
         let x = self.load_start_coordinate();
-        ship_demensions.spatium_index_by_coordinate(x)
+        ship_dimensions.spatium_index_by_coordinate(x)
     }
 
     ///
     /// Returns the index of the rightmost spatium that are under the load.
-    fn spatium_end_index(&self, ship_demensions: &ShipDimensions) -> i64 {
+    fn spatium_end_index(&self, ship_dimensions: &ShipDimensions) -> i64 {
         let x = self.load_end_coordinate();
-        ship_demensions.spatium_index_by_coordinate(x)
+        ship_dimensions.spatium_index_by_coordinate(x)
 
     }
 
@@ -83,14 +83,15 @@ impl ShipLoad {
 
     }
 
-    fn shared_shiploads(&self, ship_demensions: &ShipDimensions) -> Vec<ShipLoad> {
+    fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<ShipLoad> {
         let mut shared_loads: Vec<ShipLoad> = vec![];
         let x_1 = self.load_start_coordinate();
         let x_4 = self.load_end_coordinate();
-        let spatium_start_index = self.spatium_start_index(ship_demensions);
-        let saptium_end_index = self.spatium_end_index(ship_demensions);
-        let x_2 = ship_demensions.spatium_end_coordinate(spatium_start_index);
-        let x_3 = ship_demensions.spatium_start_coordinate(saptium_end_index);
+        let spatium_start_index = self.spatium_start_index(ship_dimensions);
+        let saptium_end_index = self.spatium_end_index(ship_dimensions);
+        let x_2 = ship_dimensions.spatium_end_coordinate(spatium_start_index);
+        let x_3 = ship_dimensions.spatium_start_coordinate(saptium_end_index);
+        debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_1.abs() - x_2.abs()).abs() > 0.0 {
             let load = self.shared_shipload(x_1, x_2);
             shared_loads.push(load);
@@ -99,13 +100,13 @@ impl ShipLoad {
             shared_loads.push(load);
         }
         let mut load_start_coordinate = x_2;
-        let mut load_end_coordinate = x_2 + ship_demensions.length_spatium();
-        let number_whole_spatiums_under_load = ((x_2 - x_3).abs() / ship_demensions.length_spatium()) as i64;
+        let mut load_end_coordinate = x_2 + ship_dimensions.length_spatium();
+        let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / ship_dimensions.length_spatium()) as i64;
         for _ in 0..number_whole_spatiums_under_load {
             let load = self.shared_shipload(load_start_coordinate, load_end_coordinate);
             shared_loads.push(load);
-            load_start_coordinate += ship_demensions.length_spatium();
-            load_end_coordinate += ship_demensions.length_spatium();
+            load_start_coordinate += ship_dimensions.length_spatium();
+            load_end_coordinate += ship_dimensions.length_spatium();
         }
         shared_loads
 
@@ -189,11 +190,11 @@ impl ShipLoad {
     fn spread(&self, ship_demensions: &ShipDimensions) -> LoadSpread {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_end_index = self.spatium_end_index(ship_demensions);
-        if self.load_start_coordinate() < ship_demensions.coordinate_aft() && self.load_end_coordinate() < ship_demensions.coordinate_aft() {
+        if self.load_start_coordinate() < ship_demensions.coordinate_aft() && self.load_end_coordinate() <= ship_demensions.coordinate_aft() {
             debug!("Load.spread | The load is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}", self);
             LoadSpread::OutsideLeftmostFrame
-        } else if self.load_start_coordinate() > ship_demensions.coordinate_bow() && self.load_end_coordinate() > ship_demensions.coordinate_bow()  {
+        } else if self.load_start_coordinate() >= ship_demensions.coordinate_bow() && self.load_end_coordinate() > ship_demensions.coordinate_bow()  {
             debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::OutsideRightmostFrame
