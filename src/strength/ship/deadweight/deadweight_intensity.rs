@@ -1,17 +1,17 @@
 use log::{warn, debug};
 use serde::Deserialize;
 
-use crate::{strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions, load::load::Load}, core::json_file::JsonFile};
+use crate::{strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions, load::shipload::ShipLoad}, core::json_file::JsonFile};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
-    loads: Option<Vec<Load>>,
+    loads: Option<Vec<ShipLoad>>,
     ship_dimensions: ShipDimensions,
 }
 
 
 impl DeadweightIntensity {
-    pub fn new(loads: Option<Vec<Load>>, ship_dimensions: ShipDimensions,) -> Self {
+    pub fn new(loads: Option<Vec<ShipLoad>>, ship_dimensions: ShipDimensions,) -> Self {
         DeadweightIntensity { loads, ship_dimensions }
     }
 
