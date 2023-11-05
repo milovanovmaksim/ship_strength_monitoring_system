@@ -88,7 +88,6 @@ impl ShipLoad {
         let x_4 = self.load_end_coordinate();
         let spatium_start_index = self.spatium_start_index(ship_dimensions);
         let saptium_end_index = self.spatium_end_index(ship_dimensions);
-        debug!("{}, {}", spatium_start_index, saptium_end_index);
         let x_2 = ship_dimensions.spatium_end_coordinate(spatium_start_index);
         let x_3 = ship_dimensions.spatium_start_coordinate(saptium_end_index);
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
