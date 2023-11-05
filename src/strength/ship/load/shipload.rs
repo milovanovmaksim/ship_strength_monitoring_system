@@ -60,11 +60,13 @@ impl ShipLoad {
     }
 
     ///
-    /// Returns load component value in tons.
+    /// Returns shipload value in tons.
     pub fn value(&self) -> f64 {
         self.value
     }
 
+    ///
+    /// Distance from LCG to left and right frames.
     fn distance(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
@@ -74,6 +76,12 @@ impl ShipLoad {
         (distance_left, distance_right)
     }
 
+    ///
+    /// Pinch off the shipload.
+    /// Params:
+        /// load_start_coordinate - shipload start coordinate.
+        /// load_end_coordinate - shipload end coordinate.
+    /// Return: Shipload.
     fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> ShipLoad {
         let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
         let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
@@ -82,6 +90,8 @@ impl ShipLoad {
         ShipLoad::new(load_value, center_gravity, load_length)
     }
 
+    ///
+    /// Share the shipload by spatiums.
     fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<ShipLoad> {
         let mut shared_loads: Vec<ShipLoad> = vec![];
         let x_1 = self.load_start_coordinate();
