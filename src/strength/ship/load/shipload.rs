@@ -202,7 +202,7 @@ impl ShipLoad {
             debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::OutsideRightmostFrame
-        } else if (self.load_end_coordinate().abs() - self.load_start_coordinate().abs()).abs() > ship_demensions.length_spatium() {
+        } else if (spatium_end_index.abs() - spatium_start_index.abs()).abs() >= 1 {
             debug!("Load.spread | The load spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::WithinManySpatiums
