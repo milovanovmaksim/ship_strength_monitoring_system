@@ -6,8 +6,8 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 
 
 
-
-/// Load - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
+///
+/// ShipLoad - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
 /// value - load value in tons.
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
