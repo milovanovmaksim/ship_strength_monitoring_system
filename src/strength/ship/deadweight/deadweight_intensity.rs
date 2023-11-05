@@ -5,14 +5,14 @@ use crate::{strength::ship::{spatium_function::SpatiumFunction, ship_dimensions:
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
-    loads: Option<Vec<ShipLoad>>,
+    shiploads: Option<Vec<ShipLoad>>,
     ship_dimensions: ShipDimensions,
 }
 
 
 impl DeadweightIntensity {
-    pub fn new(loads: Option<Vec<ShipLoad>>, ship_dimensions: ShipDimensions,) -> Self {
-        DeadweightIntensity { loads, ship_dimensions }
+    pub fn new(shiploads: Option<Vec<ShipLoad>>, ship_dimensions: ShipDimensions,) -> Self {
+        DeadweightIntensity { shiploads, ship_dimensions }
     }
 
     ///
@@ -40,7 +40,7 @@ impl DeadweightIntensity {
     }
 
     pub fn deadweight_intensity(&self) -> Option<Vec<SpatiumFunction>> {
-        match &self.loads {
+        match &self.shiploads {
             Some(loads) => {
                 let deadweight_intensity = self.spatiums_filled_zero();
                 for load in loads {
