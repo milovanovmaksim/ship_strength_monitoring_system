@@ -27,13 +27,13 @@ impl ShipLoad {
     }
 
     ///
-    /// Returns the coordinate of the start of the load relative to the amidships(the middle of a ship).
+    /// Return the coordinate of the start of the load relative to the amidships(the middle of a ship).
     fn load_start_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() - (self.length / 2.0)
     }
 
     ///
-    /// Returns the coordinate of the end of the load relative to the amidships(the middle of a ship).
+    /// Return the coordinate of the end of the load relative to the amidships(the middle of a ship).
     fn load_end_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
@@ -45,14 +45,14 @@ impl ShipLoad {
     }
 
     ///
-    /// Returns the index of the leftmost spatium that are under the load.
+    /// Return the index of the leftmost spatium that are under the load.
     fn spatium_start_index(&self, ship_dimensions: &ShipDimensions) -> i64 {
         let x = self.load_start_coordinate();
         ship_dimensions.spatium_index_by_coordinate(x)
     }
 
     ///
-    /// Returns the index of the rightmost spatium that are under the load.
+    /// Return the index of the rightmost spatium that are under the load.
     fn spatium_end_index(&self, ship_dimensions: &ShipDimensions) -> i64 {
         let x = self.load_end_coordinate();
         ship_dimensions.spatium_index_by_coordinate(x)
@@ -60,7 +60,7 @@ impl ShipLoad {
     }
 
     ///
-    /// Returns shipload value in tons.
+    /// Return shipload value in tons.
     pub fn value(&self) -> f64 {
         self.value
     }
@@ -123,7 +123,7 @@ impl ShipLoad {
     }
 
     ///
-    /// Computes load intensity.
+    /// Compute shipoad intensity.
     pub fn load_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<SpatiumFunction> {
         match self.spread(ship_demensions) {
             LoadSpread::WithinOneSpatium => {
@@ -198,8 +198,7 @@ impl ShipLoad {
     }
 
     ///
-    /// Determine spread of load.
-    /// Returns enum LoadSpread.
+    /// Determine spread of th shipload.
     fn spread(&self, ship_demensions: &ShipDimensions) -> LoadSpread {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_end_index = self.spatium_end_index(ship_demensions);
