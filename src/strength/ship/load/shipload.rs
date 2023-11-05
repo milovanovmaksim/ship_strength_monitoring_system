@@ -66,7 +66,7 @@ impl ShipLoad {
     }
 
     ///
-    /// Distance from LCG to left and right frames.
+    /// Distance from LCG of the shipload to left and right frames.
     fn distance(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
