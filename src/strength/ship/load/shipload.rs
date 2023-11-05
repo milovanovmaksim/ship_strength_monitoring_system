@@ -66,8 +66,8 @@ impl ShipLoad {
     }
 
     ///
-    /// Distance from LCG of the shipload to left and right frames.
-    fn distance(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
+    /// Distances from LCG of the shipload to left and right frames.
+    fn distances_to_frames(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
         let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
@@ -129,7 +129,7 @@ impl ShipLoad {
             LoadSpread::WithinOneSpatium => {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
                 let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
-                let (distance_left, distance_right) = self.distance(ship_demensions);
+                let (distance_left, distance_right) = self.distances_to_frames(ship_demensions);
                 let spatium_start_index = self.spatium_start_index(ship_demensions);
                 let mut load_component_intensity = vec![];
                 if (distance_left > distance_right) && (self.longitudinal_center_gravity() + ship_demensions.length_spatium() < ship_demensions.coordinate_bow()) {
