@@ -185,7 +185,6 @@ impl ShipLoad {
                 let f_x = ((1.5 + (distance / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
                 let mut load_intensity: Vec<SpatiumFunction> = vec![];
                 let spatium_function = SpatiumFunction::from_id(spatium_id as i64, ship_demensions, f_x, f_x);
-                debug!("{:?}", spatium_function);
                 load_intensity.push(spatium_function);
 
                 let f_x = -((0.5 + (distance / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
