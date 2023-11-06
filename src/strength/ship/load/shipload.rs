@@ -111,7 +111,8 @@ impl ShipLoad {
         }
         let mut load_start_coordinate = x_2;
         let mut load_end_coordinate = x_2 + ship_dimensions.length_spatium();
-        let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / ship_dimensions.length_spatium()) as i64;
+        let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / ship_dimensions.length_spatium()) as u64;
+        debug!("{:?}", number_whole_spatiums_under_load);
         for _ in 0..number_whole_spatiums_under_load {
             let load = self.shared_shipload(load_start_coordinate + 0.001, load_end_coordinate - 0.001);
             shared_loads.push(load);

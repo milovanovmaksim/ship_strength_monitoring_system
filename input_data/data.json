@@ -1,10 +1,10 @@
 {
    "shiploads": [
-        {"value": 68, "center_gravity": {"x": -65, "y": 5.6, "z": 5.6}, "length": 6}],
+        {"value": 68, "center_gravity": {"x": 65, "y": 5.6, "z": 5.6}, "length": 6}],
     "lightweight": 1750.56,
     "ship_dimensions": {
         "length_between_perpendiculars": 125,
-        "number_spatiums": 20,
+        "number_spatiums": 100,
         "completeness_coefficient": 0.6
     },
     "ship_name": "Сухогруз ТКЗ",
