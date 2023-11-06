@@ -1,4 +1,3 @@
-
 use super::spatium_function::SpatiumFunction;
 
 pub struct SpatiumFunctions {
