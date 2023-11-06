@@ -23,13 +23,9 @@ impl SpatiumFunctions {
 
     pub fn add_spatium_function(&mut self, term: SpatiumFunction) {
         let id = term.id() as usize;
-        let x1 = term.x1();
-        let x2 = term.x2();
         if let Some(spatium_function_old) =  self.functions.get(id) {
-            let f_x1 = spatium_function_old.f_x1() + term.f_x1();
-            let f_x2 = spatium_function_old.f_x2() + term.f_x2();
-            let new_spatium_function = SpatiumFunction::new(id as u64, x1, x2, f_x1, f_x2);
-            self.functions.insert(id, new_spatium_function);
+            let spatium_function = spatium_function_old.add(term);
+            self.functions.insert(id, spatium_function);
         }
     }
 }
