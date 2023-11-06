@@ -15,7 +15,7 @@ impl SpatiumFunctions {
         for id in 0..number_spatium {
             let x1 = id as f64 * length_spatium;
             let x2 = x1 + length_spatium;
-            let spatium_function = SpatiumFunction::new(x1, x2, 0.0, 0.0);
+            let spatium_function = SpatiumFunction::new(id, x1, x2, 0.0, 0.0);
             functions.push(spatium_function);
         }
         SpatiumFunctions::new(functions)
