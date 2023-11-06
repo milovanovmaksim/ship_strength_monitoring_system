@@ -30,6 +30,10 @@ impl SpatiumFunction {
         ((self.f_x1 + self.f_x2) / 2.0) * (self.x2 - self.x1)
     }
 
+    pub fn id(&self) -> u64 {
+        self.id
+    }
+
     pub fn x1(&self) -> f64 {
         self.x1
     }
