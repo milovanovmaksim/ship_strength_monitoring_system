@@ -1,6 +1,5 @@
 use crate::strength::ship::{spatium_functions::SpatiumFunctions, ship_dimensions::ShipDimensions};
-
-use super::shipload::Shipload;
+use crate::strength::ship::load::shipload::Shipload;
 
 
 ///
