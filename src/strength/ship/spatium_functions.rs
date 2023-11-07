@@ -11,11 +11,12 @@ impl SpatiumFunctions {
 
     pub fn filled_zeros(number_spatiums: u64, length_spatium: f64) -> Self {
         let mut functions = vec![];
+        let mut start_coordinate = 0.0;
         for id in 0..number_spatiums {
-            let x1 = id as f64 * length_spatium;
-            let x2 = x1 + length_spatium;
-            let spatium_function = SpatiumFunction::new(id, x1, x2, 0.0, 0.0);
+            let end_coordinate = start_coordinate + length_spatium;
+            let spatium_function = SpatiumFunction::new(id, start_coordinate, end_coordinate, 0.0, 0.0);
             functions.push(spatium_function);
+            start_coordinate += length_spatium;
         }
         SpatiumFunctions::new(functions)
     }
