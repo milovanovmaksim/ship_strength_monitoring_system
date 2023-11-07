@@ -20,7 +20,7 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
-    pub fn add_spatium_function(&mut self, term: SpatiumFunction) {
+    pub fn add_spatium_function(&mut self, term: &SpatiumFunction) {
         let id = term.id() as usize;
         if let Some(spatium_function_old) =  self.functions.get(id) {
             let spatium_function = spatium_function_old.add(term);
