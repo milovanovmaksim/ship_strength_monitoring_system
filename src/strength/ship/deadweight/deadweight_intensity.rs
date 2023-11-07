@@ -51,18 +51,4 @@ impl DeadweightIntensity {
             None => { None }
         }
     }
-
-    fn spatiums_filled_zero(&self) -> Vec<SpatiumFunction> {
-        let length_spatiums = self.ship_dimensions.length_spatium();
-        let mut spatiums = vec![];
-        let mut current_coordinate = self.ship_dimensions.coordinate_aft();
-        for id in 0..self.ship_dimensions.number_spatiums() {
-            let end_coordinate = current_coordinate + length_spatiums;
-            let spatium = SpatiumFunction::new(id, current_coordinate, end_coordinate, 0.0, 0.0);
-            spatiums.push(spatium);
-            current_coordinate += length_spatiums;
-        }
-        spatiums
-    }
-
 }
