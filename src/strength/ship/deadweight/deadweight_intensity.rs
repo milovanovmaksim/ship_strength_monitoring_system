@@ -1,18 +1,18 @@
 use log::{warn, debug};
 use serde::Deserialize;
 
-use crate::{strength::ship::{spatium::Spatium, ship_dimensions::ShipDimensions}, core::{json_file::JsonFile, load::load::LoadComponent}};
+use crate::{strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions, load::shipload::ShipLoad}, core::json_file::JsonFile};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
-    loads: Option<Vec<LoadComponent>>,
+    shiploads: Option<Vec<ShipLoad>>,
     ship_dimensions: ShipDimensions,
 }
 
 
 impl DeadweightIntensity {
-    pub fn new(loads: Option<Vec<LoadComponent>>, ship_dimensions: ShipDimensions,) -> Self {
-        DeadweightIntensity { loads, ship_dimensions }
+    pub fn new(shiploads: Option<Vec<ShipLoad>>, ship_dimensions: ShipDimensions,) -> Self {
+        DeadweightIntensity { shiploads, ship_dimensions }
     }
 
     ///
@@ -39,12 +39,12 @@ impl DeadweightIntensity {
         }
     }
 
-    pub fn deadweight_intensity(&self) -> Option<Vec<Spatium>> {
-        match &self.loads {
+    pub fn deadweight_intensity(&self) -> Option<Vec<SpatiumFunction>> {
+        match &self.shiploads {
             Some(loads) => {
                 let deadweight_intensity = self.spatiums_filled_zero();
                 for load in loads {
-                    let load_intensity = load.intensity(&self.ship_dimensions);
+                    let load_intensity = load.load_intensity(&self.ship_dimensions);
                 }
                 Some(deadweight_intensity)
             },
@@ -52,13 +52,13 @@ impl DeadweightIntensity {
         }
     }
 
-    fn spatiums_filled_zero(&self) -> Vec<Spatium> {
+    fn spatiums_filled_zero(&self) -> Vec<SpatiumFunction> {
         let length_spatiums = self.ship_dimensions.length_spatium();
         let mut spatiums = vec![];
         let mut current_coordinate = self.ship_dimensions.coordinate_aft();
         for id in 0..self.ship_dimensions.number_spatiums() {
             let end_coordinate = current_coordinate + length_spatiums;
-            let spatium = Spatium::new(id, current_coordinate, end_coordinate, 0.0, 0.0);
+            let spatium = SpatiumFunction::new(id, current_coordinate, end_coordinate, 0.0, 0.0);
             spatiums.push(spatium);
             current_coordinate += length_spatiums;
         }
