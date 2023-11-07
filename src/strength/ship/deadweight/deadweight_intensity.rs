@@ -1,6 +1,5 @@
-use log::{warn, debug};
 use serde::Deserialize;
-use crate::{strength::ship::{load::shiploads::Shiploads, spatium_functions::SpatiumFunctions}, core::json_file::JsonFile};
+use crate::strength::ship::{load::shiploads::Shiploads, spatium_functions::SpatiumFunctions};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
