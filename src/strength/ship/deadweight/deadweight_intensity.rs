@@ -1,12 +1,10 @@
 use log::{warn, debug};
 use serde::Deserialize;
-
 use crate::{strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::json_file::JsonFile};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
-    shiploads: Option<Vec<Shipload>>,
-    ship_dimensions: ShipDimensions,
+    shiploads: Shiploads
 }
 
 
