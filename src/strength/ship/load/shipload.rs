@@ -12,18 +12,18 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
 #[derive(Deserialize, Debug)]
-pub struct ShipLoad {
+pub struct Shipload {
     value: f64,
     center_gravity: Point,
     length: f64,
 }
 
-impl ShipLoad {
+impl Shipload {
 
     ///
     /// Create a new object.
     pub fn new(value: f64, center_gravity: Point, length: f64) -> Self {
-        ShipLoad { value, center_gravity, length }
+        Shipload { value, center_gravity, length }
     }
 
     ///
@@ -82,18 +82,18 @@ impl ShipLoad {
         /// load_start_coordinate - shipload start coordinate.
         /// load_end_coordinate - shipload end coordinate.
     /// Return: Shipload.
-    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> ShipLoad {
+    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
         let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
         let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
         let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y, self.center_gravity.z);
         let load_value = (load_length / self.length) * self.value;
-        ShipLoad::new(load_value, center_gravity, load_length)
+        Shipload::new(load_value, center_gravity, load_length)
     }
 
     ///
     /// Share the shipload by spatiums.
-    fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<ShipLoad> {
-        let mut shared_loads: Vec<ShipLoad> = vec![];
+    fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<Shipload> {
+        let mut shared_loads: Vec<Shipload> = vec![];
         let x_1 = self.load_start_coordinate();
         let x_4 = self.load_end_coordinate();
         let spatium_start_index = self.spatium_start_index(ship_dimensions);
