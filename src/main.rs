@@ -15,8 +15,6 @@ fn main() {
     //env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
-    let deadweight_intensity = DeadweightIntensity::from_json_file("./input_data/data.json".to_string()).unwrap();
-    deadweight_intensity.deadweight_intensity();
 
 }
 
