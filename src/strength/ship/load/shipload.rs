@@ -12,18 +12,18 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
 #[derive(Deserialize, Debug)]
-pub struct ShipLoad {
+pub struct Shipload {
     value: f64,
     center_gravity: Point,
     length: f64,
 }
 
-impl ShipLoad {
+impl Shipload {
 
     ///
     /// Create a new object.
     pub fn new(value: f64, center_gravity: Point, length: f64) -> Self {
-        ShipLoad { value, center_gravity, length }
+        Shipload { value, center_gravity, length }
     }
 
     ///
@@ -82,18 +82,18 @@ impl ShipLoad {
         /// load_start_coordinate - shipload start coordinate.
         /// load_end_coordinate - shipload end coordinate.
     /// Return: Shipload.
-    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> ShipLoad {
+    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
         let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
         let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
         let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y, self.center_gravity.z);
         let load_value = (load_length / self.length) * self.value;
-        ShipLoad::new(load_value, center_gravity, load_length)
+        Shipload::new(load_value, center_gravity, load_length)
     }
 
     ///
     /// Share the shipload by spatiums.
-    fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<ShipLoad> {
-        let mut shared_loads: Vec<ShipLoad> = vec![];
+    fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<Shipload> {
+        let mut shared_loads: Vec<Shipload> = vec![];
         let x_1 = self.load_start_coordinate();
         let x_4 = self.load_end_coordinate();
         let spatium_start_index = self.spatium_start_index(ship_dimensions);
@@ -124,48 +124,48 @@ impl ShipLoad {
 
     ///
     /// Compute shipoad intensity.
-    pub fn load_intensity(&self, ship_demensions: &ShipDimensions) -> Vec<SpatiumFunction> {
-        match self.spread(ship_demensions) {
+    pub fn load_intensity(&self, ship_dimensions: &ShipDimensions) -> Vec<SpatiumFunction> {
+        match self.spread(ship_dimensions) {
             LoadSpread::WithinOneSpatium => {
-                let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
-                let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_demensions.length_spatium())) / ship_demensions.length_spatium() };
-                let (distance_left, distance_right) = self.distances_to_frames(ship_demensions);
-                let spatium_start_index = self.spatium_start_index(ship_demensions);
+                let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_dimensions.length_spatium())) / ship_dimensions.length_spatium() };
+                let min_intensity = |c_min: f64| { self.value * (0.5 - (c_min / ship_dimensions.length_spatium())) / ship_dimensions.length_spatium() };
+                let (distance_left, distance_right) = self.distances_to_frames(ship_dimensions);
+                let spatium_start_index = self.spatium_start_index(ship_dimensions);
                 let mut load_component_intensity = vec![];
-                if (distance_left > distance_right) && (self.longitudinal_center_gravity() + ship_demensions.length_spatium() < ship_demensions.coordinate_bow()) {
+                if (distance_left > distance_right) && (self.longitudinal_center_gravity() + ship_dimensions.length_spatium() < ship_dimensions.coordinate_bow()) {
                     debug!("Load.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                     let f_x = max_intensity(distance_right);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_demensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     let f_x = min_intensity(distance_right);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index + 1, ship_demensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index + 1, ship_dimensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", load_component_intensity);
                     load_component_intensity
-                } else if (distance_right > distance_left ) && (self.longitudinal_center_gravity() - ship_demensions.length_spatium()) > ship_demensions.coordinate_aft() {
+                } else if (distance_right > distance_left ) && (self.longitudinal_center_gravity() - ship_dimensions.length_spatium()) > ship_dimensions.coordinate_aft() {
                     debug!("Load.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
                     let f_x = max_intensity(distance_left);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_demensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     let f_x = min_intensity(distance_left);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index - 1, ship_demensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index - 1, ship_dimensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", load_component_intensity);
                     load_component_intensity
                 } else {
                     debug!("Load.intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
-                    let f_x = self.value / ship_demensions.length_spatium();
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_demensions, f_x, f_x);
+                    let f_x = self.value / ship_dimensions.length_spatium();
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x, f_x);
                     load_component_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", load_component_intensity);
                     load_component_intensity
                 }
             },
             LoadSpread::WithinManySpatiums => {
-                let shared_shiploads = self.shared_shiploads(ship_demensions);
+                let shared_shiploads = self.shared_shiploads(ship_dimensions);
                 let mut shipload_intensity = vec![];
                 for shipload in shared_shiploads {
-                    let intensity = shipload.load_intensity(ship_demensions);
+                    let intensity = shipload.load_intensity(ship_dimensions);
                     shipload_intensity.extend(intensity);
                 }
                 debug!("Saptiums are under the load {:#?}", shipload_intensity);
@@ -173,22 +173,22 @@ impl ShipLoad {
             },
             LoadSpread::OutsideLeftmostFrame | LoadSpread::OutsideRightmostFrame => {
                 let (spatium_id, next_spatium_id, distance) = {
-                    if self.load_start_coordinate() < ship_demensions.coordinate_aft() && self.load_end_coordinate() <= ship_demensions.coordinate_aft() {
-                        let distance = (ship_demensions.coordinate_aft().abs() - self.longitudinal_center_gravity().abs()).abs();
+                    if self.load_start_coordinate() < ship_dimensions.coordinate_aft() && self.load_end_coordinate() <= ship_dimensions.coordinate_aft() {
+                        let distance = (ship_dimensions.coordinate_aft().abs() - self.longitudinal_center_gravity().abs()).abs();
                         (0, 1, distance)
                     } else {
-                        let rightmost_spatium_id = ship_demensions.number_spatiums() - 1;
-                        let distance = (ship_demensions.coordinate_bow().abs() - self.longitudinal_center_gravity().abs()).abs();
+                        let rightmost_spatium_id = ship_dimensions.number_spatiums() - 1;
+                        let distance = (ship_dimensions.coordinate_bow().abs() - self.longitudinal_center_gravity().abs()).abs();
                         (rightmost_spatium_id, rightmost_spatium_id - 1, distance)
                     }
                 };
-                let f_x = ((1.5 + (distance / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
+                let f_x = ((1.5 + (distance / ship_dimensions.length_spatium())) * self.value) / ship_dimensions.length_spatium();
                 let mut load_intensity: Vec<SpatiumFunction> = vec![];
-                let spatium_function = SpatiumFunction::from_id(spatium_id as i64, ship_demensions, f_x, f_x);
+                let spatium_function = SpatiumFunction::from_id(spatium_id as i64, ship_dimensions, f_x, f_x);
                 load_intensity.push(spatium_function);
 
-                let f_x = -((0.5 + (distance / ship_demensions.length_spatium())) * self.value) / ship_demensions.length_spatium();
-                let spatium_function = SpatiumFunction::from_id(next_spatium_id as i64, ship_demensions, f_x, f_x);
+                let f_x = -((0.5 + (distance / ship_dimensions.length_spatium())) * self.value) / ship_dimensions.length_spatium();
+                let spatium_function = SpatiumFunction::from_id(next_spatium_id as i64, ship_dimensions, f_x, f_x);
                 load_intensity.push(spatium_function);
                 debug!("Saptiums are under the load {:#?}", load_intensity);
                 load_intensity

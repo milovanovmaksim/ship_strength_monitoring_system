@@ -2,7 +2,7 @@ use log::debug;
 
 use crate::{strength::ship::ship_dimensions::ShipDimensions, core::point::Point};
 
-use super::shipload::ShipLoad;
+use super::shipload::Shipload;
 
 // pub struct LoadSharing<'shipload> {
 //     ship_dimensions: &'shipload ShipDimensions,
