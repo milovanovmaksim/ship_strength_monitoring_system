@@ -9,7 +9,7 @@ impl SpatiumFunctions {
         SpatiumFunctions { functions }
     }
 
-    pub fn filled_zeros(number_spatium: u64, length_spatium: f64) -> Self {
+    pub fn filled_zeros(number_spatiums: u64, length_spatium: f64) -> Self {
         let mut functions = vec![];
         for id in 0..number_spatium {
             let x1 = id as f64 * length_spatium;
