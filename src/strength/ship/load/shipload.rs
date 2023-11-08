@@ -124,7 +124,7 @@ impl Shipload {
 
     ///
     /// Compute shipoad intensity.
-    pub fn load_intensity(&self, ship_dimensions: &ShipDimensions) -> Vec<SpatiumFunction> {
+    pub fn shipload_intensity(&self, ship_dimensions: &ShipDimensions) -> Vec<SpatiumFunction> {
         match self.spread(ship_dimensions) {
             LoadSpread::WithinOneSpatium => {
                 let max_intensity = |c_min: f64| { self.value * (0.5 + (c_min / ship_dimensions.length_spatium())) / ship_dimensions.length_spatium() };
@@ -165,7 +165,7 @@ impl Shipload {
                 let shared_shiploads = self.shared_shiploads(ship_dimensions);
                 let mut shipload_intensity = vec![];
                 for shipload in shared_shiploads {
-                    let intensity = shipload.load_intensity(ship_dimensions);
+                    let intensity = shipload.shipload_intensity(ship_dimensions);
                     shipload_intensity.extend(intensity);
                 }
                 debug!("Saptiums are under the load {:#?}", shipload_intensity);

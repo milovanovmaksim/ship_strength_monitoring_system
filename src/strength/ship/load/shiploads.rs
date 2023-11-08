@@ -55,7 +55,7 @@ impl Shiploads {
         let mut shaptium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium);
 
         for shipload in self.shiploads.iter() {
-            let load_intensity = shipload.load_intensity(&self.ship_dimensions);
+            let load_intensity = shipload.shipload_intensity(&self.ship_dimensions);
             let _ = load_intensity.iter().map(|spatium_function| { shaptium_functions.add_spatium_function(spatium_function) });
         }
         shaptium_functions

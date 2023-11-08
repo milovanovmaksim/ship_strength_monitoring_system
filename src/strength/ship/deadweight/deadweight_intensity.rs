@@ -1,4 +1,4 @@
-use log::{debug, warn};
+use log::warn;
 use serde::Deserialize;
 use crate::{strength::ship::{load::shiploads::Shiploads, spatium_functions::SpatiumFunctions}, core::json_file::JsonFile};
 
@@ -19,7 +19,7 @@ impl DeadweightIntensity {
                 Ok(shiploads.intensity())
             }
             Err(err) => {
-                debug!("DeadweightIntensity::deadweight_intensity | error: {:?}.",err);
+                warn!("DeadweightIntensity::deadweight_intensity | error: {:?}.",err);
                 Err(err.to_string())
             }
         }
