@@ -45,18 +45,18 @@ impl ShipDimensions {
         match json.content() {
             Ok(content) => {
                 match serde_json::from_reader(content) {
-                    Ok(ship_metrics) => {
-                        debug!("ShipMetrics::from_json_file | ShipMetrics has been created sucessfuly. {:?}", ship_metrics);
-                        Ok(ship_metrics)
+                    Ok(ship_dimensions) => {
+                        debug!("ShipDimensions::from_json_file | ShipDimensions has been created sucessfuly. {:?}", ship_dimensions);
+                        Ok(ship_dimensions)
                     },
                     Err(err) => {
-                        warn!("ShipMetrics::from_json_file | error: {:?}.",err);
+                        warn!("ShipDimensions::from_json_file | error: {:?}.",err);
                         return Err(err.to_string());
                     }
                 }
             },
             Err(err) => {
-                warn!("ShipMetrics::from_json_file | error: {:?}.",err);
+                warn!("ShipDimensions::from_json_file | error: {:?}.",err);
                 return Err(err);
             }
         }
