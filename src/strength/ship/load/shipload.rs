@@ -11,7 +11,7 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 /// value - load value in tons.
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 pub struct Shipload {
     value: f64,
     center_gravity: Point,
