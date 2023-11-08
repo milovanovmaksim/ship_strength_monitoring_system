@@ -13,7 +13,7 @@ pub struct Visualisation {
 
 impl Visualisation {
     pub fn new(spatiumfunctions: SpatiumFunctions, name: String, title: String, spatium_length: f64) -> Self {
-        Visualisation { spatiumfunctions, name, title, spatium_length, } 
+        Visualisation { spatiumfunctions, name, title, spatium_length, }
     }
 
     pub fn visualize(&self) {

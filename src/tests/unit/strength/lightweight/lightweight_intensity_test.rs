@@ -3,7 +3,7 @@ mod tests {
     use std::{sync::Once, env};
     use log::debug;
 
-    use crate::strength::{ship::{lightweight::lightweight::LightweightIntensity, ship_dimensions::ShipDimensions}, output::type_output::TypeOutput};
+    use crate::strength::ship::{lightweight::lightweight::LightweightIntensity, ship_dimensions::ShipDimensions};
 
 
 

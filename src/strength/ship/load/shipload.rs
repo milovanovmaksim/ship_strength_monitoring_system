@@ -102,7 +102,7 @@ impl Shipload {
         let x_3 = ship_dimensions.spatium_start_coordinate(saptium_end_index);
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_1.abs() - x_2.abs()).abs() > 0.0 {
-            let load = self.shared_shipload(x_1 + 0.001, x_2 - 0.001);
+            let load = self.shared_shipload(x_1 + 0.0001, x_2 - 0.0001);
             shared_loads.push(load);
         }
         if (x_4.abs() - x_3.abs()).abs() > 0.0 {
@@ -113,7 +113,7 @@ impl Shipload {
         let mut load_end_coordinate = x_2 + ship_dimensions.length_spatium();
         let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / ship_dimensions.length_spatium()) as u64;
         for _ in 0..number_whole_spatiums_under_load {
-            let load = self.shared_shipload(load_start_coordinate + 0.001, load_end_coordinate - 0.001);
+            let load = self.shared_shipload(load_start_coordinate + 0.0001, load_end_coordinate - 0.0001);
             shared_loads.push(load);
             load_start_coordinate += ship_dimensions.length_spatium();
             load_end_coordinate += ship_dimensions.length_spatium();

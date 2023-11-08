@@ -1,6 +1,7 @@
 {
    "shiploads": [
-        {"value": 10, "center_gravity": {"x": 3.125, "y": 5.6, "z": 5.6}, "length": 5}
+        {"value": 10, "center_gravity": {"x": -57, "y": 5.6, "z": 5.6}, "length": 5.02},
+        {"value": 10, "center_gravity": {"x": -35.63, "y": 5.6, "z": 5.6}, "length": 2}
     ],
     "lightweight": 1750.56,
     "ship_dimensions": {

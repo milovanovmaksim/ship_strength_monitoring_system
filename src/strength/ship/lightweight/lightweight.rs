@@ -1,7 +1,7 @@
 use log::{warn, debug};
 use serde::Deserialize;
 
-use crate::{core::json_file::JsonFile, strength::{output::{output::Output, type_output::TypeOutput}, ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions}}};
+use crate::{core::json_file::JsonFile, strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions}};
 
 
 
