@@ -6,7 +6,7 @@ use core::visualisation::Visualisation;
 use std::env;
 
 use log::debug;
-use strength::ship::{ship_dimensions::ShipDimensions, deadweight::deadweight::Deadweight, load::shiploads::Shiploads};
+use strength::ship::{ship_dimensions::ShipDimensions, deadweight::deadweight::Deadweight, load::{shiploads::Shiploads, load_sharing::LoadSharing}};
 
 use crate::strength::ship::deadweight::deadweight_intensity::DeadweightIntensity;
 
@@ -18,6 +18,8 @@ fn main() {
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
     let shiploads = Shiploads::from_json_file("./input_data/data.json".to_string());
+    let sharing_load = LoadSharing::from_json_file("./input_data/data.json".to_string()).unwrap();
+    sharing_load.shared_loads();
     let deadweight_intensity = DeadweightIntensity::new(shiploads);
     let intensity = deadweight_intensity.deadweight_intensity().unwrap();
     let spatium_length = 6.25;
