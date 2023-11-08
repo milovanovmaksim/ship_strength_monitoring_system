@@ -28,13 +28,13 @@ impl Shipload {
 
     ///
     /// Return the coordinate of the start of the load relative to the amidships(the middle of a ship).
-    fn load_start_coordinate(&self) -> f64 {
+    pub(crate) fn load_start_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() - (self.length / 2.0)
     }
 
     ///
     /// Return the coordinate of the end of the load relative to the amidships(the middle of a ship).
-    fn load_end_coordinate(&self) -> f64 {
+    pub(crate) fn load_end_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
 
