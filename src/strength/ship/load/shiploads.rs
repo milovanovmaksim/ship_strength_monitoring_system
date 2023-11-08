@@ -52,11 +52,14 @@ impl Shiploads {
     pub fn intensity(&self) -> SpatiumFunctions {
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_spatium = self.ship_dimensions.length_spatium();
-        let mut shaptium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium);
+        let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
+        let mut shaptium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium, length_between_perpendiculars);
 
         for shipload in self.shiploads.iter() {
             let load_intensity = shipload.shipload_intensity(&self.ship_dimensions);
-            let _ = load_intensity.iter().map(|spatium_function| { shaptium_functions.add_spatium_function(spatium_function) });
+            for spatium_function in load_intensity {
+                shaptium_functions.add_spatium_function(&spatium_function);
+            }
         }
         shaptium_functions
     }
