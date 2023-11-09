@@ -18,8 +18,7 @@ fn main() {
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
     let shiploads = Shiploads::from_json_file("./input_data/data.json".to_string());
-    let sharing_load = LoadSharing::from_json_file("./input_data/data.json".to_string()).unwrap();
-    sharing_load.shared_loads();
+
     
 
 }
