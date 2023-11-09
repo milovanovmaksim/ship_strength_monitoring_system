@@ -34,7 +34,7 @@ impl SpatiumLoad {
 
     ///
     /// Return the coordinate of the end of the load relative to the amidships(the middle of a ship).
-    pub(crate) fn load_end_coordinate(&self) -> f64 {
+    pub fn load_end_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() + (self.length / 2.0)
     }
 
