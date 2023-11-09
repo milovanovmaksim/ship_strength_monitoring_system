@@ -3,14 +3,14 @@ use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
 use crate::strength::ship::{spatium_functions::SpatiumFunctions, ship_dimensions::ShipDimensions};
-use crate::strength::ship::load::spatium_load::SpatiumLoad;
+use crate::strength::ship::load::shipload::Shipload;
 
 
 ///
 /// Сontains all the loads acting on the ship
 #[derive(Deserialize, Debug)]
 pub struct Shiploads {
-    shiploads: Vec<SpatiumLoad>,
+    shiploads: Vec<Shipload>,
     ship_dimensions: ShipDimensions,
 }
 
@@ -19,7 +19,7 @@ impl Shiploads {
 
     ///
     /// Create new object.
-    fn new(shiploads: Vec<SpatiumLoad>, ship_dimensions: ShipDimensions) -> Self {
+    fn new(shiploads: Vec<Shipload>, ship_dimensions: ShipDimensions) -> Self {
         Shiploads { shiploads, ship_dimensions }
     }
 
@@ -53,15 +53,20 @@ impl Shiploads {
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_spatium = self.ship_dimensions.length_spatium();
         let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
-        let mut shaptium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium, length_between_perpendiculars);
+        let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium, length_between_perpendiculars);
 
-        for shipload in self.shiploads.iter() {
-            let load_intensity = shipload.shipload_intensity(&self.ship_dimensions);
-            for spatium_function in load_intensity {
-                shaptium_functions.add_spatium_function(&spatium_function);
+        for spatium_load in self.shiploads.iter() {
+            match spatium_load.shipload_intensity(&self.ship_dimensions) {
+                Ok(load_intensity) => {
+                    for spatium_function in load_intensity.iter() {
+                        spatium_functions.add_spatium_function(spatium_function)
+                    }
+
+                },
+                Err(err) => {}
             }
         }
-        shaptium_functions
+        spatium_functions
     }
 
     ///

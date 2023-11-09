@@ -1,19 +1,19 @@
 use log::{debug, warn};
 use serde::Deserialize;
 
-use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::spatium_load::SpatiumLoad}, core::{json_file::JsonFile, point::Point}};
+use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::{json_file::JsonFile, point::Point}};
 
 
 
 #[derive(Deserialize, Debug)]
 pub struct LoadSharing {
     ship_dimensions: ShipDimensions,
-    shiploads: Vec<SpatiumLoad>
+    shiploads: Vec<Shipload>
 }
 
 
 impl LoadSharing {
-    pub fn new(ship_dimensions: ShipDimensions, shiploads: Vec<SpatiumLoad>) -> Self {
+    pub fn new(ship_dimensions: ShipDimensions, shiploads: Vec<Shipload>) -> Self {
         LoadSharing { ship_dimensions, shiploads }
     }
 
@@ -46,16 +46,16 @@ impl LoadSharing {
         /// load_start_coordinate - shipload start coordinate.
         /// load_end_coordinate - shipload end coordinate.
     /// Return: Shipload.
-    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64, shipload: &SpatiumLoad) -> SpatiumLoad {
+    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64, shipload: &Shipload) -> Shipload {
         let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
         let center_gravity = shipload.center_gravity();
         let load_value = (load_length / shipload.length()) * shipload.value();
-        SpatiumLoad::new(load_value, center_gravity, load_length)
+        Shipload::new(load_value, center_gravity, load_length)
     }
 
     ///
     /// Share the shipload by spatiums.
-    pub fn shared_loads(&self) -> Vec<SpatiumLoad> {
+    pub fn shared_loads(&self) -> Vec<Shipload> {
         let mut shared_shiploads = vec![];
         for shipload in self.shiploads.iter() {
             let x_1 = shipload.load_start_coordinate();
