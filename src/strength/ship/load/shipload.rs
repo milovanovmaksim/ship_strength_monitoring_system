@@ -7,23 +7,24 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 
 
 ///
-/// ShipLoad - load created by the weight of cargo, ballast, tanks, deck cargo, etc.
+/// SpatiumLoad - load acting on one spatium, created by sharing shipload on parts by spatium.
+/// The load spreds within one spatium.
 /// value - load value in tons.
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
 #[derive(Deserialize, Debug, Clone, Copy)]
-pub struct Shipload {
+pub struct SpatiumLoad {
     value: f64,
     center_gravity: Point,
     length: f64,
 }
 
-impl Shipload {
+impl SpatiumLoad {
 
     ///
     /// Create a new object.
     pub fn new(value: f64, center_gravity: Point, length: f64) -> Self {
-        Shipload { value, center_gravity, length }
+        SpatiumLoad { value, center_gravity, length }
     }
 
     ///
@@ -85,52 +86,6 @@ impl Shipload {
     }
 
     ///
-    /// Pinch off the shipload.
-    /// Params:
-        /// load_start_coordinate - shipload start coordinate.
-        /// load_end_coordinate - shipload end coordinate.
-    /// Return: Shipload.
-    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
-        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
-        let longitudinal_center_gravity = load_start_coordinate + (load_length / 2.0);
-        let center_gravity = Point::new(longitudinal_center_gravity, self.center_gravity.y, self.center_gravity.z);
-        let load_value = (load_length / self.length) * self.value;
-        Shipload::new(load_value, center_gravity, load_length)
-    }
-
-    ///
-    /// Share the shipload by spatiums.
-    fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<Shipload> {
-        let mut shared_loads: Vec<Shipload> = vec![];
-        let x_1 = self.load_start_coordinate();
-        let x_4 = self.load_end_coordinate();
-        let spatium_start_index = self.spatium_start_index(ship_dimensions);
-        let saptium_end_index = self.spatium_end_index(ship_dimensions);
-        let x_2 = ship_dimensions.spatium_end_coordinate(spatium_start_index);
-        let x_3 = ship_dimensions.spatium_start_coordinate(saptium_end_index);
-        debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
-        if (x_1.abs() - x_2.abs()).abs() > 0.0 {
-            let load = self.shared_shipload(x_1 + 0.01, x_2 - 0.01);
-            shared_loads.push(load);
-        }
-        if (x_4.abs() - x_3.abs()).abs() > 0.0 {
-            let load = self.shared_shipload(x_3, x_4);
-            shared_loads.push(load);
-        }
-        let mut load_start_coordinate = x_2;
-        let mut load_end_coordinate = x_2 + ship_dimensions.length_spatium();
-        let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / ship_dimensions.length_spatium()) as u64;
-        for _ in 0..number_whole_spatiums_under_load {
-            let load = self.shared_shipload(load_start_coordinate + 0.01, load_end_coordinate - 0.01);
-            shared_loads.push(load);
-            load_start_coordinate += ship_dimensions.length_spatium();
-            load_end_coordinate += ship_dimensions.length_spatium();
-        }
-        shared_loads
-
-    }
-
-    ///
     /// Compute shipoad intensity.
     pub fn shipload_intensity(&self, ship_dimensions: &ShipDimensions) -> Vec<SpatiumFunction> {
         match self.spread(ship_dimensions) {
@@ -168,16 +123,6 @@ impl Shipload {
                     debug!("Saptiums are under the load {:#?}", load_component_intensity);
                     load_component_intensity
                 }
-            },
-            LoadSpread::WithinManySpatiums => {
-                let shared_shiploads = self.shared_shiploads(ship_dimensions);
-                let mut shipload_intensity = vec![];
-                for shipload in shared_shiploads {
-                    let intensity = shipload.shipload_intensity(ship_dimensions);
-                    shipload_intensity.extend(intensity);
-                }
-                debug!("Saptiums are under the load {:#?}", shipload_intensity);
-                shipload_intensity
             },
             LoadSpread::OutsideLeftmostFrame | LoadSpread::OutsideRightmostFrame => {
                 let (spatium_id, next_spatium_id, distance) = {
@@ -217,10 +162,6 @@ impl Shipload {
             debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
             LoadSpread::OutsideRightmostFrame
-        } else if (spatium_end_index.abs() - spatium_start_index.abs()).abs() >= 1 {
-            debug!("Load.spread | The load spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);
-            LoadSpread::WithinManySpatiums
         } else {
             debug!("Load.spread | The load spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_demensions);

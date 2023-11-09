@@ -3,14 +3,14 @@ use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
 use crate::strength::ship::{spatium_functions::SpatiumFunctions, ship_dimensions::ShipDimensions};
-use crate::strength::ship::load::shipload::Shipload;
+use crate::strength::ship::load::shipload::SpatiumLoad;
 
 
 ///
 /// Сontains all the loads acting on the ship
 #[derive(Deserialize, Debug)]
 pub struct Shiploads {
-    shiploads: Vec<Shipload>,
+    shiploads: Vec<SpatiumLoad>,
     ship_dimensions: ShipDimensions,
 }
 
@@ -19,7 +19,7 @@ impl Shiploads {
 
     ///
     /// Create new object.
-    fn new(shiploads: Vec<Shipload>, ship_dimensions: ShipDimensions) -> Self {
+    fn new(shiploads: Vec<SpatiumLoad>, ship_dimensions: ShipDimensions) -> Self {
         Shiploads { shiploads, ship_dimensions }
     }
 
