@@ -20,12 +20,6 @@ fn main() {
     let shiploads = Shiploads::from_json_file("./input_data/data.json".to_string());
     let sharing_load = LoadSharing::from_json_file("./input_data/data.json".to_string()).unwrap();
     sharing_load.shared_loads();
-    let deadweight_intensity = DeadweightIntensity::new(shiploads);
-    let intensity = deadweight_intensity.deadweight_intensity().unwrap();
-    let spatium_length = 6.25;
-    let visualisation = Visualisation::new(
-        intensity, "Deadweght intensity".to_string(),
-         "Deadweight intensity".to_string(), spatium_length);
-    visualisation.visualize();
+    
 
 }
