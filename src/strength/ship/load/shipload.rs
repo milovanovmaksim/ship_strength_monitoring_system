@@ -158,8 +158,8 @@ impl Shipload {
                 shipload_intensity
             },
             LoadSpread::WithinManySpatiums => {
-                let load_shearing = LoadSharing::new(ship_dimensions, &self);
-                let shiploads = load_shearing.shared_loads();
+                let load_sharing = LoadSharing::new(ship_dimensions, &self);
+                let shiploads = load_sharing.shared_loads();
                 let mut shipload_intensity: Vec<SpatiumFunction> = vec![];
                 for shipload in shiploads.iter() {
                     let spatium_functions = shipload.shipload_intensity(ship_dimensions);
