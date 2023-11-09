@@ -1,7 +1,7 @@
 use log::{debug, warn};
 use serde::Deserialize;
 
-use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::json_file::JsonFile};
+use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::{json_file::JsonFile, point::Point}};
 
 
 
@@ -40,8 +40,22 @@ impl LoadSharing {
         }
     }
 
+    ///
+    /// Pinch off the shipload.
+    /// Params:
+        /// load_start_coordinate - shipload start coordinate.
+        /// load_end_coordinate - shipload end coordinate.
+    /// Return: Shipload.
+    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64, shipload: &Shipload) -> Shipload {
+        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
+        let center_gravity = shipload.center_gravity();
+        let load_value = (load_length / shipload.length()) * shipload.value();
+        Shipload::new(load_value, center_gravity, load_length)
+    }
 
-    pub fn shared_loads(&self) {
+    ///
+    /// Share the shipload by spatiums.
+    pub fn shared_loads(&self) -> Vec<Shipload> {
         let mut shared_shiploads = vec![];
         for shipload in self.shiploads.iter() {
             let x_1 = shipload.load_start_coordinate();
@@ -56,11 +70,26 @@ impl LoadSharing {
                 shared_shiploads.push(shared_shipload);
 
             } else {
-                todo!()
-
+                if (x_1.abs() - x_2.abs()).abs() > 0.0 {
+                    let load = self.shared_shipload(x_1, x_2, shipload);
+                    shared_shiploads.push(load);
+                }
+                if (x_4.abs() - x_3.abs()).abs() > 0.0 {
+                    let load = self.shared_shipload(x_3, x_4, shipload);
+                    shared_shiploads.push(load);
+                }
+                let mut load_start_coordinate = x_2;
+                let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
+                let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / self.ship_dimensions.length_spatium()) as u64;
+                for _ in 0..number_whole_spatiums_under_load {
+                    let load = self.shared_shipload(load_start_coordinate, load_end_coordinate, shipload);
+                    shared_shiploads.push(load);
+                    load_start_coordinate += self.ship_dimensions.length_spatium();
+                    load_end_coordinate += self.ship_dimensions.length_spatium();
+                }
             }
-
         }
+        shared_shiploads
 
     }
 
