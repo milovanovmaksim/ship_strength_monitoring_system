@@ -61,8 +61,16 @@ impl Shipload {
 
     ///
     /// Return shipload value in tons.
-    pub fn value(&self) -> f64 {
+    pub(crate) fn value(&self) -> f64 {
         self.value
+    }
+
+    pub(crate) fn length(&self) -> f64 {
+        self.length
+    }
+
+    pub(crate) fn center_gravity(&self) -> Point {
+        self.center_gravity
     }
 
     ///
