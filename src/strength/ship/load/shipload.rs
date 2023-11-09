@@ -172,7 +172,7 @@ impl Shipload {
 
     ///
     /// Determine spread of th shipload.
-    fn spread(&self, ship_dimensions: &ShipDimensions) -> LoadSpread {
+    pub fn spread(&self, ship_dimensions: &ShipDimensions) -> LoadSpread {
         let spatium_start_index = self.spatium_start_index(ship_dimensions);
         let spatium_end_index = self.spatium_end_index(ship_dimensions);
         let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(spatium_start_index);
