@@ -1,6 +1,6 @@
 use log::{debug, warn};
 use serde::Deserialize;
-use crate::{core::{json_file::JsonFile}, strength::ship::load::{shipload::SpatiumLoad, shiploads::Shiploads}};
+use crate::{core::{json_file::JsonFile}, strength::ship::load::{spatium_load::SpatiumLoad, shiploads::Shiploads}};
 
 
 

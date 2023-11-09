@@ -1,7 +1,7 @@
 use log::{debug, warn};
 use serde::Deserialize;
 
-use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::SpatiumLoad}, core::{json_file::JsonFile, point::Point}};
+use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::spatium_load::SpatiumLoad}, core::{json_file::JsonFile, point::Point}};
 
 
 

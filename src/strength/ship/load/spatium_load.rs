@@ -65,10 +65,14 @@ impl SpatiumLoad {
         self.value
     }
 
+    ///
+    /// The load length.
     pub fn length(&self) -> f64 {
         self.length
     }
 
+    ///
+    /// The center gravity load.
     pub fn center_gravity(&self) -> Point {
         self.center_gravity
     }

@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
 use crate::strength::ship::{spatium_functions::SpatiumFunctions, ship_dimensions::ShipDimensions};
-use crate::strength::ship::load::shipload::SpatiumLoad;
+use crate::strength::ship::load::spatium_load::SpatiumLoad;
 
 
 ///
