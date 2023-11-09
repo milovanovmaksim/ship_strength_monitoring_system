@@ -11,7 +11,6 @@ use crate::strength::ship::load::shipload::Shipload;
 #[derive(Deserialize, Debug)]
 pub struct Shiploads {
     shiploads: Vec<Shipload>,
-    ship_dimensions: ShipDimensions,
 }
 
 
@@ -19,8 +18,8 @@ impl Shiploads {
 
     ///
     /// Create new object.
-    fn new(shiploads: Vec<Shipload>, ship_dimensions: ShipDimensions) -> Self {
-        Shiploads { shiploads, ship_dimensions }
+    fn new(shiploads: Vec<Shipload>) -> Self {
+        Shiploads { shiploads }
     }
 
     ///
@@ -47,21 +46,8 @@ impl Shiploads {
         }
     }
 
-    ///
-    /// Compute shiploads intensity.
-    pub fn intensity(&self) -> SpatiumFunctions {
-        let number_spatiums = self.ship_dimensions.number_spatiums();
-        let length_spatium = self.ship_dimensions.length_spatium();
-        let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
-        let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium, length_between_perpendiculars);
-
-        for shipload in self.shiploads.iter() {
-            let shipload_intensity = shipload.shipload_intensity(&self.ship_dimensions);
-            for spatium_function in shipload_intensity.iter() {
-                spatium_functions.add_spatium_function(&spatium_function)
-            }
-        }
-        spatium_functions
+    pub fn shiploads(&self) -> &Vec<Shipload> {
+        &self.shiploads
     }
 
     ///
