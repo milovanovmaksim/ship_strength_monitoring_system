@@ -55,15 +55,10 @@ impl Shiploads {
         let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
         let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium, length_between_perpendiculars);
 
-        for spatium_load in self.shiploads.iter() {
-            match spatium_load.shipload_intensity(&self.ship_dimensions) {
-                Ok(load_intensity) => {
-                    for spatium_function in load_intensity.iter() {
-                        spatium_functions.add_spatium_function(spatium_function)
-                    }
-
-                },
-                Err(err) => {}
+        for shipload in self.shiploads.iter() {
+            let shipload_intensity = shipload.shipload_intensity(&self.ship_dimensions);
+            for spatium_function in shipload_intensity.iter() {
+                spatium_functions.add_spatium_function(&spatium_function)
             }
         }
         spatium_functions
