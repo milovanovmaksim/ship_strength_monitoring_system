@@ -29,7 +29,7 @@ impl SpatiumLoad {
 
     ///
     /// Return the coordinate of the start of the load relative to the amidships(the middle of a ship).
-    pub(crate) fn load_start_coordinate(&self) -> f64 {
+    pub fn load_start_coordinate(&self) -> f64 {
         self.longitudinal_center_gravity() - (self.length / 2.0)
     }
 
@@ -62,21 +62,21 @@ impl SpatiumLoad {
 
     ///
     /// Return shipload value in tons.
-    pub(crate) fn value(&self) -> f64 {
+    pub fn value(&self) -> f64 {
         self.value
     }
 
-    pub(crate) fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         self.length
     }
 
-    pub(crate) fn center_gravity(&self) -> Point {
+    pub fn center_gravity(&self) -> Point {
         self.center_gravity
     }
 
     ///
     /// Distances from LCG of the shipload to left and right frames.
-    fn distances_to_frames(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
+    pub fn distances_to_frames(&self, ship_demensions: &ShipDimensions) -> (f64, f64) {
         let spatium_start_index = self.spatium_start_index(ship_demensions);
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(spatium_start_index);
         let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(spatium_start_index);
