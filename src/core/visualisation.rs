@@ -33,7 +33,8 @@ impl Visualisation {
         let layout = Layout::new()
             .x_axis(Axis::new().dtick(self.spatium_length))
             .legend(Legend::new().font(Font::new().size(16)))
-            .title(Title::new(&self.title));
+            .title(Title::new(&self.title))
+            .y_axis(Axis::new().range_mode(RangeMode::ToZero));
         plot.add_trace(trace1);
         plot.set_layout(layout);
         plot.show();

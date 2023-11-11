@@ -76,9 +76,11 @@ impl Shipload {
         /// load_end_coordinate - shipload end coordinate.
     /// Return: Shipload.
     pub fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
-        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
+        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs() - 0.02;
         let load_value = (load_length / self.length) * self.value;
-        Shipload::new(load_value, self.center_gravity, load_length)
+        let x = load_start_coordinate + load_length / 2.0;
+        let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);
+        Shipload::new(load_value, center_gravity, load_length)
     }
 
     ///
@@ -87,6 +89,7 @@ impl Shipload {
         let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(self.load_start_coordinate());
         let spatium_end_index = ship_dimensions.spatium_index_by_coordinate(self.load_end_coordinate());
         let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(spatium_start_index);
+        debug!("spatium_start_coordinate={}, load_start_coordinate ={}", spatium_start_coordinate, self.load_start_coordinate());
         if self.load_start_coordinate() < ship_dimensions.coordinate_aft() && self.load_end_coordinate() <= ship_dimensions.coordinate_aft() {
             debug!("Load.spread | The load is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}", self);
