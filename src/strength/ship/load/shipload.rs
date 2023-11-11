@@ -53,12 +53,6 @@ impl Shipload {
     }
 
     ///
-    /// The load length.
-    pub fn length(&self) -> f64 {
-        self.length
-    }
-
-    ///
     /// Distances from LCG of the shipload to left and right frames.
     pub fn distances_to_frames(&self, ship_dimensions: &ShipDimensions) -> (f64, f64) {
         let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(self.load_start_coordinate());
