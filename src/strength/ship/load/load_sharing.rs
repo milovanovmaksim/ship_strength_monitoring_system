@@ -4,15 +4,14 @@ use crate::strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shi
 
 
 
-#[derive(Debug)]
 pub struct LoadSharing<'a> {
     ship_dimensions: &'a ShipDimensions,
     shipload: &'a Shipload
 }
 
 
-impl<'a> LoadSharing<'_> {
-    pub fn new(ship_dimensions: &ShipDimensions, shipload: &Shipload) -> Self {
+impl<'a> LoadSharing<'a> {
+    pub fn new(ship_dimensions: &'a ShipDimensions, shipload: &'a Shipload) -> Self {
         LoadSharing { ship_dimensions, shipload }
     }
 
