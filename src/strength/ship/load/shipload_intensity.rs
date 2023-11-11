@@ -6,7 +6,7 @@ use crate::strength::ship::{ship_dimensions::ShipDimensions,
 
 
 ///
-/// Compute the shipload intensity. Computed results store in SpatiumFunctrion.
+/// Compute the shipload intensity.
 pub(crate) struct ShiploadIntensity<'a> {
     shipload: &'a Shipload,
     ship_dimensions: &'a ShipDimensions
