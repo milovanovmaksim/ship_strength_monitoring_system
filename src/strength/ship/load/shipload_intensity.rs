@@ -2,7 +2,7 @@ use log::debug;
 
 use crate::strength::ship::{ship_dimensions::ShipDimensions,
     load::{shipload::Shipload, load_sharing::LoadSharing, load_spread::LoadSpread},
-    spatium_function::SpatiumFunction};
+    spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
 
 
 ///
@@ -19,7 +19,7 @@ impl<'a> ShiploadIntensity<'a> {
 
     ///
     /// Compute the shipload intensity.
-    pub fn shipload_intensity(&self) -> Vec<SpatiumFunction> {
+    pub fn spatium_functions(&self) -> SpatiumFunctions {
         match self.shipload.spread(self.ship_dimensions) {
             LoadSpread::WithinManySpatiums => {
                 let mut shipload_intensity = vec![];
@@ -29,10 +29,11 @@ impl<'a> ShiploadIntensity<'a> {
                     let spatium_functions = self._shipload_intensity(shipload);
                     shipload_intensity.extend(spatium_functions);
                 }
-                shipload_intensity
+                SpatiumFunctions::new(shipload_intensity)
             },
             _ => {
-                self._shipload_intensity(self.shipload)
+                let shipload_intensity = self._shipload_intensity(self.shipload);
+                SpatiumFunctions::new(shipload_intensity)
             }
         }
     }

@@ -31,6 +31,7 @@ impl SpatiumFunctions {
     }
 
     pub fn functions(&self) -> &Vec<SpatiumFunction> {
+        // TODO: Implement trait Iter for the struct.
         &self.functions
     }
 }
