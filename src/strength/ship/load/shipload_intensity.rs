@@ -18,7 +18,7 @@ impl<'a> ShiploadIntensity<'a> {
     }
 
     ///
-    /// Compute the shipload intensity.
+    /// Return SpatiumFunctions containing the shipload intensity.
     pub fn spatium_functions(&self) -> SpatiumFunctions {
         match self.shipload.spread(self.ship_dimensions) {
             LoadSpread::WithinManySpatiums => {
