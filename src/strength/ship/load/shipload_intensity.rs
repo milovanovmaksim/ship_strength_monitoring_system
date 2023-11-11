@@ -46,21 +46,21 @@ impl<'a> ShiploadIntensity<'a> {
                 let mut shipload_intensity = vec![];
                 if (distance_left > distance_right) && (self.longitudinal_center_gravity() + ship_dimensions.length_spatium() < ship_dimensions.coordinate_bow()) {
                     debug!("Load.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
-                    let f_x = max_intensity(distance_right);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x, f_x);
+                    let f_x_max_intensity = max_intensity(distance_right);
+                    let f_x_min_intensity = min_intensity(distance_right);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x_max_intensity, f_x_max_intensity);
                     shipload_intensity.push(spatium_function);
-                    let f_x = min_intensity(distance_right);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index + 1, ship_dimensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index + 1, ship_dimensions, f_x_min_intensity, f_x_min_intensity);
                     shipload_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", shipload_intensity);
                     shipload_intensity
                 } else if (distance_right > distance_left ) && (self.longitudinal_center_gravity() - ship_dimensions.length_spatium()) > ship_dimensions.coordinate_aft() {
                     debug!("Load.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
-                    let f_x = max_intensity(distance_left);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x, f_x);
+                    let f_x_max_intensity = max_intensity(distance_left);
+                    let f_x_min_intensity = min_intensity(distance_left);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index, ship_dimensions, f_x_max_intensity, f_x_max_intensity);
                     shipload_intensity.push(spatium_function);
-                    let f_x = min_intensity(distance_left);
-                    let spatium_function = SpatiumFunction::from_id(spatium_start_index - 1, ship_dimensions, f_x, f_x);
+                    let spatium_function = SpatiumFunction::from_id(spatium_start_index - 1, ship_dimensions, f_x_min_intensity, f_x_min_intensity);
                     shipload_intensity.push(spatium_function);
                     debug!("Saptiums are under the load {:#?}", shipload_intensity);
                     shipload_intensity
