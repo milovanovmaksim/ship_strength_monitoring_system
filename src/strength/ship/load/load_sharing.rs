@@ -25,20 +25,20 @@ impl<'a> LoadSharing<'a> {
         let spatium_end_index = self.ship_dimensions.spatium_index_by_coordinate(x_4);
         let x_2 = self.ship_dimensions.spatium_end_coordinate(spatium_start_index);
         let x_3 = self.ship_dimensions.spatium_start_coordinate(spatium_end_index);
+        let length_spatium = self.ship_dimensions.length_spatium();
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_1.abs() - x_2.abs()).abs() > 0.0 {
-            let load = self.shipload.shared_shipload(x_1, x_2);
+            let load = self.shipload.shared_shipload(x_1, x_2, length_spatium);
             shared_shiploads.push(load);
         }
         if (x_4.abs() - x_3.abs()).abs() > 0.0 {
-            let load = self.shipload.shared_shipload(x_3, x_4);
+            let load = self.shipload.shared_shipload(x_3, x_4, length_spatium);
             shared_shiploads.push(load);
         }
         let mut load_start_coordinate = x_2;
         let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
-        let number_whole_spatiums_under_load = ((x_2.abs() - x_3.abs()).abs() / self.ship_dimensions.length_spatium()) as u64;
-        for _ in 0..number_whole_spatiums_under_load {
-            let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
+        while load_end_coordinate <= x_3 {
+            let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate, length_spatium);
             shared_shiploads.push(load);
             load_start_coordinate += self.ship_dimensions.length_spatium();
             load_end_coordinate += self.ship_dimensions.length_spatium();
