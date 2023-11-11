@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use crate::strength::ship::{load::shiploads::Shiploads, ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions};
+use crate::strength::ship::{load::{shiploads::Shiploads, shipload_intensity::ShiploadIntensity}, ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
@@ -19,8 +19,8 @@ impl DeadweightIntensity {
         let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
         let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_spatium, length_between_perpendiculars);
         for shipload in self.shiploads.shiploads() {
-            let shipload_intensity = shipload.shipload_intensity(&self.ship_dimensions);
-            for spatium_function in shipload_intensity.iter() {
+            let shipload_intensity = ShiploadIntensity::new(shipload, &self.ship_dimensions);
+            for spatium_function in shipload_intensity.shipload_intensity() {
                 spatium_functions.add_spatium_function(&spatium_function)
             }
         }
