@@ -23,6 +23,4 @@ fn main() {
     let spatium_functions = deadweight_intnesity.spatium_functions();
     let visualization = Visualisation::new(spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
     visualization.visualize();
-    
-
 }

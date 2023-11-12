@@ -1,30 +1,6 @@
 {
    "shiploads": [
-        {"value": 2, "center_gravity": {"x": 0, "y": 5.6, "z": 5.6}, "length": 5},
-        {"value": 6, "center_gravity": {"x": 10, "y": 5.6, "z": 5.6}, "length": 15},
-        {"value": 20, "center_gravity": {"x": 20, "y": 5.6, "z": 5.6}, "length": 25},
-        {"value": 20, "center_gravity": {"x": 30, "y": 5.6, "z": 5.6}, "length": 26},
-        {"value": 2, "center_gravity": {"x": 40, "y": 5.6, "z": 5.6}, "length": 18},
-        {"value": 2, "center_gravity": {"x": 60, "y": 5.6, "z": 5.6}, "length": 2.5},
-        {"value": 12, "center_gravity": {"x": -10, "y": 5.6, "z": 5.6}, "length": 3},
-        {"value": 17, "center_gravity": {"x": -20, "y": 5.6, "z": 5.6}, "length": 5},
-        {"value": 20, "center_gravity": {"x": -30, "y": 5.6, "z": 5.6}, "length": 3},
-        {"value": 2, "center_gravity": {"x": -40, "y": 5.6, "z": 5.6}, "length": 3},
-        {"value": 20, "center_gravity": {"x": 42, "y": 5.6, "z": 5.6}, "length": 28},
-        {"value": 15, "center_gravity": {"x": 51, "y": 5.6, "z": 5.6}, "length": 8},
-        {"value": 2, "center_gravity": {"x": 63, "y": 5.6, "z": 5.6}, "length": 2},
-        {"value": 2, "center_gravity": {"x": -12, "y": 5.6, "z": 5.6}, "length": 3},
-        {"value": 8, "center_gravity": {"x": -22, "y": 5.6, "z": 5.6}, "length": 15},
-        {"value": 2, "center_gravity": {"x": -38, "y": 5.6, "z": 5.6}, "length": 3},
-        {"value": 27, "center_gravity": {"x": -46, "y": 5.6, "z": 5.6}, "length": 33},
-        {"value": 20, "center_gravity": {"x": 4, "y": 5.6, "z": 5.6}, "length": 28},
-        {"value": 2, "center_gravity": {"x": 1, "y": 5.6, "z": 5.6}, "length": 5},
-        {"value": 7, "center_gravity": {"x": 2, "y": 5.6, "z": 5.6}, "length": 5},
-        {"value": 2, "center_gravity": {"x": 3, "y": 5.6, "z": 5.6}, "length": 6},
-        {"value": 3, "center_gravity": {"x": 4, "y": 5.6, "z": 5.6}, "length": 8},
-        {"value": 8, "center_gravity": {"x": 5, "y": 5.6, "z": 5.6}, "length": 8},
-        {"value": 9, "center_gravity": {"x": 6, "y": 5.6, "z": 5.6}, "length": 5}
-
+        {"value": 6, "center_gravity": {"x": 3.125, "y": 5.6, "z": 5.6}, "length": 6.25}
     ],
     "lightweight": 1750.56,
     "ship_dimensions": {
