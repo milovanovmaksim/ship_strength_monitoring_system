@@ -25,6 +25,7 @@ impl<'a> ShiploadIntensity<'a> {
                 let mut shipload_intensity = vec![];
                 let load_sharing = LoadSharing::new(self.ship_dimensions, self.shipload);
                 let shiploads = load_sharing.shared_loads();
+                debug!("{:?}", shiploads);
                 for shipload in shiploads.iter() {
                     let spatium_functions = self.shipload_intensity(shipload);
                     shipload_intensity.extend(spatium_functions);
