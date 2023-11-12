@@ -1,5 +1,6 @@
 use log::debug;
 use serde::Deserialize;
+use crate::core::round::Round;
 use crate::{core::point::Point, strength::ship::ship_dimensions::ShipDimensions};
 
 use crate::strength::ship::load::load_spread::LoadSpread;
@@ -70,7 +71,7 @@ impl Shipload {
         /// load_end_coordinate - shipload end coordinate.
     /// Return: Shipload.
     pub fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64, length_spatium: f64) -> Shipload {
-        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs() - 0.002 * length_spatium;
+        let load_length = (load_start_coordinate.abs() - load_end_coordinate.abs()).abs();
         let load_value = (load_length / self.length) * self.value;
         let x = load_start_coordinate + load_length / 2.0;
         let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);
@@ -92,7 +93,7 @@ impl Shipload {
             debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
             LoadSpread::OutsideRightmostFrame
-        } else if self.load_start_coordinate() >= spatium_start_coordinate && self.load_end_coordinate() <= spatium_start_coordinate + ship_dimensions.length_spatium() {
+        } else if self.load_start_coordinate().my_round(2) >= spatium_start_coordinate.my_round(2) && self.load_end_coordinate().my_round(2) <= (spatium_start_coordinate + ship_dimensions.length_spatium()).my_round(2) {
             debug!("Load.spread | The load spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
             LoadSpread::WithinOneSpatium
