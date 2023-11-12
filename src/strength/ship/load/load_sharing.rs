@@ -1,6 +1,6 @@
 use log::debug;
 
-use crate::strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload};
+use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::round::Round};
 
 
 
@@ -39,7 +39,7 @@ impl<'a> LoadSharing<'a> {
         while load_end_coordinate <= x_3 {
             let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
             shared_shiploads.push(load);
-            load_start_coordinate += self.ship_dimensions.length_spatium();
+            load_start_coordinate = load_end_coordinate;
             load_end_coordinate += self.ship_dimensions.length_spatium();
         }
         shared_shiploads
