@@ -37,12 +37,11 @@ impl<'a> LoadSharing<'a> {
         let mut load_start_coordinate = x_2;
         let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
         loop {
-            debug!("load_start_coordinate = {}, load_end_coordinate = {}", load_start_coordinate, load_end_coordinate);
             let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
             shared_shiploads.push(load);
+            if load_end_coordinate >= x_3 { break; }
             load_start_coordinate = load_end_coordinate;
             load_end_coordinate += self.ship_dimensions.length_spatium();
-            if load_end_coordinate >= x_3 { break; }
         }
         shared_shiploads
     }
