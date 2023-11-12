@@ -84,8 +84,6 @@ impl Shipload {
         let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(self.load_start_coordinate());
         let spatium_end_index = ship_dimensions.spatium_index_by_coordinate(self.load_end_coordinate());
         let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(spatium_start_index);
-        debug!("spatium_start_coordinate={}, load_start_coordinate={}", spatium_start_coordinate, self.load_start_coordinate());
-        debug!("load_end_coordinate = {}, {}", self.load_end_coordinate(), (spatium_start_coordinate + ship_dimensions.length_spatium()));
         if self.load_start_coordinate() < ship_dimensions.coordinate_aft() && self.load_end_coordinate() <= ship_dimensions.coordinate_aft() {
             debug!("Load.spread | The load is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
             debug!("Load.spread | The load: {:#?}", self);
