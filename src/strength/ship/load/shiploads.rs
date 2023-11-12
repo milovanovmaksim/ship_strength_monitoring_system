@@ -46,10 +46,6 @@ impl Shiploads {
         }
     }
 
-    pub fn shiploads(&self) -> &Vec<Shipload> {
-        &self.shiploads
-    }
-
     ///
     /// Return the shiploads sum.
     pub fn sum(&self) -> f64 {
@@ -58,5 +54,23 @@ impl Shiploads {
             sum += shipload.value();
         }
         sum
+    }
+}
+
+
+
+impl IntoIterator for Shiploads {
+    type Item = Shipload;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.shiploads.into_iter()
+    }
+}
+
+impl AsRef<Vec<Shipload>> for Shiploads {
+
+    fn as_ref(&self) -> &Vec<Shipload> {
+        &self.shiploads
     }
 }
