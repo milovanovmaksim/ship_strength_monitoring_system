@@ -25,7 +25,6 @@ impl<'a> LoadSharing<'a> {
         let spatium_end_index = self.ship_dimensions.spatium_index_by_coordinate(x_4);
         let x_2 = self.ship_dimensions.spatium_end_coordinate(spatium_start_index);
         let x_3 = self.ship_dimensions.spatium_start_coordinate(spatium_end_index);
-        let length_spatium = self.ship_dimensions.length_spatium();
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_1.abs() - x_2.abs()).abs() > 0.0 {
             let load = self.shipload.shared_shipload(x_1, x_2);
