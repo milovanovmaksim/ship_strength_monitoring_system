@@ -1,6 +1,6 @@
 use plotly::{Scatter, common::{Mode, LineShape, Line, Title, Font}, Layout, layout::{Axis, RangeMode, Legend}, Plot};
 
-use crate::strength::ship::{spatium_functions::SpatiumFunctions, ship_dimensions::ShipDimensions};
+use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
 pub struct Visualisation {
     spatiumfunctions: SpatiumFunctions,
@@ -19,7 +19,7 @@ impl Visualisation {
     pub fn visualize(&self) {
         let mut x: Vec<f64> = vec![];
         let mut y = vec![];
-        for spatium in self.spatiumfunctions.functions() {
+        for spatium in self.spatiumfunctions.as_ref() {
             x.push(spatium.x1());
             y.push(spatium.f_x1());
             x.push(spatium.x2());

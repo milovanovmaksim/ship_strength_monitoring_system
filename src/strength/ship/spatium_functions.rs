@@ -2,12 +2,12 @@ use super::spatium_function::SpatiumFunction;
 
 #[derive(Debug)]
 pub struct SpatiumFunctions {
-    functions: Vec<SpatiumFunction>
+    spatium_functions: Vec<SpatiumFunction>
 }
 
 impl SpatiumFunctions {
     pub fn new(functions: Vec<SpatiumFunction>) -> Self {
-        SpatiumFunctions { functions }
+        SpatiumFunctions { spatium_functions: functions }
     }
 
     pub fn filled_zeros(number_spatiums: u64, length_spatium: f64, length_between_perpendiculars: f64) -> Self {
@@ -22,16 +22,28 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
-    pub fn add_spatium_function(&mut self, term: &SpatiumFunction) {
+    pub fn add_spatium_function(&mut self, term: SpatiumFunction) {
         let id = term.id() as usize;
-        if let Some(spatium_function) =  self.functions.get_mut(id) {
+        if let Some(spatium_function) =  self.spatium_functions.get_mut(id) {
             let new_spatium_function = spatium_function.add(term);
             *spatium_function = new_spatium_function;
         }
     }
+}
 
-    pub fn functions(&self) -> &Vec<SpatiumFunction> {
-        // TODO: Implement trait Iter for the struct.
-        &self.functions
+
+impl IntoIterator for SpatiumFunctions {
+    type Item = SpatiumFunction;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.spatium_functions.into_iter()
+    }
+}
+
+impl AsRef<Vec<SpatiumFunction>> for SpatiumFunctions {
+
+    fn as_ref(&self) -> &Vec<SpatiumFunction> {
+        &self.spatium_functions
     }
 }
