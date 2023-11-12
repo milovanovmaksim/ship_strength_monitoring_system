@@ -28,17 +28,17 @@ impl<'a> LoadSharing<'a> {
         let length_spatium = self.ship_dimensions.length_spatium();
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_1.abs() - x_2.abs()).abs() > 0.0 {
-            let load = self.shipload.shared_shipload(x_1, x_2, length_spatium);
+            let load = self.shipload.shared_shipload(x_1, x_2);
             shared_shiploads.push(load);
         }
         if (x_4.abs() - x_3.abs()).abs() > 0.0 {
-            let load = self.shipload.shared_shipload(x_3, x_4, length_spatium);
+            let load = self.shipload.shared_shipload(x_3, x_4);
             shared_shiploads.push(load);
         }
         let mut load_start_coordinate = x_2;
         let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
         while load_end_coordinate <= x_3 {
-            let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate, length_spatium);
+            let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
             shared_shiploads.push(load);
             load_start_coordinate += self.ship_dimensions.length_spatium();
             load_end_coordinate += self.ship_dimensions.length_spatium();
