@@ -19,12 +19,12 @@ impl<'a> LoadSharing<'a> {
     /// Share the shipload by spatiums.
     pub fn shared_loads(&self) -> Vec<Shipload> {
         let mut shared_shiploads = vec![];
-        let x_1 = self.shipload.load_start_coordinate().my_round(2);
-        let x_4 = self.shipload.load_end_coordinate().my_round(2);
+        let x_1 = self.shipload.load_start_coordinate();
+        let x_4 = self.shipload.load_end_coordinate();
         let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(x_1);
         let spatium_end_index = self.ship_dimensions.spatium_index_by_coordinate(x_4);
-        let x_2 = self.ship_dimensions.spatium_end_coordinate(spatium_start_index).my_round(2);
-        let x_3 = self.ship_dimensions.spatium_start_coordinate(spatium_end_index).my_round(2);
+        let x_2 = self.ship_dimensions.spatium_end_coordinate(spatium_start_index);
+        let x_3 = self.ship_dimensions.spatium_start_coordinate(spatium_end_index);
         debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
         if (x_2 - x_1).abs() > 0.0 {
             let load = self.shipload.shared_shipload(x_1, x_2);
@@ -34,19 +34,18 @@ impl<'a> LoadSharing<'a> {
             let load = self.shipload.shared_shipload(x_3, x_4);
             shared_shiploads.push(load);
         }
-        let mut load_start_coordinate = x_2;
-        let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
-        loop {
-            let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
-            shared_shiploads.push(load);
-            if load_end_coordinate >= x_3 { break; }
-            load_start_coordinate = load_end_coordinate;
-            load_end_coordinate += self.ship_dimensions.length_spatium();
+        if (x_3 - x_2).abs() > 0.0 {
+            let mut load_start_coordinate = x_2;
+            let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
+            let number_spatiums_under_load = ((x_3 - x_2).abs() / self.ship_dimensions.length_spatium()).round();
+            for _ in 0..number_spatiums_under_load as i64{
+                let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
+                shared_shiploads.push(load);
+                load_start_coordinate = load_end_coordinate;
+                load_end_coordinate = load_start_coordinate + self.ship_dimensions.length_spatium();
+            }
         }
         shared_shiploads
     }
-
 }
-
-
 

@@ -102,22 +102,17 @@ impl ShipDimensions {
     ///
     /// Define the spatium index by coordinate.
     pub fn spatium_index_by_coordinate(&self, x: f64) -> i64 {
-        if x < self.coordinate_aft() {
-            ((x / self.length_spatium()) + (self.number_spatiums()) as f64 / 2.0) as i64 - 1
-        } else {
-            ((x / self.length_spatium()) + (self.number_spatiums()) as f64 / 2.0) as i64
+        let mut spatium_start_coordinate = -self.length_between_perpendiculars / 2.0;
+        let mut spatium_end_coordinate = spatium_start_coordinate + self.length_spatium();
+        let mut index = 0;
+        for id in 0..self.number_spatiums {
+            if x >= spatium_start_coordinate && x < spatium_end_coordinate {
+                index = id as i64;
+                break;
+            }
+            spatium_start_coordinate = spatium_end_coordinate;
+            spatium_end_coordinate += self.length_spatium();
         }
-        // let mut spatium_start_coordinate = -self.length_between_perpendiculars / 2.0;
-        // let mut spatium_end_coordinate = spatium_start_coordinate + self.length_spatium();
-        // let mut index = 0;
-        // for id in 0..self.number_spatiums {
-        //     if x >= spatium_start_coordinate && x < spatium_end_coordinate {
-        //         index = id as i64;
-        //         break;
-        //     }
-        //     spatium_start_coordinate = spatium_end_coordinate;
-        //     spatium_end_coordinate += self.length_spatium();
-        // }
-        // index
+        index
     }
 }

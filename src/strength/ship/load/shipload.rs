@@ -56,11 +56,11 @@ impl Shipload {
     ///
     /// Distances from LCG of the shipload to left and right frames.
     pub fn distances_to_frames(&self, ship_dimensions: &ShipDimensions) -> (f64, f64) {
-        let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(self.load_start_coordinate());
+        let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(self.longitudinal_center_gravity());
         let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(spatium_start_index);
         let spatium_end_coordinate = ship_dimensions.spatium_end_coordinate(spatium_start_index);
-        let distance_left = (self.longitudinal_center_gravity().abs() - spatium_start_coordinate.abs()).abs().my_round(2);
-        let distance_right = (self.longitudinal_center_gravity().abs() - spatium_end_coordinate.abs()).abs().my_round(2);
+        let distance_left = (self.longitudinal_center_gravity() - spatium_start_coordinate).abs();
+        let distance_right = (self.longitudinal_center_gravity() - spatium_end_coordinate).abs();
         (distance_left, distance_right)
     }
 
@@ -71,7 +71,7 @@ impl Shipload {
         /// load_end_coordinate - shipload end coordinate.
     /// Return: Shipload.
     pub fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
-        let load_length = (load_end_coordinate - load_start_coordinate).abs().my_round(2);
+        let load_length = (load_end_coordinate - load_start_coordinate).abs();
         let load_value = (load_length / self.length) * self.value;
         let x = load_start_coordinate + (load_length) / 2.0;
         let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);

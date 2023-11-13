@@ -46,7 +46,7 @@ impl<'a> ShiploadIntensity<'a> {
                 let max_intensity = |c_min: f64| { shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
                 let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
                 let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
-                let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.load_start_coordinate());
+                let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
                 let shipload_intensity_closure = |destance: f64, index: i64, next_index: i64| {
                     let mut spatium_functions = vec![];
                     let f_x_max_intensity = max_intensity(destance);
@@ -57,12 +57,12 @@ impl<'a> ShiploadIntensity<'a> {
                     spatium_functions.push(spatium_function);
                     spatium_functions
                 };
-                if (distance_left > distance_right) && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium() < self.ship_dimensions.coordinate_bow()) {
+                if (distance_left - distance_right >= 0.01) && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium() < self.ship_dimensions.coordinate_bow()) {
                     debug!("Load.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                     let spatium_functions = shipload_intensity_closure(distance_right, spatium_start_index, spatium_start_index + 1);
                     debug!("Saptiums are under the load {:#?}", spatium_functions);
                     spatium_functions
-                } else if (distance_right > distance_left ) && (shipload.longitudinal_center_gravity() - self.ship_dimensions.length_spatium()) > self.ship_dimensions.coordinate_aft() {
+                } else if (distance_right - distance_left >= 0.01 ) && (shipload.longitudinal_center_gravity() - self.ship_dimensions.length_spatium()) > self.ship_dimensions.coordinate_aft() {
                     debug!("Load.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
                     let spatium_functions = shipload_intensity_closure(distance_left, spatium_start_index, spatium_start_index - 1);
                     debug!("Saptiums are under the load {:#?}", spatium_functions);
