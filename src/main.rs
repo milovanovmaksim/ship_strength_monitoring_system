@@ -21,6 +21,6 @@ fn main() {
     let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
     let deadweight_intnesity = DeadweightIntensity::new(shiploads, ship_dimensions);
     let spatium_functions = deadweight_intnesity.spatium_functions();
-    let visualization = Visualisation::new(spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 1.0);
+    let visualization = Visualisation::new(spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
     visualization.visualize();
 }
