@@ -2,9 +2,11 @@ mod strength;
 mod core;
 mod tests;
 mod cross_section_properties;
+use core::visualisation::Visualisation;
 use std::env;
 
-use strength::ship::{ship_dimensions::ShipDimensions, deadweight::deadweight::Deadweight};
+use log::debug;
+use strength::ship::{ship_dimensions::ShipDimensions, deadweight::deadweight::Deadweight, load::{shiploads::Shiploads, load_sharing::LoadSharing}};
 
 use crate::strength::ship::deadweight::deadweight_intensity::DeadweightIntensity;
 
@@ -15,27 +17,10 @@ fn main() {
     //env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
-    let deadweight_intensity = DeadweightIntensity::from_json_file("./input_data/data.json".to_string()).unwrap();
-    deadweight_intensity.deadweight_intensity();
-
+    let shiploads = Shiploads::from_json_file("./input_data/data.json".to_string()).unwrap();
+    let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+    let deadweight_intnesity = DeadweightIntensity::new(shiploads, ship_dimensions);
+    let spatium_functions = deadweight_intnesity.spatium_functions();
+    let visualization = Visualisation::new(spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
+    visualization.visualize();
 }
-
-// Solution{
-//     EquBeam{
-//         CrossSections::from_csv_file(),
-//         BendingMoment{
-//             SheareForce{
-//                 TotalShipLoad {
-//                     BouyanLoad{
-//                         Ship::from_file(file_path),
-//                         BonjeanScale::from_file(file_path)
-//                     },
-//                     Displacment{
-//                         Deadweight::from_json_file(file_path),
-//                         Lightweight::from_json_file(file_path)
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
