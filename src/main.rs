@@ -17,8 +17,8 @@ fn main() {
     //env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
-    let shiploads = Shiploads::from_json_file("./input_data/data.json".to_string()).unwrap();
-    let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+    let shiploads = Shiploads::from_json_file("./input_data/input_data.json".to_string()).unwrap();
+    let ship_dimensions = ShipDimensions::from_json_file("./input_data/input_data.json".to_string()).unwrap();
     let deadweight_intnesity = DeadweightIntensity::new(shiploads, ship_dimensions);
     let spatium_functions = deadweight_intnesity.spatium_functions();
     let visualization = Visualisation::new(spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
