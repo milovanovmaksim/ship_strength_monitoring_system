@@ -73,7 +73,7 @@ impl Shipload {
     pub fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
         let load_length = (load_end_coordinate - load_start_coordinate).abs();
         let load_value = (load_length / self.length) * self.value;
-        let x = load_start_coordinate + (load_length) / 2.0;
+        let x = load_start_coordinate + (load_length / 2.0);
         let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);
         Shipload::new(load_value, center_gravity, load_length)
     }
@@ -81,24 +81,26 @@ impl Shipload {
     ///
     /// Determine spread of th shipload.
     pub fn spread(&self, ship_dimensions: &ShipDimensions) -> LoadSpread {
-        let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(self.load_start_coordinate());
-        let spatium_end_index = ship_dimensions.spatium_index_by_coordinate(self.load_end_coordinate());
+        let load_start_coordinate = self.load_start_coordinate();
+        let load_end_coordinate = self.load_end_coordinate();
+        let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(load_start_coordinate);
+        let spatium_end_index = ship_dimensions.spatium_index_by_coordinate(load_end_coordinate);
         let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(spatium_start_index);
         if self.load_start_coordinate() < ship_dimensions.coordinate_aft() && self.load_end_coordinate() <= ship_dimensions.coordinate_aft() {
-            debug!("Load.spread | The load is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("Load.spread | The load: {:#?}", self);
+            debug!("ShipLoad.spread | The shipload is outside the leftmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("ShipLoad.spread | The shipload: {:#?}", self);
             LoadSpread::OutsideLeftmostFrame
         } else if self.load_start_coordinate() >= ship_dimensions.coordinate_bow() && self.load_end_coordinate() > ship_dimensions.coordinate_bow()  {
-            debug!("Load.spread | The load  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
+            debug!("ShipLoad.spread | The shipload  is outside the rightmost frame. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("ShipLoad.spread | The shipload: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
             LoadSpread::OutsideRightmostFrame
-        } else if self.load_start_coordinate().my_round(2) >= spatium_start_coordinate.my_round(2) && self.load_end_coordinate().my_round(2) <= (spatium_start_coordinate + ship_dimensions.length_spatium()).my_round(2) {
-            debug!("Load.spread | The load spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
+        } else if load_start_coordinate >= spatium_start_coordinate && load_end_coordinate <= (spatium_start_coordinate + ship_dimensions.length_spatium()) {
+            debug!("ShipLoad.spread | The shipload spreads whithin one spatium. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("ShipLoad.spread | The shipload: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
             LoadSpread::WithinOneSpatium
         } else {
-            debug!("Load.spread | The load spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
-            debug!("Load.spread | The load: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
+            debug!("ShipLoad.spread | The shipload spreads whithin many spatiums. start index: {}, end index: {}", spatium_start_index, spatium_end_index);
+            debug!("ShipLoad.spread | The shipload: {:#?}. ShipDimensions: {:#?}", self, ship_dimensions);
             LoadSpread::WithinManySpatiums
         }
     }

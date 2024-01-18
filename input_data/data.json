@@ -13,7 +13,7 @@
     "lightweight": 1750.56,
     "ship_dimensions": {
         "length_between_perpendiculars": 125,
-        "number_spatiums": 23,
+        "number_spatiums": 191,
         "completeness_coefficient": 0.6
     },
     "ship_name": "Сухогруз ТКЗ",

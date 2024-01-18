@@ -69,7 +69,7 @@ impl SpatiumFunction {
         self.f_x2
     }
 
-    /// Add curetn object with another.
+    /// Add curretn object with another.
     pub fn add(&self, term: SpatiumFunction) -> SpatiumFunction {
         let f_x1 = self.f_x1 + term.f_x1();
         let f_x2 = self.f_x2 + term.f_x2();
