@@ -42,7 +42,7 @@ impl<'a> ShiploadIntensity<'a> {
     /// Compute the shipload intensity.
     fn shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
         match shipload.spread(self.ship_dimensions) {
-            LoadSpread::WithinOneSpatium => {
+            LoadSpread::WithinOneSpatium | LoadSpread::WithinManySpatiums => {
                 let max_intensity = |c_min: f64| { shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
                 let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
                 let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
@@ -98,7 +98,6 @@ impl<'a> ShiploadIntensity<'a> {
                 debug!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
             },
-            LoadSpread::WithinManySpatiums => { unreachable!("The shipload has been shared.") }
         }
     }
 }
