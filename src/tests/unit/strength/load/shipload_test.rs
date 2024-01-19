@@ -3,7 +3,7 @@ mod tests {
     use std::{sync::Once, env};
     use log::debug;
 
-    use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::point::Point};
+    use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::{shipload::Shipload, load_spread::{self, LoadSpread}}}, core::point::Point};
 
 
 
@@ -71,5 +71,38 @@ mod tests {
         let test_shipload = Shipload::new(1.75, Point::new(23.44, 0.0, 0.0), 4.26);
         let shared_shipload = shipload.shared_shipload(21.31, 25.57);
         assert_eq!(test_shipload, shared_shipload);
+    }
+
+    #[test]
+    fn within_many_spatium_test() {
+        call_once();
+        let test_shipload = Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let load_spread = test_shipload.spread(&ship_dimensions);
+        assert_eq!(LoadSpread::WithinManySpatiums, load_spread);
+    }
+
+    #[test]
+    fn within_one_spatium_test() {
+        let test_shipload = Shipload::new(4.2, Point::new(1.0, 0.0, 0.0), 1.0);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let load_spread = test_shipload.spread(&ship_dimensions);
+        assert_eq!(LoadSpread::WithinOneSpatium, load_spread);
+    }
+
+    #[test]
+    fn outside_right_frame_test() {
+        let test_shipload = Shipload::new(4.2, Point::new(70.0, 0.0, 0.0), 1.0);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let load_spread = test_shipload.spread(&ship_dimensions);
+        assert_eq!(LoadSpread::OutsideRightmostFrame, load_spread);
+    }
+
+    #[test]
+    fn outside_leftmost_frame_test() {
+        let test_shipload = Shipload::new(4.2, Point::new(-70.13, 0.0, 0.0), 1.0);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let load_spread = test_shipload.spread(&ship_dimensions);
+        assert_eq!(LoadSpread::OutsideLeftmostFrame, load_spread);
     }
 }
