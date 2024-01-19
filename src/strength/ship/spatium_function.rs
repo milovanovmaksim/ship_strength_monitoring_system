@@ -46,13 +46,13 @@ impl SpatiumFunction {
     }
 
     ///
-    /// 
+    /// Spatium start coordinate.
     pub fn x1(&self) -> f64 {
         self.x1
     }
 
     ///
-    /// 
+    /// Spatium end coordinate.
     pub fn x2(&self) -> f64 {
         self.x2
     }
