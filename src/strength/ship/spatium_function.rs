@@ -4,7 +4,7 @@ use super::ship_dimensions::ShipDimensions;
 
 ///
 /// Contains the results of any calculations for the spatium.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SpatiumFunction {
     id: u64,
     x1: f64,
@@ -30,7 +30,7 @@ impl SpatiumFunction {
     pub fn from_id(id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Self {
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(id).my_round(2);
         let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(id).my_round(2);
-        SpatiumFunction::new(id as u64, spatium_start_coordinate, spatium_end_coordinate, f_x1, f_x2)
+        SpatiumFunction::new(id as u64, spatium_start_coordinate, spatium_end_coordinate, f_x1.my_round(2), f_x2.my_round(2))
 
     }
 
