@@ -30,7 +30,6 @@ mod tests {
 
     #[test]
     fn shared_loads_test() {
-        call_once();
         let center_gravity = Point::new(29.29, 0.0, 0.0);
         let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);

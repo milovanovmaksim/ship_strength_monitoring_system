@@ -20,7 +20,6 @@ mod tests {
 
     #[test]
     fn load_start_coordinate_test() {
-        call_once();
         let center_gravity = Point::new(25.23, 0.0, 0.0);
         let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let load_start_coordinate = 20.125;
@@ -34,7 +33,6 @@ mod tests {
 
     #[test]
     fn load_end_coordinate_test() {
-        call_once();
         let center_gravity = Point::new(25.23, 0.0, 0.0);
         let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let load_end_coordinate = 30.335;
@@ -48,7 +46,6 @@ mod tests {
 
     #[test]
     fn distances_to_frames_test() {
-        call_once();
         let center_gravity = Point::new(25.23, 0.0, 0.0);
         let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
@@ -65,7 +62,6 @@ mod tests {
 
     #[test]
     fn shared_shipload_test() {
-        call_once();
         let shipload = Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21);
         let test_shipload = Shipload::new(1.75, Point::new(23.44, 0.0, 0.0), 4.26);
         let shared_shipload = shipload.shared_shipload(21.31, 25.57);
@@ -74,7 +70,6 @@ mod tests {
 
     #[test]
     fn within_many_spatium_test() {
-        call_once();
         let test_shipload = Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let load_spread = test_shipload.spread(&ship_dimensions);

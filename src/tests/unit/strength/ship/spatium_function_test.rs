@@ -1,8 +1,7 @@
 #[cfg(test)]
 mod tests {
     use std::{sync::Once, env};
-    use crate::{strength::ship::{ship_dimensions::ShipDimensions,
-        load::{shipload::Shipload, load_sharing::LoadSharing}, spatium_function::SpatiumFunction}, core::point::Point};
+    use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction};
 
 
 
@@ -20,7 +19,6 @@ mod tests {
 
     #[test]
     fn from_id_test() {
-        call_once();
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_spatium_function = SpatiumFunction::new(0, -62.5, -56.25, 1.5, 1.5);
         let spatium_function = SpatiumFunction::from_id(0, &ship_dimensions, 1.5, 1.5);
