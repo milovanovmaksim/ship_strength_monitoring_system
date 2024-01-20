@@ -20,7 +20,7 @@ mod tests {
     }
 
     #[test]
-    fn number_shared_loads_test() {
+    fn count_shared_loads_test() {
         let center_gravity = Point::new(29.29, 0.0, 0.0);
         let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
@@ -31,16 +31,17 @@ mod tests {
 
     #[test]
     fn shared_loads_test() {
+        call_once();
         let center_gravity = Point::new(29.29, 0.0, 0.0);
         let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let load_sharing = LoadSharing::new(&ship_dimensions, &shipload);
         let test_shared_loads = vec![
-            Shipload::new(),
-            Shipload::new(),
-            Shipload::new()
+            Shipload::new(0.34, Point::new(24.6, 0.0, 0.0), 0.82),
+            Shipload::new(1.29, Point::new(32.82, 0.0, 0.0), 3.14),
+            Shipload::new(2.57, Point::new(28.13, 0.0, 0.0), 6.25)
         ];
         let shared_loads = load_sharing.shared_loads();
-        assert_eq!(3, shared_loads.len());
+        assert_eq!(test_shared_loads, shared_loads);
     }
 }
