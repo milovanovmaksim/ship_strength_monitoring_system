@@ -12,8 +12,9 @@ impl SpatiumFunctions {
         SpatiumFunctions { spatium_functions: functions }
     }
 
-    pub fn filled_zeros(number_spatiums: u64, length_spatium: f64, length_between_perpendiculars: f64) -> Self {
+    pub fn filled_zeros(number_spatiums: u64, length_between_perpendiculars: f64) -> Self {
         let mut functions = vec![];
+        let length_spatium = length_between_perpendiculars / number_spatiums as f64;
         let mut start_coordinate = -length_between_perpendiculars / 2.0;
         for id in 0..number_spatiums {
             let end_coordinate = start_coordinate + length_spatium;
