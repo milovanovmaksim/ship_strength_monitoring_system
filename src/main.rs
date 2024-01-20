@@ -14,7 +14,6 @@ use crate::strength::ship::deadweight::deadweight_intensity::DeadweightIntensity
 
 fn main() {
     env::set_var("RUST_LOG", "debug");
-    //env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
     let shiploads = Shiploads::from_json_file("./input_data/input_data.json".to_string()).unwrap();
