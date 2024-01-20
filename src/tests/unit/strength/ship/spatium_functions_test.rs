@@ -1,7 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use std::{sync::Once, env};
-
     use crate::strength::ship::{spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
 
     #[test]
