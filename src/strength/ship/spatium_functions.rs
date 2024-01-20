@@ -1,5 +1,3 @@
-use log::debug;
-
 use crate::core::round::Round;
 
 use super::spatium_function::SpatiumFunction;

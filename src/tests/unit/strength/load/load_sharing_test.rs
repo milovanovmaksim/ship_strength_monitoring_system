@@ -1,9 +1,8 @@
 #[cfg(test)]
 mod tests {
     use std::{sync::Once, env};
-    use log::debug;
-
-    use crate::{strength::ship::{lightweight::lightweight::LightweightIntensity, ship_dimensions::ShipDimensions, load::{shipload::Shipload, load_sharing::LoadSharing}}, core::point::Point};
+    use crate::{strength::ship::{ship_dimensions::ShipDimensions,
+        load::{shipload::Shipload, load_sharing::LoadSharing}}, core::point::Point};
 
 
 

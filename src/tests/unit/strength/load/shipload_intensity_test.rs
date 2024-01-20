@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod tests {
     use std::{sync::Once, env};
-    use log::debug;
-
-    use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::{shipload::Shipload, shipload_intensity::ShiploadIntensity}, spatium_functions::SpatiumFunctions, spatium_function::SpatiumFunction}, core::point::Point};
+    use crate::{strength::ship::{ship_dimensions::ShipDimensions,
+        load::{shipload::Shipload, shipload_intensity::ShiploadIntensity},
+        spatium_functions::SpatiumFunctions, spatium_function::SpatiumFunction}, core::point::Point};
 
 
 
