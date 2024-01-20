@@ -1,11 +1,10 @@
 #[cfg(test)]
 mod tests {
-    use std::{sync::Once, env};
+    use std::{env, sync::Once};
+
     use crate::{strength::ship::{ship_dimensions::ShipDimensions,
         load::{shipload::Shipload, shipload_intensity::ShiploadIntensity},
         spatium_functions::SpatiumFunctions, spatium_function::SpatiumFunction}, core::point::Point};
-
-
 
     static INIT: Once = Once::new();
 
@@ -14,7 +13,7 @@ mod tests {
                 env::set_var("RUST_LOG", "debug");  // off / error / warn / info / debug / trace
                 // env::set_var("RUST_BACKTRACE", "1");
                 env::set_var("RUST_BACKTRACE", "full");
-                env_logger::init();
+                let _ = env_logger::try_init();
             }
         )
     }
