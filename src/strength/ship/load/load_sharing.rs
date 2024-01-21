@@ -1,6 +1,6 @@
 use log::debug;
 
-use crate::{strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload}, core::round::Round};
+use crate::strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload};
 
 
 
@@ -17,7 +17,7 @@ impl<'a> LoadSharing<'a> {
 
     ///
     /// Share the shipload by spatiums.
-    pub fn shared_loads(&self) -> Vec<Shipload> {
+    pub fn shared_loads_2(&self) -> Vec<Shipload> {
         let mut shared_shiploads = vec![];
         let x_1 = self.shipload.load_start_coordinate();
         let x_4 = self.shipload.load_end_coordinate();
@@ -51,49 +51,24 @@ impl<'a> LoadSharing<'a> {
 
     ///
     /// Share the shipload by spatiums.
-    pub fn shared_loads_2(&self) -> Vec<Shipload> {
+    pub fn shared_loads(&self) -> Vec<Shipload> {
         let mut shared_shiploads = vec![];
         let mut load_start_coordinate = self.shipload.load_start_coordinate();
         let load_end_coordinate = self.shipload.load_end_coordinate();
-        let current_coordinate = self.ship_dimensions.coordinate_aft();
+        let mut current_coordinate = self.ship_dimensions.coordinate_aft();
         let spatium_length = self.ship_dimensions.length_spatium();
         while current_coordinate + spatium_length < load_end_coordinate {
             if current_coordinate > load_start_coordinate {
-                todo!();
-
+                let shipload = self.shipload.shared_shipload(load_start_coordinate, current_coordinate);
+                shared_shiploads.push(shipload);
+                load_start_coordinate = current_coordinate;
             }
-
             current_coordinate += spatium_length;
         }
-
-
-        let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(x_1);
-        let spatium_end_index = self.ship_dimensions.spatium_index_by_coordinate(x_4);
-        let x_2 = self.ship_dimensions.spatium_end_coordinate(spatium_start_index);
-        let x_3 = self.ship_dimensions.spatium_start_coordinate(spatium_end_index);
-        debug!("x_1 = {}, x_2 = {}, x_3 = {}, x_4 = {}", x_1, x_2, x_3, x_4);
-        debug!("spatium_start_index = {}, spatium_end_index = {}", spatium_start_index, spatium_end_index);
-        if (x_2 - x_1).abs() > 0.0 {
-            let load = self.shipload.shared_shipload(x_1, x_2);
-            shared_shiploads.push(load);
-        }
-        if (x_4 - x_3).abs() > 0.0 {
-            let load = self.shipload.shared_shipload(x_3, x_4);
-            shared_shiploads.push(load);
-        }
-        if (x_3 - x_2).abs() > 0.0 {
-            let mut load_start_coordinate = x_2;
-            let mut load_end_coordinate = x_2 + self.ship_dimensions.length_spatium();
-            let number_spatiums_under_load = ((x_3 - x_2).abs() / self.ship_dimensions.length_spatium()).round();
-            for _ in 0..number_spatiums_under_load as i64{
-                let load = self.shipload.shared_shipload(load_start_coordinate, load_end_coordinate);
-                shared_shiploads.push(load);
-                load_start_coordinate = load_end_coordinate;
-                load_end_coordinate = load_start_coordinate + self.ship_dimensions.length_spatium();
-            }
-        }
+        let shipload = self.shipload.shared_shipload(current_coordinate, load_end_coordinate);
+        shared_shiploads.push(shipload);
         shared_shiploads
     }
 }
-}
+
 
