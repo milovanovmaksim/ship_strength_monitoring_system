@@ -55,7 +55,7 @@ mod tests {
 
     #[test]
     fn within_many_spatium_test() {
-        let test_shipload = Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21);
+        let test_shipload = Shipload::new(4.2, Point::new(63.0, 0.0, 0.0), 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let load_spread = test_shipload.spread(&ship_dimensions);
         assert_eq!(LoadSpread::WithinManySpatiums, load_spread);
