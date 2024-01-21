@@ -76,4 +76,35 @@ mod tests {
         let shared_loads = load_sharing.shared_loads();
         assert_eq!(test_shared_loads, shared_loads);
     }
+
+    #[test]
+    fn shared_loads_test_4() {
+        call_once();
+        let center_gravity = Point::new(-64.0, 0.0, 0.0);
+        let shipload = Shipload::new(10.0, center_gravity, 10.21);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        assert_eq!(LoadSpread::WithinManySpatiums, shipload.spread(&ship_dimensions));
+        let load_sharing = LoadSharing::new(&ship_dimensions, &shipload);
+        let test_shared_loads = vec![
+            Shipload::new(6.469147894221355, Point::new(-65.80250000000001,0.0, 0.0 ), 6.605000000000004),
+            Shipload::new(3.530852105778652, Point::new(-60.6975, 0.0, 0.0), 3.605000000000004)];
+        let shared_loads = load_sharing.shared_loads();
+        assert_eq!(test_shared_loads, shared_loads);
+    }
+
+    #[test]
+    fn shared_loads_test_5() {
+        call_once();
+        let center_gravity = Point::new(64.0, 0.0, 0.0);
+        let shipload = Shipload::new(10.0, center_gravity, 10.21);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        assert_eq!(LoadSpread::WithinManySpatiums, shipload.spread(&ship_dimensions));
+        let load_sharing = LoadSharing::new(&ship_dimensions, &shipload);
+        let test_shared_loads = vec![
+            Shipload::new(3.530852105778652, Point::new(60.6975, 0.0, 0.0), 3.605000000000004),
+            Shipload::new(6.121449559255632, Point::new(65.625, 0.0, 0.0), 6.25),
+            Shipload::new(0.3476983349657237, Point::new(68.92750000000001, 0.0, 0.0), 0.355000000000004)];
+        let shared_loads = load_sharing.shared_loads();
+        assert_eq!(test_shared_loads, shared_loads);
+    }
 }
