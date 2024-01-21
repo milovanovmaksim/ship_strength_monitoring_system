@@ -18,7 +18,7 @@ impl Shiploads {
 
     ///
     /// Create new object.
-    fn new(shiploads: Vec<Shipload>) -> Self {
+    pub fn new(shiploads: Vec<Shipload>) -> Self {
         Shiploads { shiploads }
     }
 
