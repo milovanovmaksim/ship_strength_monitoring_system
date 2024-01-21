@@ -59,7 +59,7 @@ impl<'a> LoadSharing<'a> {
         let spatium_length = self.ship_dimensions.length_spatium();
         while current_coordinate + spatium_length < load_end_coordinate {
             if current_coordinate > load_start_coordinate {
-                
+                todo!();
 
             }
 
