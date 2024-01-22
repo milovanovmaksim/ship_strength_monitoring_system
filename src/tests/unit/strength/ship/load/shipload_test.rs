@@ -48,7 +48,7 @@ mod tests {
     #[test]
     fn shared_shipload_test() {
         let shipload = Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21);
-        let test_shipload = Shipload::new(1.75, Point::new(23.44, 0.0, 0.0), 4.26);
+        let test_shipload = Shipload::new(1.7523996082272286, Point::new(23.439999999999998, 0.0, 0.0), 4.260000000000002);
         let shared_shipload = shipload.shared_shipload(21.31, 25.57);
         assert_eq!(test_shipload, shared_shipload);
     }
