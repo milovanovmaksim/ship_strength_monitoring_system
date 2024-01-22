@@ -85,6 +85,13 @@ impl Shipload {
     pub fn spread(&self, ship_dimensions: &ShipDimensions) -> LoadSpread {
         let load_start_coordinate = self.load_start_coordinate();
         let load_end_coordinate = self.load_end_coordinate();
+        if load_start_coordinate < ship_dimensions.coordinate_aft() && load_end_coordinate > ship_dimensions.coordinate_aft() {
+            debug!("ShipLoad.spread | The shipload spreads whithin many spatiums. load_start_coordinate = {}", load_start_coordinate);
+            return LoadSpread::WithinManySpatiums;
+        } else if load_start_coordinate < ship_dimensions.coordinate_bow() && load_end_coordinate > ship_dimensions.coordinate_bow() {
+            debug!("ShipLoad.spread | The shipload spreads whithin many spatiums. load_end_coordinate = {}", load_end_coordinate);
+            return LoadSpread::WithinManySpatiums;
+        }
         let spatium_start_index = ship_dimensions.spatium_index_by_coordinate(load_start_coordinate);
         let spatium_end_index = ship_dimensions.spatium_index_by_coordinate(load_end_coordinate);
         let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(spatium_start_index);
