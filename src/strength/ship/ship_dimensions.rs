@@ -102,6 +102,7 @@ impl ShipDimensions {
     ///
     /// Define the spatium index by coordinate.
     pub fn spatium_index_by_coordinate(&self, x: f64) -> i64 {
+        // Если координата x выходит за пределы корабля(кормы или носа) необходимо выдывать соответствующую ошибку.
         let mut spatium_start_coordinate = -self.length_between_perpendiculars / 2.0;
         let mut spatium_end_coordinate = spatium_start_coordinate + self.length_spatium();
         let mut index = 0;
