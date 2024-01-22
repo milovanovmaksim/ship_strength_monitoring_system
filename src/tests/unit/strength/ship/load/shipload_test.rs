@@ -1,7 +1,21 @@
 #[cfg(test)]
 mod tests {
+    use std::{sync::Once, env};
+
     use crate::{strength::ship::{ship_dimensions::ShipDimensions,
         load::{shipload::Shipload, load_spread::LoadSpread}}, core::point::Point};
+
+    static INIT: Once = Once::new();
+
+    fn call_once() {
+        INIT.call_once(|| {
+                env::set_var("RUST_LOG", "debug");  // off / error / warn / info / debug / trace
+                // env::set_var("RUST_BACKTRACE", "1");
+                env::set_var("RUST_BACKTRACE", "full");
+                let _ = env_logger::try_init();
+            }
+        )
+    }
 
     #[test]
     fn load_start_coordinate_test() {
@@ -55,10 +69,15 @@ mod tests {
 
     #[test]
     fn within_many_spatium_test() {
+        call_once();
         let test_shipload = Shipload::new(4.2, Point::new(63.0, 0.0, 0.0), 10.21);
+        let test_shipload_2 = Shipload::new(10.0, Point::new(-63.0, 0.0, 0.0), 10.21);
+        let test_shipload_3 = Shipload::new(10.0, Point::new(1.0, 0.0, 0.0), 14.0);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let load_spread = test_shipload.spread(&ship_dimensions);
         assert_eq!(LoadSpread::WithinManySpatiums, load_spread);
+        assert_eq!(LoadSpread::WithinManySpatiums, test_shipload_2.spread(&ship_dimensions));
+        assert_eq!(LoadSpread::WithinManySpatiums, test_shipload_3.spread(&ship_dimensions));
     }
 
     #[test]
