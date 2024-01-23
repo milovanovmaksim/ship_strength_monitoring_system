@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::strength::ship::ship_dimensions::{self, ShipDimensions};
+    use crate::strength::ship::ship_dimensions::ShipDimensions;
 
 
     #[test]

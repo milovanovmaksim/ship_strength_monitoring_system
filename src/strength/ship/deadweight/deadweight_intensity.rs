@@ -1,4 +1,3 @@
-use log::debug;
 use serde::Deserialize;
 use crate::strength::ship::{load::{shiploads::Shiploads, shipload_intensity::ShiploadIntensity}, ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions};
 

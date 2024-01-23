@@ -1,4 +1,3 @@
-use log::debug;
 use crate::strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload};
 
 
