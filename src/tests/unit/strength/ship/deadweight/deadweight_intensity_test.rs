@@ -2,7 +2,7 @@
 mod tests {
     use std::{sync::Once, env};
     use crate::{strength::ship::{ship_dimensions::ShipDimensions,
-        load::{shipload::Shipload, load_sharing::LoadSharing, shiploads::Shiploads}, deadweight::deadweight_intensity::DeadweightIntensity, spatium_functions::SpatiumFunctions, spatium_function::SpatiumFunction}, core::point::Point};
+        load::{shipload::Shipload, shiploads::Shiploads}, deadweight::deadweight_intensity::DeadweightIntensity, spatium_functions::SpatiumFunctions, spatium_function::SpatiumFunction}, core::point::Point};
 
 
 
