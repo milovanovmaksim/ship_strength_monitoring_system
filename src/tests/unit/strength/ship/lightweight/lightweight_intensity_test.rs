@@ -49,8 +49,9 @@ mod tests {
 
     #[test]
     fn test_lightweight_intensity() {
+        call_once();
         let test_weight = 13575.73;
-        let ship_dimensions = ShipDimensions::new(235.03, 20, 0.77);
+        let ship_dimensions = ShipDimensions::new(235.03, 20, 0.5);
         let test_lightweight = LightweightIntensity::new(test_weight, ship_dimensions);
         let output = test_lightweight.lightweight_intensity();
         let mut computed_weight = 0.0;
