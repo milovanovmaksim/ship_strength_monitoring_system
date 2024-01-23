@@ -89,26 +89,26 @@ impl ShipDimensions {
 
     ///
     /// Return spatium start coordinate.
-    pub fn spatium_start_coordinate(&self, id: i64) -> f64 {
+    pub fn spatium_start_coordinate(&self, id: u64) -> f64 {
         id as f64 * self.length_spatium() - (self.length_between_perpendiculars() / 2.0)
     }
 
     ///
     /// Return spatium end coordinate.
-    pub fn spatium_end_coordinate(&self, id: i64) -> f64 {
+    pub fn spatium_end_coordinate(&self, id: u64) -> f64 {
         self.spatium_start_coordinate(id) + self.length_spatium()
     }
 
     ///
     /// Define the spatium index by coordinate.
-    pub fn spatium_index_by_coordinate(&self, x: f64) -> i64 {
+    pub fn spatium_index_by_coordinate(&self, x: f64) -> u64 {
         // Если координата x выходит за пределы корабля(кормы или носа) необходимо выдывать соответствующую ошибку.
         let mut spatium_start_coordinate = -self.length_between_perpendiculars / 2.0;
         let mut spatium_end_coordinate = spatium_start_coordinate + self.length_spatium();
         let mut index = 0;
         for id in 0..self.number_spatiums {
             if x >= spatium_start_coordinate && x < spatium_end_coordinate {
-                index = id as i64;
+                index = id;
                 break;
             }
             spatium_start_coordinate = spatium_end_coordinate;

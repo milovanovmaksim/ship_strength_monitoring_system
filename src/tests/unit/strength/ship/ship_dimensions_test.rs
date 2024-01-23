@@ -49,7 +49,7 @@ mod tests {
         let length_spatium = ship_dimensions.length_spatium();
         let mut current_coordinate = -62.0;
         for index in 0..ship_dimensions.number_spatiums() {
-            assert_eq!(index as i64, ship_dimensions.spatium_index_by_coordinate(current_coordinate));
+            assert_eq!(index, ship_dimensions.spatium_index_by_coordinate(current_coordinate));
             current_coordinate += length_spatium;
         }
 

@@ -46,7 +46,7 @@ impl<'a> ShiploadIntensity<'a> {
             let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
             let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
-            let shipload_intensity_closure = |destance: f64, index: i64, next_index: i64| {
+            let shipload_intensity_closure = |destance: f64, index: u64, next_index: u64| {
                 let mut spatium_functions = vec![];
                 let f_x_max_intensity = max_intensity(destance);
                 let f_x_min_intensity = min_intensity(destance);
@@ -87,11 +87,11 @@ impl<'a> ShiploadIntensity<'a> {
             };
             let f_x = ((1.5 + (distance / self.ship_dimensions.length_spatium())) * shipload.value()) / self.ship_dimensions.length_spatium();
             let mut spatium_functions: Vec<SpatiumFunction> = vec![];
-            let spatium_function = SpatiumFunction::from_id(spatium_id as i64, self.ship_dimensions, f_x, f_x);
+            let spatium_function = SpatiumFunction::from_id(spatium_id, self.ship_dimensions, f_x, f_x);
             spatium_functions.push(spatium_function);
 
             let f_x = -((0.5 + (distance / self.ship_dimensions.length_spatium())) * shipload.value()) / self.ship_dimensions.length_spatium();
-            let spatium_function = SpatiumFunction::from_id(next_spatium_id as i64, self.ship_dimensions, f_x, f_x);
+            let spatium_function = SpatiumFunction::from_id(next_spatium_id, self.ship_dimensions, f_x, f_x);
             spatium_functions.push(spatium_function);
             debug!("Saptiums are under the load {:#?}", spatium_functions);
             spatium_functions

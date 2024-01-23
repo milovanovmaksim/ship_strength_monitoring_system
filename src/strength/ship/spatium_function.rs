@@ -27,10 +27,10 @@ impl SpatiumFunction {
 
     ///
     /// Create new object by id.
-    pub fn from_id(id: i64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Self {
+    pub fn from_id(id: u64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Self {
         let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(id).my_round(2);
         let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(id).my_round(2);
-        SpatiumFunction::new(id as u64, spatium_start_coordinate, spatium_end_coordinate, f_x1.my_round(2), f_x2.my_round(2))
+        SpatiumFunction::new(id, spatium_start_coordinate, spatium_end_coordinate, f_x1.my_round(2), f_x2.my_round(2))
 
     }
 
