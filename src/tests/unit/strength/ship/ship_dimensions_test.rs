@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::strength::ship::ship_dimensions::ShipDimensions;
+    use crate::strength::ship::ship_dimensions::{self, ShipDimensions};
 
 
     #[test]
@@ -33,6 +33,25 @@ mod tests {
         assert_eq!(-12.5, ship_dimensions.spatium_start_coordinate(8));
         assert_eq!(-62.5, ship_dimensions.spatium_start_coordinate(0));
         assert_eq!(56.25, ship_dimensions.spatium_start_coordinate(19));
+    }
+
+    #[test]
+    fn spatium_end_coordinate_test() {
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        assert_eq!(-6.25, ship_dimensions.spatium_end_coordinate(8));
+        assert_eq!(-56.25, ship_dimensions.spatium_end_coordinate(0));
+        assert_eq!(62.5, ship_dimensions.spatium_end_coordinate(19));
+    }
+
+    #[test]
+    fn spatium_index_by_coordinate_test() {
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let length_spatium = ship_dimensions.length_spatium();
+        let mut current_coordinate = -62.0;
+        for index in 0..ship_dimensions.number_spatiums() {
+            assert_eq!(index as i64, ship_dimensions.spatium_index_by_coordinate(current_coordinate));
+            current_coordinate += length_spatium;
+        }
 
     }
 }
