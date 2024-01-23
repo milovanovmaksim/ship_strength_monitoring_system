@@ -1,8 +1,6 @@
 use log::debug;
 
-use crate::strength::ship::{ship_dimensions::ShipDimensions,
-    load::{shipload::Shipload, load_sharing::LoadSharing, load_spread::LoadSpread},
-    spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
+use crate::strength::ship::{load::{shipload::Shipload, load_sharing::LoadSharing}, ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
 
 
 ///
@@ -20,28 +18,22 @@ impl<'a> ShiploadIntensity<'a> {
     ///
     /// Return SpatiumFunctions containing the shipload intensity.
     pub fn spatium_functions(&self) -> SpatiumFunctions {
-        match self.shipload.spread(self.ship_dimensions) {
-            LoadSpread::WithinManySpatiums => {
-                let mut shipload_intensity = vec![];
-                let load_sharing = LoadSharing::new(self.ship_dimensions, self.shipload);
-                let shiploads = load_sharing.shared_loads();
-                for shipload in shiploads.iter() {
-                    let spatium_functions = self.shipload_intensity(shipload);
-                    shipload_intensity.extend(spatium_functions);
-                }
-                SpatiumFunctions::new(shipload_intensity)
-            },
-            _ => {
-                let shipload_intensity = self.shipload_intensity(self.shipload);
-                SpatiumFunctions::new(shipload_intensity)
-            }
+        let mut shipload_intensity = vec![];
+        let load_sharing = LoadSharing::new(self.ship_dimensions, self.shipload);
+        let shiploads = load_sharing.shared_loads();
+        for shipload in shiploads.iter() {
+            let spatium_functions = self.shipload_intensity(shipload);
+            shipload_intensity.extend(spatium_functions);
         }
+        SpatiumFunctions::new(shipload_intensity)
     }
 
     ///
     /// Compute the shipload intensity.
     fn shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft() && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_bow() {
+            // TODO Грузы весом до 0,01 от дэдвейта могут быть равномерно разнесены
+            //  по длине всей шпации независимо от действительного положения их центра тяжести.
             let max_intensity = |c_min: f64| { shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
