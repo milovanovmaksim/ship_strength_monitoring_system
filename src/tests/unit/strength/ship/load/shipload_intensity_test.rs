@@ -63,7 +63,7 @@ mod tests {
 
     #[test]
     fn spatium_functions_test_2() {
-        // The Shipload value less than 0.001 * deadweight.
+        // The Shipload value less than 0.01 * deadweight.
         call_once();
         let center_gravity = Point::new(25.23, 0.0, 0.0);
         let shipload = Shipload::new(14.23, center_gravity, 10.21);
