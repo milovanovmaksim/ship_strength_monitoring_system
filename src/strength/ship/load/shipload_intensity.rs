@@ -36,7 +36,7 @@ impl<'a> ShiploadIntensity<'a> {
             // TODO Грузы весом до 0,01 от дэдвейта могут быть равномерно разнесены
             //  по длине всей шпации независимо от действительного положения их центра тяжести.
             if shipload.value() < self.deadweight * 0.01 {
-                debug!("Load.intensity | Вес груза распределяем на всю теоретическую шпацию. Shipload value = {} < deadweight = {}", self.shipload.value(), self.deadweight);
+                debug!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. Shipload value = {} < deadweight = {}", self.shipload.value(), self.deadweight);
                 let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
                 let f_x = shipload.value() / self.ship_dimensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_id(spatium_start_index, self.ship_dimensions, f_x, f_x);
@@ -59,17 +59,17 @@ impl<'a> ShiploadIntensity<'a> {
                 spatium_functions
             };
             if (distance_left - distance_right >= 0.01) && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium() < self.ship_dimensions.coordinate_bow()) {
-                debug!("Load.intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
+                debug!("Shipload.shipload_intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                 let spatium_functions = shipload_intensity_closure(distance_right, spatium_start_index, spatium_start_index + 1);
                 debug!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
             } else if (distance_right - distance_left >= 0.01 ) && (shipload.longitudinal_center_gravity() - self.ship_dimensions.length_spatium()) > self.ship_dimensions.coordinate_aft() {
-                debug!("Load.intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
+                debug!("Load.shipload_intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
                 let spatium_functions = shipload_intensity_closure(distance_left, spatium_start_index, spatium_start_index - 1);
                 debug!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
             } else {
-                debug!("Load.intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
+                debug!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                 let f_x = shipload.value() / self.ship_dimensions.length_spatium();
                 let spatium_function = SpatiumFunction::from_id(spatium_start_index, self.ship_dimensions, f_x, f_x);
                 let spatium_functions = vec![spatium_function];
