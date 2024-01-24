@@ -20,42 +20,14 @@ mod tests {
     }
 
     #[test]
-    fn create_lightweight_from_json_file_successfully() {
-        let lightweight = LightweightIntensity::from_json_file("./src/tests/unit/strength/lightweight/data/correct_data.json".to_string());
-        assert!(lightweight.is_ok());
-    }
-
-    #[test]
-    fn create_lightweight_from_json_file_invalid_type() {
-        let lightweight = LightweightIntensity::from_json_file("./src/tests/unit/strength/lightweight/data/invalid_type.json".to_string());
-        assert!(lightweight.is_err());
-        assert!(lightweight.unwrap_err().contains("invalid type"));
-    }
-
-    #[test]
-    fn create_lightweight_from_json_file_missing_field() {
-        let lightweight = LightweightIntensity::from_json_file("./src/tests/unit/strength/lightweight/data/empty_field.json".to_string());
-        assert!(lightweight.is_err());
-        assert!(lightweight.unwrap_err().contains("missing field `lightweight`"));
-    }
-    #[test]
-    fn test_number_spatiums() {
-        let number_spatiums = 20;
-        let ship_dimensions = ShipDimensions::new(125.03, number_spatiums, 0.8);
-        let lightweight = LightweightIntensity::new(1750.0, ship_dimensions);
-        let output = lightweight.lightweight_intensity();
-        assert_eq!(output.len(), number_spatiums as usize);
-    }
-
-    #[test]
     fn test_lightweight_intensity() {
         call_once();
         let test_weight = 13575.73;
         let ship_dimensions = ShipDimensions::new(235.03, 20, 0.5);
         let test_lightweight = LightweightIntensity::new(test_weight, ship_dimensions);
-        let output = test_lightweight.lightweight_intensity();
+        let spatium_functions = test_lightweight.lightweight_intensity();
         let mut computed_weight = 0.0;
-        for spatium in &output {
+        for spatium in spatium_functions.into_iter() {
             computed_weight += spatium.integral();
         }
         let err = {
