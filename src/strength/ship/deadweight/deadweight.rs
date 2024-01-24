@@ -1,19 +1,19 @@
 use log::{debug, warn};
 use serde::Deserialize;
-use crate::core::{json_file::JsonFile, load::load::Load};
+use crate::{core::json_file::JsonFile, strength::ship::load::shiploads::Shiploads};
 
 
 
 #[derive(Deserialize, Debug)]
 pub struct Deadweight {
-    loads: Option<Vec<Load>>,
+    shiploads: Shiploads,
 
 }
 
 
 impl Deadweight {
-    pub fn new(loads: Option<Vec<Load>>) -> Self {
-        Deadweight { loads }
+    pub fn new(shiploads: Shiploads) -> Self {
+        Deadweight { shiploads }
     }
 
     ///
@@ -41,15 +41,6 @@ impl Deadweight {
     }
 
     pub fn deadweight(&self) -> f64 {
-        match &self.loads {
-            Some(loads) => {
-                let mut deadweight = 0.0;
-                for load in loads {
-                    deadweight += load.value();
-                }
-                deadweight
-            }
-            None => { 0.0 }
-        }
+        self.shiploads.sum()
     }
 }

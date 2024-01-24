@@ -1,68 +1,29 @@
-use log::{warn, debug};
 use serde::Deserialize;
-
-use crate::{strength::ship::{spatium::Spatium, ship_dimensions::ShipDimensions}, core::{json_file::JsonFile, load::load::Load}};
+use crate::strength::ship::{load::{shiploads::Shiploads, shipload_intensity::ShiploadIntensity}, ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions};
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
-    loads: Option<Vec<Load>>,
+    shiploads: Shiploads,
     ship_dimensions: ShipDimensions,
 }
 
 
 impl DeadweightIntensity {
-    pub fn new(loads: Option<Vec<Load>>, ship_dimensions: ShipDimensions,) -> Self {
-        DeadweightIntensity { loads, ship_dimensions }
+    pub fn new(shiploads: Shiploads, ship_dimensions: ShipDimensions,) -> Self {
+        DeadweightIntensity { shiploads, ship_dimensions }
     }
 
-    ///
-    /// Create the object from json file.
-    pub fn from_json_file(file_path: String) -> Result<Self, String> {
-        let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(deadweight_intensity) => {
-                        debug!("DeadweightIntensity::from_json_file | DeadweightIntensity has been created sucessfuly. {:?}", deadweight_intensity);
-                        Ok(deadweight_intensity)
-                    },
-                    Err(err) => {
-                        warn!("DeadweightIntensity::from_json_file | error: {:?}.",err);
-                        return Err(err.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                warn!("DeadweightIntensity::from_json_file | error: {:?}.",err);
-                return Err(err);
+    pub fn spatium_functions(&self) -> SpatiumFunctions {
+        let number_spatiums = self.ship_dimensions.number_spatiums();
+        let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
+        let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
+        let deadweight = self.shiploads.sum();
+        for shipload in self.shiploads.as_ref() {
+            let shipload_intensity = ShiploadIntensity::new(shipload, &self.ship_dimensions, deadweight);
+            for spatium_function in shipload_intensity.spatium_functions().into_iter() {
+                spatium_functions.add_spatium_function(spatium_function)
             }
         }
+        spatium_functions
     }
-
-    pub fn deadweight_intensity(&self) -> Option<Vec<Spatium>> {
-        match &self.loads {
-            Some(loads) => {
-                let deadweight_intensity = self.spatiums_filled_zero();
-                for load in loads {
-                    let load_intensity = load.intensity(&self.ship_dimensions);
-                }
-                Some(deadweight_intensity)
-            },
-            None => { None }
-        }
-    }
-
-    fn spatiums_filled_zero(&self) -> Vec<Spatium> {
-        let length_spatiums = self.ship_dimensions.length_spatium();
-        let mut spatiums = vec![];
-        let mut current_coordinate = self.ship_dimensions.coordinate_aft();
-        for id in 0..self.ship_dimensions.number_spatiums() {
-            let end_coordinate = current_coordinate + length_spatiums;
-            let spatium = Spatium::new(id, current_coordinate, end_coordinate, 0.0, 0.0);
-            spatiums.push(spatium);
-            current_coordinate += length_spatiums;
-        }
-        spatiums
-    }
-
 }
