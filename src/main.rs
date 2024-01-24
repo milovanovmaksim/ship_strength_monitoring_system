@@ -23,7 +23,7 @@ fn main() {
     let visualization = Visualisation::new(&deadweight_intnesity_spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
     visualization.visualize();
 
-    let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+    let ship_dimensions = ShipDimensions::from_json_file("./input_data/input_data.json".to_string()).unwrap();
     let lightweight_intensity = LightweightIntensity::new(1750.56, ship_dimensions);
     let lightweight_intensity_spatium_functions = lightweight_intensity.lightweight_intensity();
     let visualization = Visualisation::new(&lightweight_intensity_spatium_functions, "Lightweight intnesity".to_string(), "Lightweight intnesity".to_string(), 6.25);
