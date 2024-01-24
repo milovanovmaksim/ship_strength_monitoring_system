@@ -1,7 +1,7 @@
 use log::{warn, debug};
 use serde::Deserialize;
 
-use crate::{core::json_file::JsonFile, strength::ship::{spatium_function::SpatiumFunction, ship_dimensions::ShipDimensions}};
+use crate::{core::json_file::JsonFile, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}};
 
 
 
@@ -43,7 +43,7 @@ impl LightweightIntensity {
 
     ///
     /// Computes the lightweight intensity for spatiums
-    pub fn lightweight_intensity(&self) -> Vec<SpatiumFunction> {
+    pub fn lightweight_intensity(&self) -> SpatiumFunctions {
         let mut spatiums = vec![];
         let half_length_spatium = self.ship_dimensions.length_spatium() / 2.0;
         let mut current_coord = self.ship_dimensions.coordinate_aft() + half_length_spatium;
@@ -52,8 +52,7 @@ impl LightweightIntensity {
             spatiums.push(spatium);
             current_coord += self.ship_dimensions.length_spatium();
         }
-        debug!("Lightweight.lightweight_intensity() | Lightweight intensity hase been computed successfully.");
-        spatiums
+        SpatiumFunctions::new(spatiums)
     }
     ///
     /// Computes the lightweight intensity for the spatium.
