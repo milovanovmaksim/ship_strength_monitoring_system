@@ -33,8 +33,6 @@ impl<'a> ShiploadIntensity<'a> {
     /// Compute the shipload intensity.
     fn shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft() && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_bow() {
-            // TODO Грузы весом до 0,01 от дэдвейта могут быть равномерно разнесены
-            //  по длине всей шпации независимо от действительного положения их центра тяжести.
             if shipload.value() < self.deadweight * 0.01 {
                 debug!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. Shipload value = {} < deadweight = {}", self.shipload.value(), self.deadweight);
                 let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
