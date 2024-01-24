@@ -20,12 +20,12 @@ BendingMoment-->ShearForce;
 ShearForce -.->BendingMoment;
 ShearForce-->TotalShipLoad;
 TotalShipLoad -.-> ShearForce;
-TotalShipLoad-->Displacment;
+TotalShipLoad-->Displacement;
 TotalShipLoad-->BuoyantLoad;
 BuoyantLoad -.->TotalShipLoad;
-Displacment-->Deadweight;
-Displacment-->Lightweight;
-Displacment -.-> TotalShipLoad;
-Lightweight -.->Displacment;
-Deadweight -.->Displacment;
+Displacement-->Deadweight;
+Displacement-->Lightweight;
+Displacement -.-> TotalShipLoad;
+Lightweight -.->Displacement;
+Deadweight -.->Displacement;
 ```
