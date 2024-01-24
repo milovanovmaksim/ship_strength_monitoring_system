@@ -29,28 +29,3 @@ Displacment -.-> TotalShipLoad;
 Lightweight -.->Displacment;
 Deadweight -.->Displacment;
 ```
-
-Вложенность объектов:
-``` rust
-Strenght {
-    NormalStress {
-        CrossSections,
-        BendingMoment {
-            SheareForce {
-                TotalShipLoad {
-                    Displacement {
-                        Deadweight {},
-                        Lightweight {
-                            Ship{}
-                        }
-                    },
-                    BouyanLoad {
-                        Ship {},
-                        BonjeanScale {}
-                    }
-                }
-            }
-        }
-    }
-}
-```
