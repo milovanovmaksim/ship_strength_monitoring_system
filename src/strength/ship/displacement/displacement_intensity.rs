@@ -1,6 +1,6 @@
 use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
-struct DisplacementIntensity<'a> {
+pub struct DisplacementIntensity<'a> {
     deadweight_intensity: &'a SpatiumFunctions,
     lightweight_intnesity: &'a SpatiumFunctions,
 }
