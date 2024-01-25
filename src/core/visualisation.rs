@@ -2,8 +2,8 @@ use plotly::{Scatter, common::{Mode, LineShape, Line, Title, Font}, Layout, layo
 
 use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
-pub struct Visualisation {
-    spatiumfunctions: SpatiumFunctions,
+pub struct Visualisation<'a> {
+    spatiumfunctions: &'a SpatiumFunctions,
     name: String,
     title: String,
     spatium_length: f64,
@@ -11,8 +11,8 @@ pub struct Visualisation {
 
 
 
-impl Visualisation {
-    pub fn new(spatiumfunctions: SpatiumFunctions, name: String, title: String, spatium_length: f64) -> Self {
+impl<'a> Visualisation<'a> {
+    pub fn new(spatiumfunctions: &'a SpatiumFunctions, name: String, title: String, spatium_length: f64) -> Self {
         Visualisation { spatiumfunctions, name, title, spatium_length, }
     }
 
