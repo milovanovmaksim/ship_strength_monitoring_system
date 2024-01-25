@@ -5,4 +5,4 @@ pub mod deadweight;
 pub mod load;
 pub mod spatium_functions;
 pub mod displacement;
-pub mod buoyant_load;
+pub mod buoyancy_load;
