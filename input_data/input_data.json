@@ -12,9 +12,9 @@
     ],
     "lightweight": 1750.56,
     "length_between_perpendiculars": 125,
-    "number_spatiums": 50,
+    "number_spatiums": 20,
     "completeness_coefficient": 0.6,
-    "ship_name": "Сухогруз ТКЗ",
+    "ship_name": "Сухогруз Maxim",
     "cross_sections_properties": [
         {"id": 0, "I_z": 1.2, "I_y": 1.2, "z_up": 13.6, "z_down": 5.6},
         {"id": 1, "I_z": 1.2, "I_y": 1.2, "z_up": 13.6, "z_down": 5.6}
