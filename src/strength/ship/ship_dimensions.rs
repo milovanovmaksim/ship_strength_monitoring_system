@@ -1,4 +1,4 @@
-use log::{warn, debug};
+use log::{error, debug};
 use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
@@ -50,13 +50,13 @@ impl ShipDimensions {
                         Ok(ship_dimensions)
                     },
                     Err(err) => {
-                        warn!("ShipDimensions::from_json_file | error: {:?}.",err);
+                        error!("ShipDimensions::from_json_file | error: {:?}.",err);
                         return Err(err.to_string());
                     }
                 }
             },
             Err(err) => {
-                warn!("ShipDimensions::from_json_file | error: {:?}.",err);
+                error!("ShipDimensions::from_json_file | error: {:?}.",err);
                 return Err(err);
             }
         }

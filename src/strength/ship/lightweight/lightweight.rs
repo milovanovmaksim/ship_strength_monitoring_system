@@ -1,4 +1,4 @@
-use log::{warn, debug};
+use log::{error, debug};
 use serde::Deserialize;
 
 use crate::{core::json_file::JsonFile, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}};
@@ -29,13 +29,13 @@ impl LightweightIntensity {
                         Ok(lightweight)
                     },
                     Err(err) => {
-                        warn!("Lightweight::from_json_file | error: {:?}.",err);
+                        error!("Lightweight::from_json_file | error: {:?}.",err);
                         return Err(err.to_string());
                     }
                 }
             },
             Err(err) => {
-                warn!("Lightweight::from_json_file | error: {:?}.",err);
+                error!("Lightweight::from_json_file | error: {:?}.",err);
                 return Err(err);
             }
         }

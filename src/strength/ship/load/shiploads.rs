@@ -1,4 +1,4 @@
-use log::{debug, warn};
+use log::{debug, error};
 use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
@@ -33,13 +33,13 @@ impl Shiploads {
                         Ok(shiploads)
                     },
                     Err(err) => {
-                        warn!("Shiploads::from_json_file | error: {:?}.",err);
+                        error!("Shiploads::from_json_file | error: {:?}.",err);
                         return Err(err.to_string());
                     }
                 }
             },
             Err(err) => {
-                warn!("Shiploads::from_json_file | error: {:?}.",err);
+                error!("Shiploads::from_json_file | error: {:?}.",err);
                 return Err(err);
             }
         }

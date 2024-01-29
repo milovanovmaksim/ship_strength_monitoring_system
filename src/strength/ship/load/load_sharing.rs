@@ -21,7 +21,7 @@ impl<'a> LoadSharing<'a> {
         let load_end_coordinate = self.shipload.load_end_coordinate();
         let mut current_coordinate = self.ship_dimensions.coordinate_aft();
         let spatium_length = self.ship_dimensions.length_spatium();
-        
+
         while current_coordinate < load_end_coordinate {
             if current_coordinate > load_start_coordinate {
                 let shipload = self.shipload.shared_shipload(load_start_coordinate, current_coordinate);
