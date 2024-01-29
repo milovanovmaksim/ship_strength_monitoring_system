@@ -29,7 +29,6 @@ impl ShipDimensions {
 
     ///
     /// Return parameters of the ship hull weight distribution function.
-    /// TODO: добавить ссылку на литература, откуда эти формулы были взяты.
     pub fn lightweight_intensity_parameters(&self) -> (f64, f64, f64) {
         if self.completeness_coefficient  <= 0.7 {
             (0.64, 1.20, 0.56)

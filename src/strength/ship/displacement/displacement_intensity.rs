@@ -1,5 +1,8 @@
 use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
+
+///
+/// 
 pub struct DisplacementIntensity<'a> {
     deadweight_intensity: &'a SpatiumFunctions,
     lightweight_intnesity: &'a SpatiumFunctions,
@@ -11,6 +14,8 @@ impl<'a> DisplacementIntensity<'a> {
         DisplacementIntensity { deadweight_intensity, lightweight_intnesity }
     }
 
+    ///
+    /// Computes the deadweight intensity for spatiums.
     pub fn spatium_functions(&self) -> SpatiumFunctions {
         let deadweight_intensity = self.deadweight_intensity.as_ref();
         let lightweight_intnesity = self.lightweight_intnesity.as_ref();

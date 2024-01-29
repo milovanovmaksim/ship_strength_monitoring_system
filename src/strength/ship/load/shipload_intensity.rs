@@ -4,7 +4,7 @@ use crate::strength::ship::{load::{shipload::Shipload, load_sharing::LoadSharing
 
 
 ///
-/// Compute the shipload intensity.
+/// Shipload intensit. Measured in [ton/m].
 pub(crate) struct ShiploadIntensity<'a> {
     shipload: &'a Shipload,
     ship_dimensions: &'a ShipDimensions,

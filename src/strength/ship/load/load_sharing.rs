@@ -1,7 +1,8 @@
 use crate::strength::ship::{ship_dimensions::ShipDimensions, load::shipload::Shipload};
 
 
-
+///
+/// Share a shipload by spatiums.
 pub struct LoadSharing<'a> {
     ship_dimensions: &'a ShipDimensions,
     shipload: &'a Shipload
@@ -14,7 +15,7 @@ impl<'a> LoadSharing<'a> {
     }
 
     ///
-    /// Share the shipload by spatiums.
+    /// Share a shipload by spatiums.
     pub fn shared_loads(&self) -> Vec<Shipload> {
         let mut shared_shiploads = vec![];
         let mut load_start_coordinate = self.shipload.load_start_coordinate();

@@ -12,7 +12,7 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 
 
 ///
-/// SpatiumLoad - load acting on one spatium.
+/// Shipload - load acting on one the ship.
 /// value - load value in tons.
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.

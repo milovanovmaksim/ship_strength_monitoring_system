@@ -3,7 +3,9 @@ use serde::Deserialize;
 use crate::{core::json_file::JsonFile, strength::ship::load::shiploads::Shiploads};
 
 
-
+///
+/// Deadweight is defined as weight of cargo plus fuel and consumable stores,
+/// and lightweight as the weight of the hull, including machinery and equipment.
 #[derive(Deserialize, Debug)]
 pub struct Deadweight {
     shiploads: Shiploads,

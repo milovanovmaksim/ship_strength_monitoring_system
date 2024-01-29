@@ -6,7 +6,7 @@ use crate::strength::ship::load::shipload::Shipload;
 
 
 ///
-/// Сontains all the loads acting on the ship
+/// Сontains Shipload objects.
 #[derive(Deserialize, Debug)]
 pub struct Shiploads {
     shiploads: Vec<Shipload>,

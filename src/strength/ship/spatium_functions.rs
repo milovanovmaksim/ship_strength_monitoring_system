@@ -2,6 +2,8 @@ use crate::core::round::Round;
 
 use super::spatium_function::SpatiumFunction;
 
+///
+/// Contains SaptiumFunction objects.
 #[derive(Debug, PartialEq)]
 pub struct SpatiumFunctions {
     spatium_functions: Vec<SpatiumFunction>
