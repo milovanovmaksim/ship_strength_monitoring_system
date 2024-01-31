@@ -42,6 +42,8 @@ impl Deadweight {
         }
     }
 
+    ///
+    /// Return deadweight.
     pub fn deadweight(&self) -> f64 {
         self.shiploads.sum()
     }
