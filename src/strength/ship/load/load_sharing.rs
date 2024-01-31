@@ -10,6 +10,9 @@ pub struct LoadSharing<'a> {
 
 
 impl<'a> LoadSharing<'a> {
+
+    ///
+    /// Create a new object.
     pub fn new(ship_dimensions: &'a ShipDimensions, shipload: &'a Shipload) -> Self {
         LoadSharing { ship_dimensions, shipload }
     }
