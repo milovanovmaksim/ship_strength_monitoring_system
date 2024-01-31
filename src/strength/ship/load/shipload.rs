@@ -12,7 +12,7 @@ use crate::strength::ship::load::load_spread::LoadSpread;
 
 
 ///
-/// Shipload - load acting on one the ship.
+/// Shipload - load created by ship cargo, balast, e.t.c.
 /// value - load value in tons.
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
