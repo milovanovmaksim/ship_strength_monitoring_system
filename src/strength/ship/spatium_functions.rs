@@ -14,6 +14,8 @@ impl SpatiumFunctions {
         SpatiumFunctions { spatium_functions: functions }
     }
 
+    ///
+    /// Return new SpatiumFucions object, filled SaptiumFuction containing zeros.
     pub fn filled_zeros(number_spatiums: u64, length_between_perpendiculars: f64) -> Self {
         let mut functions = vec![];
         let length_spatium = length_between_perpendiculars / number_spatiums as f64;
@@ -27,6 +29,8 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
+    ///
+    /// Add new SaptiumFunction object into "spatium_functions" vector. Mutate self SpatiumFunctions object.
     pub fn add_spatium_function(&mut self, term: &SpatiumFunction) {
         let id = term.id() as usize;
         if let Some(spatium_function) =  self.spatium_functions.get_mut(id) {
@@ -37,6 +41,8 @@ impl SpatiumFunctions {
 }
 
 
+///
+/// Implementation of IntoIterator trait.
 impl IntoIterator for SpatiumFunctions {
     type Item = SpatiumFunction;
     type IntoIter = std::vec::IntoIter<Self::Item>;
@@ -46,6 +52,9 @@ impl IntoIterator for SpatiumFunctions {
     }
 }
 
+
+///
+/// Implementation of AsRef trait.
 impl AsRef<Vec<SpatiumFunction>> for SpatiumFunctions {
 
     fn as_ref(&self) -> &Vec<SpatiumFunction> {

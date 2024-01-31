@@ -34,7 +34,7 @@ impl SpatiumFunction {
 
     }
 
-    /// Determines the integral of the function using a numerical method(trapezoidal method).
+    /// Compute and return the integral of the SpatiumFunction using a numerical method(trapezoidal method).
     pub fn integral(&self) -> f64 {
         ((self.f_x1 + self.f_x2) / 2.0) * (self.x2 - self.x1)
     }
@@ -46,13 +46,13 @@ impl SpatiumFunction {
     }
 
     ///
-    /// Spatium start coordinate.
+    /// Return spatium start coordinate.
     pub fn x1(&self) -> f64 {
         self.x1
     }
 
     ///
-    /// Spatium end coordinate.
+    /// Return spatium end coordinate.
     pub fn x2(&self) -> f64 {
         self.x2
     }
@@ -69,7 +69,7 @@ impl SpatiumFunction {
         self.f_x2
     }
 
-    /// Add curretn object with another.
+    /// Add curretn object with another. Return new SpatiumFunction object.
     pub fn add(&self, term: &SpatiumFunction) -> SpatiumFunction {
         let f_x1 = self.f_x1 + term.f_x1().my_round(2);
         let f_x2 = self.f_x2 + term.f_x2().my_round(2);
