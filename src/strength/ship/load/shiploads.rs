@@ -46,7 +46,7 @@ impl Shiploads {
     }
 
     ///
-    /// Return the shiploads sum.
+    /// Return the shiploads sum (deadweight).
     pub fn sum(&self) -> f64 {
         let mut sum = 0.0;
         for shipload in self.shiploads.iter() {
