@@ -2,7 +2,7 @@ use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
 
 ///
-/// 
+/// Displacement intensity is algebraic sum deadweight intensity and lightweight intensity.
 pub struct DisplacementIntensity<'a> {
     deadweight_intensity: &'a SpatiumFunctions,
     lightweight_intnesity: &'a SpatiumFunctions,
