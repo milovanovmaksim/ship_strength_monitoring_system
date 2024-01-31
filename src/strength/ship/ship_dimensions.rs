@@ -17,12 +17,15 @@ pub struct ShipDimensions {
 }
 
 impl ShipDimensions {
+
+    ///
+    /// Create new object.
     pub fn new(length_between_perpendiculars: f64, number_spatiums: u64, completeness_coefficient: f64) -> Self {
         ShipDimensions { length_between_perpendiculars, number_spatiums, completeness_coefficient }
     }
 
     ///
-    /// Return length spatium
+    /// Return spaium length.
     pub fn length_spatium(&self) -> f64 {
         self.length_between_perpendiculars / self.number_spatiums as f64
     }
@@ -38,7 +41,7 @@ impl ShipDimensions {
     }
 
     ///
-    /// Create the object from json file.
+    /// Create new object from json file.
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
         let json = JsonFile::new(file_path);
         match json.content() {
@@ -74,7 +77,7 @@ impl ShipDimensions {
     }
 
     ///
-    /// Return number spatiums.
+    /// Return the number spatiums.
     pub fn number_spatiums(&self) -> u64 {
         self.number_spatiums
     }
