@@ -4,7 +4,6 @@ use serde::Deserialize;
 use crate::{core::json_file::JsonFile, strength::ship::ship_dimensions::ShipDimensions};
 
 
-
 ///
 /// Lightweight - weight of the empty as-built ship without cargo, fuel, lubricating oil, ballast water,
 /// fresh water and feed water in tanks, consumable stores, passengers and crew and their belongings. Measured in tons.
