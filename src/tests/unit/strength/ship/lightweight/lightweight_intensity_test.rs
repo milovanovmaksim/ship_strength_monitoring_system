@@ -3,7 +3,7 @@ mod tests {
     use std::{sync::Once, env};
     use log::debug;
 
-    use crate::strength::ship::{lightweight::lightweight::LightweightIntensity, ship_dimensions::ShipDimensions};
+    use crate::strength::ship::{lightweight::lightweight_intensity::LightweightIntensity, ship_dimensions::ShipDimensions};
 
 
 
@@ -25,10 +25,10 @@ mod tests {
         let test_weight = 13575.73;
         let ship_dimensions = ShipDimensions::new(235.03, 20, 0.5);
         let test_lightweight = LightweightIntensity::new(test_weight, ship_dimensions);
-        let spatium_functions = test_lightweight.lightweight_intensity();
+        let spatium_functions = test_lightweight.intensity();
         let mut computed_weight = 0.0;
         for spatium in spatium_functions.into_iter() {
-            computed_weight += spatium.integral();
+            todo!();
         }
         let err = {
             if computed_weight > test_weight {
