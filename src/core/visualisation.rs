@@ -3,7 +3,7 @@ use plotly::{Scatter, common::{Mode, LineShape, Line, Title, Font}, Layout, layo
 use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
 pub struct Visualisation<'a> {
-    spatiumfunctions: &'a SpatiumFunctions,
+    result: &'a Vec<(f64, f64)>,
     name: String,
     title: String,
     spatium_length: f64,
@@ -12,19 +12,18 @@ pub struct Visualisation<'a> {
 
 
 impl<'a> Visualisation<'a> {
-    pub fn new(spatiumfunctions: &'a SpatiumFunctions, name: String, title: String, spatium_length: f64) -> Self {
-        Visualisation { spatiumfunctions, name, title, spatium_length, }
+    pub fn new(result: &'a Vec<(f64, f64)>, name: String, title: String, spatium_length: f64) -> Self {
+        Visualisation { result, name, title, spatium_length, }
     }
 
     pub fn visualize(&self) {
         let mut x: Vec<f64> = vec![];
         let mut y = vec![];
-        for spatium in self.spatiumfunctions.as_ref() {
-            x.push(spatium.x1());
-            y.push(spatium.f_x1());
-            x.push(spatium.x2());
-            y.push(spatium.f_x2());
+        for spatium in self.result {
+            x.push(spatium.0);
+            y.push(spatium.1);
         }
+
         let trace1 = Scatter::new(x, y)
         .mode(Mode::LinesMarkers)
         .name(&self.name)
