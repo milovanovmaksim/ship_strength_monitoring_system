@@ -12,8 +12,8 @@ pub struct LightweightIntensity {
 }
 
 impl LightweightIntensity {
-    pub fn new(lightweight: f64, ship_metrics: ShipDimensions) -> Self {
-        LightweightIntensity { lightweight, ship_dimensions: ship_metrics}
+    pub fn new(lightweight: f64, ship_dimensions: ShipDimensions) -> Self {
+        LightweightIntensity { lightweight, ship_dimensions}
     }
 
     ///
