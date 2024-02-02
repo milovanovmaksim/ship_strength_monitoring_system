@@ -17,13 +17,12 @@ impl<'a> ShiploadIntensity<'a> {
     }
 
     ///
-    /// Return SpatiumFunctions containing the shipload intensity.
-    pub fn spatium_functions(&self) -> SpatiumFunctions {
+    /// Return the shipload intensity.
+    pub fn shipload_intensity(&self) -> SpatiumFunctions {
         let mut shipload_intensity = vec![];
-        let load_sharing = LoadSharing::new(self.ship_dimensions, self.shipload);
         let shiploads = self.shipload.shared_shiploads(&self.ship_dimensions);
         for shipload in shiploads.iter() {
-            let spatium_functions = self.shipload_intensity(shipload);
+            let spatium_functions = self._shipload_intensity(shipload);
             shipload_intensity.extend(spatium_functions);
         }
         SpatiumFunctions::new(shipload_intensity)
@@ -31,7 +30,7 @@ impl<'a> ShiploadIntensity<'a> {
 
     ///
     /// Compute the shipload intensity.
-    fn shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
+    fn _shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft() && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_bow() {
             if shipload.value() < self.deadweight * 0.01 {
                 debug!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. Shipload value = {} < deadweight = {}", self.shipload.value(), self.deadweight);
