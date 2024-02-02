@@ -67,17 +67,39 @@ impl Shipload {
     }
 
     ///
-    /// Pinch off the shipload.
+    /// Share shipload by coordinates.
     /// Params:
-        /// load_start_coordinate - shipload start coordinate.
-        /// load_end_coordinate - shipload end coordinate.
+        /// load_start_coordinate - coordinate of the start of the new shipload.
+        /// load_end_coordinate - coordinate of the end of the new shipload.
     /// Return: Shipload.
-    pub fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
+    fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
         let load_length = (load_end_coordinate - load_start_coordinate).abs();
         let load_value = (load_length / self.length) * self.value;
         let x = load_start_coordinate + (load_length / 2.0);
         let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);
         Shipload::new(load_value, center_gravity, load_length)
+    }
+
+    ///
+    /// Share the shipload by spatiums.
+    pub fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<Shipload> {
+        let mut shared_shiploads = vec![];
+        let mut load_start_coordinate = self.load_start_coordinate();
+        let spatium_shipload_start_index = ship_dimensions.spatium_index_by_coordinate(load_start_coordinate);
+        let load_end_coordinate = self.load_end_coordinate();
+        let mut current_coordinate = ship_dimensions.spatium_start_coordinate(spatium_shipload_start_index);
+        let spatium_length = ship_dimensions.length_spatium();
+        while current_coordinate < load_end_coordinate {
+            if current_coordinate > load_start_coordinate {
+                let shipload = self.shared_shipload(load_start_coordinate, current_coordinate);
+                shared_shiploads.push(shipload);
+                load_start_coordinate = current_coordinate;
+            }
+            current_coordinate += spatium_length;
+        }
+        let shipload = self.shared_shipload(load_start_coordinate, load_end_coordinate);
+        shared_shiploads.push(shipload);
+        shared_shiploads
     }
 
     ///
