@@ -8,12 +8,11 @@ use crate::strength::ship::{load::shipload::Shipload, ship_dimensions::ShipDimen
 pub(crate) struct ShiploadIntensity<'a> {
     shipload: &'a Shipload,
     ship_dimensions: &'a ShipDimensions,
-    deadweight: f64
 }
 
 impl<'a> ShiploadIntensity<'a> {
-    pub fn new(shipload: &'a Shipload, ship_dimensions: &'a ShipDimensions, deadweight: f64) -> Self {
-        ShiploadIntensity { shipload, ship_dimensions , deadweight}
+    pub fn new(shipload: &'a Shipload, ship_dimensions: &'a ShipDimensions) -> Self {
+        ShiploadIntensity { shipload, ship_dimensions}
     }
 
     ///
@@ -32,15 +31,6 @@ impl<'a> ShiploadIntensity<'a> {
     /// Compute the shipload intensity.
     fn _shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft() && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_bow() {
-            if shipload.value() < self.deadweight * 0.01 {
-                debug!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. Shipload value = {} < deadweight = {}", self.shipload.value(), self.deadweight);
-                let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
-                let f_x = shipload.value() / self.ship_dimensions.length_spatium();
-                let spatium_function = SpatiumFunction::from_id(spatium_start_index, self.ship_dimensions, f_x, f_x);
-                let spatium_functions = vec![spatium_function];
-                debug!("Saptiums are under the load {:#?}", spatium_functions);
-                return spatium_functions;
-            }
             let max_intensity = |c_min: f64| { shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
