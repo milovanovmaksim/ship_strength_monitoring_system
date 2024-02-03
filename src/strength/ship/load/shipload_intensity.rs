@@ -20,8 +20,8 @@ impl<'a> ShiploadIntensity<'a> {
     pub fn spatium_functions(&self) -> SpatiumFunctions {
         let mut shipload_intensity = vec![];
         let shiploads = self.shipload.shared_shiploads(&self.ship_dimensions);
-        for shipload in shiploads.iter() {
-            let spatium_functions = self.shared_shipload_intensity(shipload);
+        for shared_shipload in shiploads.iter() {
+            let spatium_functions = self.shared_shipload_intensity(shared_shipload);
             shipload_intensity.extend(spatium_functions);
         }
         SpatiumFunctions::new(shipload_intensity)
