@@ -21,9 +21,6 @@ fn main() {
     let ship_dimensions = ShipDimensions::from_json_file("./input_data/input_data.json".to_string()).unwrap();
     let mut lightweight_intensity = LightweightIntensity::new(None);
     let lightweight_intensity_result = lightweight_intensity.lightweight_intensity(1750.56, &ship_dimensions);
-    let visualization = Visualisation::new(&lightweight_intensity_result, "Lightweight intnesity".to_string(), "Lightweight intnesity".to_string(), 6.25);
+    let visualization = Visualisation::new(lightweight_intensity_result, "Lightweight intnesity".to_string(), "Lightweight intnesity".to_string(), 6.25);
     visualization.visualize();
-
-    
-
 }
