@@ -16,35 +16,35 @@ impl<'a> ShiploadIntensity<'a> {
     }
 
     ///
-    /// Return the shipload intensity.
+    /// Return SpatiumFunctions containing shipload intensity.
     pub fn spatium_functions(&self) -> SpatiumFunctions {
         let mut shipload_intensity = vec![];
         let shiploads = self.shipload.shared_shiploads(&self.ship_dimensions);
         for shipload in shiploads.iter() {
-            let spatium_functions = self.shipload_intensity(shipload);
+            let spatium_functions = self.shared_shipload_intensity(shipload);
             shipload_intensity.extend(spatium_functions);
         }
         SpatiumFunctions::new(shipload_intensity)
     }
 
     ///
-    /// Compute the shipload intensity.
-    fn shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
+    /// Compute intensity of shared shipload.
+    fn shared_shipload_intensity(&self, shipload: &Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft() && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_bow() {
             let max_intensity = |c_min: f64| { shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
-            let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
-            let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
-            let shipload_intensity_closure = |destance: f64, index: u64, next_index: u64| {
+            let shipload_intensity_closure = |distance: f64, index: u64, next_index: u64| -> Vec<SpatiumFunction>  {
                 let mut spatium_functions = vec![];
-                let f_x_max_intensity = max_intensity(destance);
-                let f_x_min_intensity = min_intensity(destance);
+                let f_x_max_intensity = max_intensity(distance);
+                let f_x_min_intensity = min_intensity(distance);
                 let spatium_function = SpatiumFunction::from_id(index, self.ship_dimensions, f_x_max_intensity, f_x_max_intensity);
                 spatium_functions.push(spatium_function);
                 let spatium_function = SpatiumFunction::from_id(next_index, self.ship_dimensions, f_x_min_intensity, f_x_min_intensity);
                 spatium_functions.push(spatium_function);
                 spatium_functions
             };
+            let spatium_start_index = self.ship_dimensions.spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
+            let (distance_left, distance_right) = shipload.distances_to_frames(self.ship_dimensions);
             if (distance_left - distance_right >= 0.01) && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium() < self.ship_dimensions.coordinate_bow()) {
                 debug!("Shipload.shipload_intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                 let spatium_functions = shipload_intensity_closure(distance_right, spatium_start_index, spatium_start_index + 1);
