@@ -132,7 +132,7 @@ mod tests {
             Shipload::new(1.8103448275862069, Point::new(-3.125, 0.0, 0.0), 6.25),
             Shipload::new(1.8103448275862069, Point::new(3.125, 0.0, 0.0), 6.25),
             Shipload::new(0.2896551724137931, Point::new(6.75, 0.0, 0.0 ), 1.0 )];
-        let shared_loads = shipload.shared_shiploads(&ship_dimensions);;
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }
 
