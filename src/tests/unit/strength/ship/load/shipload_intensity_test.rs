@@ -56,7 +56,7 @@ mod tests {
             ),
         ];
         let test_shipload_intensity = SpatiumFunctions::new(spatium_functions);
-        let shipload_intensity = shipload_intensity.shipload_intensity();
+        let shipload_intensity = shipload_intensity.spatium_functions();
         assert_eq!(test_shipload_intensity, shipload_intensity);
     }
 
