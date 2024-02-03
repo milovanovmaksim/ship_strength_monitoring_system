@@ -20,7 +20,7 @@ impl DeadweightIntensity {
         let deadweight = self.shiploads.sum();
         for shipload in self.shiploads.as_ref() {
             let shipload_intensity = ShiploadIntensity::new(shipload, &self.ship_dimensions, deadweight);
-            for spatium_function in shipload_intensity.spatium_functions().as_ref() {
+            for spatium_function in shipload_intensity.shipload_intensity().as_ref() {
                 spatium_functions.add_spatium_function(spatium_function)
             }
         }

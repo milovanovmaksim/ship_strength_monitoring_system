@@ -1,6 +1,6 @@
 use log::debug;
 
-use crate::strength::ship::{load::{shipload::Shipload, load_sharing::LoadSharing}, ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
+use crate::strength::ship::{load::shipload::Shipload, ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
 
 
 ///

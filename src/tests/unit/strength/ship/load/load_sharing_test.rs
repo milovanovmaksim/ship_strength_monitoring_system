@@ -2,7 +2,7 @@
 mod tests {
     use std::{sync::Once, env};
     use crate::{strength::ship::{ship_dimensions::ShipDimensions,
-        load::{shipload::Shipload, load_sharing::LoadSharing, load_spread::LoadSpread}}, core::point::Point};
+        load::{shipload::Shipload, load_spread::LoadSpread}}, core::point::Point};
 
 
 

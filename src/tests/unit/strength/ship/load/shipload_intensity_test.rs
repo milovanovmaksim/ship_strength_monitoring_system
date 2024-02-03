@@ -56,7 +56,7 @@ mod tests {
             ),
         ];
         let test_shipload_intensity = SpatiumFunctions::new(spatium_functions);
-        let shipload_intensity = shipload_intensity.spatium_functions();
+        let shipload_intensity = shipload_intensity.shipload_intensity();
         assert_eq!(test_shipload_intensity, shipload_intensity);
     }
 
@@ -74,7 +74,7 @@ mod tests {
             SpatiumFunction::new(14, 25.0, 31.25, 1.19, 1.19)
         ];
         let test_shipload_intensity = SpatiumFunctions::new(spatium_functions);
-        let shipload_intensity = shipload_intensity.spatium_functions();
+        let shipload_intensity = shipload_intensity.shipload_intensity();
         assert_eq!(test_shipload_intensity, shipload_intensity);
     }
 }
