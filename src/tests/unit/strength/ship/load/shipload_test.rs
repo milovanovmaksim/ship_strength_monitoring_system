@@ -3,7 +3,7 @@ mod tests {
     use std::{sync::Once, env};
 
     use crate::{strength::ship::{ship_dimensions::ShipDimensions,
-        load::{shipload::Shipload, load_spread::LoadSpread}}, core::point::Point};
+        load::shipload::Shipload}, core::point::Point};
 
     static INIT: Once = Once::new();
 
@@ -60,47 +60,82 @@ mod tests {
     }
 
     #[test]
-    fn shared_shipload_test() {
-        let shipload = Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21);
-        let test_shipload = Shipload::new(1.7523996082272286, Point::new(23.439999999999998, 0.0, 0.0), 4.260000000000002);
-        let shared_shipload = shipload.shared_shipload(21.31, 25.57);
-        assert_eq!(test_shipload, shared_shipload);
-    }
-
-    #[test]
-    fn within_many_spatium_test() {
+    fn count_shared_loads_test() {
         call_once();
-        let test_shipload = Shipload::new(4.2, Point::new(63.0, 0.0, 0.0), 10.21);
-        let test_shipload_2 = Shipload::new(10.0, Point::new(-63.0, 0.0, 0.0), 10.21);
-        let test_shipload_3 = Shipload::new(10.0, Point::new(1.0, 0.0, 0.0), 14.0);
+        let center_gravity = Point::new(29.29, 0.0, 0.0);
+        let shipload = Shipload::new(4.2, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
-        let load_spread = test_shipload.spread(&ship_dimensions);
-        assert_eq!(LoadSpread::WithinManySpatiums, load_spread);
-        assert_eq!(LoadSpread::WithinManySpatiums, test_shipload_2.spread(&ship_dimensions));
-        assert_eq!(LoadSpread::WithinManySpatiums, test_shipload_3.spread(&ship_dimensions));
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
+        assert_eq!(3, shared_loads.len());
     }
 
     #[test]
-    fn within_one_spatium_test() {
-        let test_shipload = Shipload::new(4.2, Point::new(1.0, 0.0, 0.0), 1.0);
+    fn shared_shiploads_test() {
+        call_once();
+        let center_gravity = Point::new(0.0, 0.0, 0.0);
+        let shipload = Shipload::new(4.2, center_gravity, 12.5);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
-        let load_spread = test_shipload.spread(&ship_dimensions);
-        assert_eq!(LoadSpread::WithinOneSpatium, load_spread);
+        let test_shared_loads = vec![
+            Shipload::new(2.1, Point::new(-3.125, 0.0, 0.0), 6.25),
+            Shipload::new(2.1, Point::new(3.125, 0.0, 0.0), 6.25),
+        ];
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);;
+        assert_eq!(test_shared_loads, shared_loads);
     }
 
     #[test]
-    fn outside_right_frame_test() {
-        let test_shipload = Shipload::new(4.2, Point::new(70.0, 0.0, 0.0), 1.0);
+    fn shared_shiploads_test_2() {
+        call_once();
+        let center_gravity = Point::new(0.0, 0.0, 0.0);
+        let shipload = Shipload::new(4.2, center_gravity, 14.5);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
-        let load_spread = test_shipload.spread(&ship_dimensions);
-        assert_eq!(LoadSpread::OutsideRightmostFrame, load_spread);
+        let test_shared_loads = vec![
+            Shipload::new(0.2896551724137931, Point::new( -6.75, 0.0, 0.0 ), 1.0),
+            Shipload::new(1.8103448275862069, Point::new(-3.125, 0.0, 0.0), 6.25),
+            Shipload::new(1.8103448275862069, Point::new(3.125, 0.0, 0.0), 6.25),
+            Shipload::new(0.2896551724137931, Point::new(6.75, 0.0, 0.0 ), 1.0 )];
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
+        assert_eq!(test_shared_loads, shared_loads);
     }
 
     #[test]
-    fn outside_leftmost_frame_test() {
-        let test_shipload = Shipload::new(4.2, Point::new(-70.13, 0.0, 0.0), 1.0);
+    fn shared_shiploads_test_3() {
+        call_once();
+        let center_gravity = Point::new(3.125, 0.0, 0.0);
+        let shipload = Shipload::new(10.0, center_gravity, 12.5);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
-        let load_spread = test_shipload.spread(&ship_dimensions);
-        assert_eq!(LoadSpread::OutsideLeftmostFrame, load_spread);
+        let test_shared_loads = vec![
+            Shipload::new(2.5, Point::new(-1.5625, 0.0, 0.0 ), 3.125),
+            Shipload::new(5.0, Point::new(3.125, 0.0, 0.0), 6.25),
+            Shipload::new(2.5, Point::new(7.8125, 0.0, 0.0), 3.125),];
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
+        assert_eq!(test_shared_loads, shared_loads);
+    }
+
+    #[test]
+    fn shared_shiploads_test_4() {
+        call_once();
+        let center_gravity = Point::new(-64.0, 0.0, 0.0);
+        let shipload = Shipload::new(10.0, center_gravity, 10.21);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let test_shared_loads = vec![
+            Shipload::new(6.469147894221355, Point::new(-65.80250000000001,0.0, 0.0 ), 6.605000000000004),
+            Shipload::new(3.530852105778652, Point::new(-60.6975, 0.0, 0.0), 3.605000000000004)];
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
+        assert_eq!(test_shared_loads, shared_loads);
+    }
+
+    #[test]
+    fn shared_shiploads_test_5() {
+        call_once();
+        let center_gravity = Point::new(64.0, 0.0, 0.0);
+        let shipload = Shipload::new(10.0, center_gravity, 10.21);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let test_shared_loads = vec![
+            Shipload::new(3.530852105778652, Point::new(60.6975, 0.0, 0.0), 3.605000000000004),
+            Shipload::new(6.121449559255632, Point::new(65.625, 0.0, 0.0), 6.25),
+            Shipload::new(0.3476983349657237, Point::new(68.92750000000001, 0.0, 0.0), 0.355000000000004)];
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
+        assert_eq!(test_shared_loads, shared_loads);
     }
 }

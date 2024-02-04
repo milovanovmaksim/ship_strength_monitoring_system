@@ -3,24 +3,22 @@ use crate::strength::ship::{load::{shiploads::Shiploads, shipload_intensity::Shi
 
 #[derive(Deserialize, Debug)]
 pub struct DeadweightIntensity {
-    shiploads: Shiploads,
-    ship_dimensions: ShipDimensions,
+    shiploads: Shiploads
 }
 
 
 impl DeadweightIntensity {
-    pub fn new(shiploads: Shiploads, ship_dimensions: ShipDimensions,) -> Self {
-        DeadweightIntensity { shiploads, ship_dimensions }
+    pub fn new(shiploads: Shiploads) -> Self {
+        DeadweightIntensity { shiploads }
     }
 
-    pub fn spatium_functions(&self) -> SpatiumFunctions {
-        let number_spatiums = self.ship_dimensions.number_spatiums();
-        let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
+    pub fn spatium_functions(&self, ship_dimensions: &ShipDimensions) -> SpatiumFunctions {
+        let number_spatiums = ship_dimensions.number_spatiums();
+        let length_between_perpendiculars = ship_dimensions.length_between_perpendiculars();
         let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
-        let deadweight = self.shiploads.sum();
         for shipload in self.shiploads.as_ref() {
-            let shipload_intensity = ShiploadIntensity::new(shipload, &self.ship_dimensions, deadweight);
-            for spatium_function in shipload_intensity.spatium_functions().as_ref() {
+            let shipload_intensity = ShiploadIntensity::new(shipload);
+            for spatium_function in shipload_intensity.spatium_functions(ship_dimensions).as_ref() {
                 spatium_functions.add_spatium_function(spatium_function)
             }
         }
