@@ -24,16 +24,11 @@ struct Frame {
 
 impl Frame {
     pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, massa: Vec<f64>,
-        x: Vec<f64>,
-        y: Vec<f64>,
-        z: Vec<f64>) -> Self {
-
-            Frame { id, drafts, areas, volumes, massa, x, y, z }
-    }
-
-    pub fn from_scv_file(path: String) -> Result<Self, String> {
-        todo!("Создать объект из файда формата scv.")
+               x: Vec<f64>, y: Vec<f64>, z: Vec<f64>) -> Self {
+        Frame { id, drafts, areas, volumes, massa, x, y, z }
     }
 
     pub fn id(&self) -> u64 { self.id }
+
+    pub fn drafts(&self) -> &Vec<f64> { &self.drafts }
 }
