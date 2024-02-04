@@ -18,8 +18,8 @@ fn main() {
     env_logger::init();
     let shiploads = Shiploads::from_json_file("./input_data/input_data.json".to_string()).unwrap();
     let ship_dimensions = ShipDimensions::from_json_file("./input_data/input_data.json".to_string()).unwrap();
-    let deadweight_intnesity = DeadweightIntensity::new();
-    let deadweight_intnesity_spatium_functions = deadweight_intnesity.spatium_functions(shiploads, &ship_dimensions);
+    let deadweight_intnesity = DeadweightIntensity::new(shiploads);
+    let deadweight_intnesity_spatium_functions = deadweight_intnesity.spatium_functions(&ship_dimensions);
     let visualization = Visualisation::new(&deadweight_intnesity_spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
     visualization.visualize();
 
