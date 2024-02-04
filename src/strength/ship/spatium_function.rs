@@ -34,7 +34,7 @@ impl SpatiumFunction {
 
     }
 
-    /// Determines the integral of the function using a numerical method(trapezoidal method).
+    /// Compute the integral of the spatium function using a numerical method(trapezoidal method).
     pub fn integral(&self) -> f64 {
         ((self.f_x1 + self.f_x2) / 2.0) * (self.x2 - self.x1)
     }
