@@ -16,8 +16,8 @@ impl DeadweightIntensity {
         let length_between_perpendiculars = ship_dimensions.length_between_perpendiculars();
         let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
         for shipload in shiploads.as_ref() {
-            let shipload_intensity = ShiploadIntensity::new(shipload, ship_dimensions);
-            for spatium_function in shipload_intensity.spatium_functions().as_ref() {
+            let shipload_intensity = ShiploadIntensity::new(shipload);
+            for spatium_function in shipload_intensity.spatium_functions(ship_dimensions).as_ref() {
                 spatium_functions.add_spatium_function(spatium_function)
             }
         }
