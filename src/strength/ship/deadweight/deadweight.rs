@@ -1,10 +1,6 @@
-use log::{debug, warn};
-use serde::Deserialize;
-use crate::{core::json_file::JsonFile, strength::ship::load::shiploads::Shiploads};
+use crate::strength::ship::load::shiploads::Shiploads;
 
 
-
-#[derive(Deserialize, Debug)]
 pub struct Deadweight {
     shiploads: Shiploads,
 
