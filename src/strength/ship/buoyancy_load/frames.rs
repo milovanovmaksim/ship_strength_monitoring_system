@@ -4,6 +4,10 @@ use serde::Deserialize;
 use crate::core::json_file::JsonFile;
 use super::frame::Frame;
 
+///
+/// Frames - содержит данные масштаба Бонжана всех шпангоутов судна.
+/// Parameters:
+///     frame: Vec<Frame> - список шпангоутов корабля.
 #[derive(Deserialize, Debug)]
 pub(crate) struct Frames {
     frames: Vec<Frame>
