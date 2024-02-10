@@ -173,7 +173,7 @@ mod tests {
                 ),
             ]
         );
-        let spatium_functions = deadweight_intensity.spatium_functions(&ship_dimensions);
+        let spatium_functions = deadweight_intensity.deadweight_intensity(&ship_dimensions);
         assert_eq!(test_spatium_functions, spatium_functions);
 
     }

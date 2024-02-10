@@ -1,6 +1,6 @@
 # ship_strength_monitoring_system
 
-Система расчета прочности судна (прибор контроля прочности).
+Cистема контроля прочности корабля (прибор контроля прочности).
 
 Назначение прибора контроля прочности:
  - задание оператором схемы загрузки судна;
@@ -12,9 +12,7 @@
 
 ```mermaid
 graph TD;
-Strength --> NormalStress
-NormalStress -.-> Strength
-NormalStress --> BendingMoment;
+Strength--> BendingMoment;
 BendingMoment -.-> NormalStress;
 BendingMoment-->ShearForce;
 ShearForce -.->BendingMoment;
