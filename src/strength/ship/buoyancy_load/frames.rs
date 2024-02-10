@@ -22,7 +22,7 @@ impl Frames {
             Ok(content) => {
                 match serde_json::from_reader(content) {
                     Ok(frames) => {
-                        debug!("Frames::from_json_file | Shiploads has been created sucessfuly. {:?}", frames);
+                        debug!("Frames::from_json_file | Frames has been created sucessfuly. {:?}", frames);
                         Ok(frames)
                     },
                     Err(err) => {
