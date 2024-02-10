@@ -2,7 +2,6 @@ use log::{debug, warn};
 use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
-
 use super::frame::Frame;
 
 #[derive(Deserialize, Debug)]
