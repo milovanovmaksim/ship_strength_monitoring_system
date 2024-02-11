@@ -1,5 +1,5 @@
 use crate::strength::ship::{spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
-use super::frame::Frame;
+
 
 ///
 /// Масштаба Бонжана.
