@@ -1,60 +1,43 @@
-use log::{debug, warn};
-use serde::Deserialize;
-
-use crate::core::json_file::JsonFile;
+use crate::strength::ship::{spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
 use super::frame::Frame;
 
 ///
-/// Frames - содержит данные масштаба Бонжана всех шпангоутов судна.
+/// Масштаба Бонжана судна.
 /// Parameters:
-///     frame: Vec<Frame> - список шпангоутов корабля.
-#[derive(Deserialize, Debug)]
+///     spatium_functions:  - данные масштаба Бонжана для всех шпаций судна.
+#[derive(Debug)]
 pub(crate) struct BonjeanScale {
-    frames: Vec<Frame>
+    spatium_functions: SpatiumFunctions
 }
 
 impl BonjeanScale {
-    pub fn new(frames: Vec<Frame>) -> Self {
-        BonjeanScale { frames }
+    pub fn new(spatium_functions: SpatiumFunctions) -> Self {
+        BonjeanScale { spatium_functions }
     }
 
-    ///
-    /// Create the object from json file.
-    pub fn from_json_file(file_path: String) -> Result<Self, String> {
-        let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(frames) => {
-                        debug!("BonjeanScale::from_json_file | Frames has been created sucessfuly. {:?}", frames);
-                        Ok(frames)
-                    },
-                    Err(err) => {
-                        warn!("BonjeanScale::from_json_file | error: {:?}.",err);
-                        return Err(err.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                warn!("BonjeanScale::from_json_file | error: {:?}.",err);
-                return Err(err);
-            }
-        }
+    pub fn frame_by_coodinate(&self, x_coordinate: f64) -> &SpatiumFunction {
+        todo!("Вернуть &SpatiumFunction с координатой x. Если такого нет, вернуть ближайший шпангоут")
+
+
+    }
+
+    pub fn frame_by_id(&self, id : usize) -> Option<&SpatiumFunction> {
+        self.spatium_functions.spatium_function_by_id(id)
     }
 }
 
 impl IntoIterator for BonjeanScale {
-    type Item = Frame;
+    type Item = SpatiumFunction;
     type IntoIter = std::vec::IntoIter<Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.frames.into_iter()
+        self.spatium_functions.into_iter()
     }
 }
 
-impl AsRef<Vec<Frame>> for BonjeanScale {
+impl AsRef<Vec<SpatiumFunction>> for BonjeanScale {
 
-    fn as_ref(&self) -> &Vec<Frame> {
-        &self.frames
+    fn as_ref(&self) -> &Vec<SpatiumFunction> {
+        &self.spatium_functions.as_ref()
     }
 }
