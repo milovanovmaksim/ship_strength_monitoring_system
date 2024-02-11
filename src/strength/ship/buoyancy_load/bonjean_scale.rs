@@ -2,7 +2,7 @@ use crate::strength::ship::{spatium_function::SpatiumFunction, spatium_functions
 use super::frame::Frame;
 
 ///
-/// Масштаба Бонжана судна.
+/// Масштаба Бонжана.
 /// Parameters:
 ///     spatium_functions:  - данные масштаба Бонжана для всех шпаций судна.
 #[derive(Debug)]
