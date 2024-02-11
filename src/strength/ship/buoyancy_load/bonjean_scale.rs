@@ -16,7 +16,7 @@ impl BonjeanScale {
     }
 
     pub fn frame_by_coodinate(&self, x_coordinate: f64) -> &SpatiumFunction {
-        todo!("Вернуть &SpatiumFunction с координатой x. Если такого нет, вернуть ближайший шпангоут")
+        todo!("Вернуть &SpatiumFunction с координатой x.")
 
 
     }
