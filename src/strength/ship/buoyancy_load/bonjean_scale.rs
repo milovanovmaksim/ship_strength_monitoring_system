@@ -4,7 +4,7 @@ use crate::strength::ship::{spatium_function::SpatiumFunction, spatium_functions
 ///
 /// Масштаб Бонжана.
 /// Parameters:
-///     spatium_functions:  - данные масштаба Бонжана для всех шпаций судна.
+///     spatium_functions - данные масштаба Бонжана для всех шпаций судна.
 #[derive(Debug)]
 pub(crate) struct BonjeanScale {
     spatium_functions: SpatiumFunctions
