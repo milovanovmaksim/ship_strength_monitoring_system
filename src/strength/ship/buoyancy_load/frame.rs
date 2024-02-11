@@ -10,7 +10,7 @@ use serde::Deserialize;
 ///     areas - вектор, содержащий площади погруженной части шпангоута от осадки,
 ///     volumes - вектор, содержащий объемы погруженной части шпангоута от осадки,
 ///     massa - вектор, содержащий массы погруженной части шпангоута от осадки,
-///     x, y, z - вектора, содержащие координаты центра тяжести погруженной части шпангоута.
+///     abscissa - абсцисса шпангоута относительно центра корабля.
 /// Длина всех векторов должна быть одинакова, в проивном случая будет возвращена ошибка.
 #[derive(Deserialize, Debug)]
 pub(crate) struct Frame {
@@ -19,15 +19,13 @@ pub(crate) struct Frame {
     areas: Vec<f64>,
     volumes: Vec<f64>,
     massa: Vec<f64>,
-    x: Vec<f64>,
-    y: Vec<f64>,
-    z: Vec<f64>
+    abscissa: f64
+
 }
 
 impl Frame {
-    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, massa: Vec<f64>,
-               x: Vec<f64>, y: Vec<f64>, z: Vec<f64>) -> Self {
-        Frame { id, drafts, areas, volumes, massa, x, y, z }
+    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, massa: Vec<f64>, abscissa: f64) -> Self {
+        Frame { id, drafts, areas, volumes, massa, abscissa }
     }
 
     pub fn id(&self) -> u64 { self.id }
