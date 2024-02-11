@@ -65,7 +65,19 @@ impl BonjeanScale {
     /// Parameters:
     ///     x - координата шпангоута относительно центра корабля [м],
     ///     draft - осадка корабля [м].
-    pub fn frame_underwater_volume(&self, abscissa: f64, draft: f64) -> f64 {
+    pub fn underwater_volume_frame(&self, abscissa: f64, draft: f64) -> f64 {
+
+
+    }
+
+    ///
+    /// Возвращает погруженную площаль шпангоута для заданной осадки [м^2].
+    /// Если шпангоут с координатой x отсутствует, линейно инерполируем
+    /// площадь шпангоута, имея в распоряжение площадь двух соседних.
+    /// Parameters:
+    ///     x - координата шпангоута относительно центра корабля [м],
+    ///     draft - осадка корабля [м].
+    pub fn underwater_area_frame(&self, abscissa: f64, draft: f64) -> f64 {
 
 
     }
