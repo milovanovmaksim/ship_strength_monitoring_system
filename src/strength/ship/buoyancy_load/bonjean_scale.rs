@@ -1,8 +1,9 @@
 use log::{debug, warn};
 use serde::Deserialize;
 
-use crate::core::json_file::JsonFile;
+use crate::{core::json_file::JsonFile, strength::ship::ship_dimensions::ShipDimensions};
 use super::frame::Frame;
+
 
 ///
 /// Масштаб Бонжана.
@@ -10,12 +11,13 @@ use super::frame::Frame;
 ///     frame: Vec<Frame> - список шпангоутов корабля.
 #[derive(Deserialize, Debug)]
 pub(crate) struct BonjeanScale {
-    frames: Vec<Frame>
+    frames: Vec<Frame>,
+    shipdimensions: ShipDimensions
 }
 
 impl BonjeanScale {
-    pub fn new(frames: Vec<Frame>) -> Self {
-        BonjeanScale { frames }
+    pub fn new(frames: Vec<Frame>, shipdimensions: ShipDimensions) -> Self {
+        BonjeanScale { frames, shipdimensions }
     }
 
     ///
@@ -43,10 +45,29 @@ impl BonjeanScale {
     }
 
     ///
-    /// Бинарный поиск шпангоута по абсциссе.
-    /// Возвращает id шпангоута. Если такого нет, то возвращаем ближайший.
-    fn frame_by_abscissa(&self, abscissa: f64) -> usize {
-
+    /// Бинарный поиск id шпангоута по абсциссе.
+    /// Возвращает id шпангоут по абсциссе. Если шпангоута с заданной абсциссой нет,
+    /// то возвращаем id двух ближайших шпангоутов.
+    fn frame_id_by_abscissa(&self, abscissa: f64) -> Result<(Option<usize>, Option<usize>), String> {
+        if abscissa >= self.shipdimensions.coordinate_aft() && abscissa <= self.shipdimensions.coordinate_bow() {
+            let mut left_point = 0;
+            let mut right_point = self.frames.len() - 1;
+            while left_point != right_point - 1 {
+                let middle = (left_point + right_point) / 2;
+                let frame = self.frames.get(middle).unwrap();
+                if frame.abscissa() > abscissa {
+                    right_point = middle;
+                } else if frame.abscissa() < abscissa {
+                    left_point = middle
+                } else if frame.abscissa() == abscissa {
+                    return Ok((Some(middle), None));
+                }
+            }
+            Ok((Some(left_point), Some(right_point)))
+        } else {
+            Err(format!("Абсцисса вышла за пределы координаты кормы или носа корабля. Абсцисса должна входить в диапозон между {} и {} метров",
+                self.shipdimensions.coordinate_aft(), self.shipdimensions.coordinate_bow()))
+        }
     }
 
     ///
@@ -54,13 +75,13 @@ impl BonjeanScale {
     /// Возвращает шпангоут Frame, полученный в результате линейной интерполяции.
     /// Parameters:
     ///     abscissa - абсцисса в которой необходимо получить данные масштаба Бонжана [м].
-    fn interpolated_frame(&self, abscissa: f64) -> Frame {
+    fn interpolated_frame(&self, frame_0: &Frame, frame_1: &Frame) -> Frame {
 
     }
 
     ///
     /// Возвращает погруженный объем шпангоута для заданной осадки [м^3].
-    /// Если шпангоут с координатой x отсутствует, линейно инерполируем
+    /// Если шпангоут с координатой x отсутствует, линейно интерполируем
     /// объем шпангоута, имея в распоряжение объемы двух соседних.
     /// Parameters:
     ///     x - координата шпангоута относительно центра корабля [м],
