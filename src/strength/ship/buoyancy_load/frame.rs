@@ -31,4 +31,6 @@ impl Frame {
     pub fn id(&self) -> u64 { self.id }
 
     pub fn drafts(&self) -> &Vec<f64> { &self.drafts }
+
+    pub fn abscissa(&self) ->f64 { self.abscissa }
 }
