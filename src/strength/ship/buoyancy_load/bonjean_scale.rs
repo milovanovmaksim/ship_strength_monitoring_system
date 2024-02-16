@@ -45,10 +45,12 @@ impl BonjeanScale {
     }
 
     ///
-    /// Бинарный поиск id шпангоута по абсциссе.
-    /// Возвращает id шпангоут по абсциссе. Если шпангоута с заданной абсциссой нет,
-    /// то возвращаем id двух ближайших шпангоутов.
+    /// Бинарный поиск id шпангоутов по абсциссе.
+    /// Возвращает id шпангоутов по абсциссе. Если шпангоута с заданной абсциссой нет,
+    /// то возвращаем id двух ближайших шпангоутов Ok((Some(id1), Some(id2))),
+    /// если такой шпангоут существет, возвращаем его id Ok(Some(id), None).
     fn frame_id_by_abscissa(&self, abscissa: f64) -> Result<(Option<usize>, Option<usize>), String> {
+        // TODO: возвращать не id шпангоутов а заимствованные ссылки на шпангоуты &Frame.
         if abscissa >= self.shipdimensions.coordinate_aft() && abscissa <= self.shipdimensions.coordinate_bow() {
             let mut left_point = 0;
             let mut right_point = self.frames.len() - 1;
