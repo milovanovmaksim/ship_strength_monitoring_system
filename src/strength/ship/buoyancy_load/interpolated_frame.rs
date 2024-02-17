@@ -37,8 +37,8 @@ impl<'a> InterpolatedFrame<'a> {
             volumes.push(volume);
 
 
-            let massa_0 = *self.frame_0.massas().get(i).unwrap();
-            let massa_1 = *self.frame_1.massas().get(i).unwrap();
+            let massa_0 = *self.frame_0.masses().get(i).unwrap();
+            let massa_1 = *self.frame_1.masses().get(i).unwrap();
             let linear_interpolation = LinearInterpolation::new(massa_0, massa_1, abscissa_0, abscissa_1);
             let massa = linear_interpolation.interpolated_value(abscissa).unwrap();
             massas.push(massa);
