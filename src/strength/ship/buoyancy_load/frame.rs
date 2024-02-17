@@ -26,7 +26,7 @@ pub(crate) struct Frame {
 }
 
 impl Frame {
-    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, massas: Vec<f64>, abscissa: f64) -> Self {
+    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Self {
         Frame { id, drafts, areas, volumes, masses, abscissa }
     }
 
