@@ -48,24 +48,28 @@ impl Frame {
     ///     draft: осадка для которой нужно вернуть погруженную площадь шпангоута.
     ///     Параметр draft  не должен выходить за пределы допустимого диапазона осадки судна.
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
+        let min_draft = *self.drafts.first().unwrap();
+        let max_draft = *self.drafts.last().unwrap();
         if draft < 0.0 {
-            return Err("Осадка судна не может быть отрицательной".to_string());
-        } else if draft > *self.drafts.last().unwrap() {
-            return Err("Осадка превысила максимально допустимое значение для данного судна".to_string());
+            return Err("Осадка судна не может быть отрицательной.".to_string());
+        } else if draft > max_draft {
+            return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} метра.", max_draft));
         }
-         else {
-            match self.draft_binary_search(draft) {
-                (Some(left_point), Some(right_point)) => {
-                    let draft_0 = *self.drafts.get(left_point).unwrap();
-                    let draft_1 = *self.drafts.get(right_point).unwrap();
-                    let area_0 = *self.areas.get(left_point).unwrap();
-                    let area_1 = *self.areas.get(right_point).unwrap();
-                    let linear_interpolated = LinearInterpolation::new(area_0, area_1, draft_0,draft_1);
-                    return linear_interpolated.interpolated_value(draft);
-                },
-                (Some(middle), None) => { return Ok(*self.drafts.get(middle).unwrap()); }
-                _ => { unreachable!("Осадка находится в допустимом диапазоне") }
-            }
+        if draft < min_draft {
+            return Err(format!("Осадка меньше чем минимально известная осадка для данного шпангоута. Минимальная осадка: {} метра.", min_draft));
+        }
+
+        match self.draft_binary_search(draft) {
+            (Some(left_point), Some(right_point)) => {
+                let draft_0 = *self.drafts.get(left_point).unwrap();
+                let draft_1 = *self.drafts.get(right_point).unwrap();
+                let area_0 = *self.areas.get(left_point).unwrap();
+                let area_1 = *self.areas.get(right_point).unwrap();
+                let linear_interpolated = LinearInterpolation::new(area_0, area_1, draft_0,draft_1);
+                return linear_interpolated.interpolated_value(draft);
+            },
+            (Some(middle), None) => { return Ok(*self.areas.get(middle).unwrap()); }
+            _ => { unreachable!("Осадка находится в допустимом диапазоне") }
         }
 
 
@@ -86,6 +90,12 @@ impl Frame {
                 right_point = middle;
             } else { left_point = middle }
         }
-        return (Some(left_point), Some(right_point));
+        if *self.drafts().get(left_point).unwrap() == draft {
+            return (Some(left_point), None);
+        }
+        if *self.drafts().get(right_point).unwrap() == draft {
+            return (Some(right_point), None);
+        }
+        (Some(left_point), Some(right_point))
     }
 }
