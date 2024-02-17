@@ -17,5 +17,7 @@ mod tests {
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 6.0);
         assert_eq!(Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()), interpolation.interpolated_value(1.0));
         assert_eq!(Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()), interpolation.interpolated_value(7.0));
+        let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 2.0);
+        assert_eq!(Err("x_0 не должен равнятся x_1".to_owned()), interpolation.interpolated_value(1.0));
     }
 }

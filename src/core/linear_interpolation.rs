@@ -24,9 +24,11 @@ impl LinearInterpolation {
     /// Примечание:
     ///    x_0 < x < x_1
     pub fn interpolated_value(&self, x: f64) -> Result<f64, String> {
-        // TODO: добавить проверку деления на ноль.
+        if self.x_0 == self.x_1 {
+            return Err("x_0 не должен равнятся x_1".to_string());
+        }
         if self.x_0 < x && x < self.x_1 {
-            let f_x = self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1-self.x_0)) * (x - self.x_0);
+            let f_x = self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1 - self.x_0)) * (x - self.x_0);
             return Ok(f_x);
         }
         Err("Function argument 'x' should be x_0 < x < x_1.".to_owned())
