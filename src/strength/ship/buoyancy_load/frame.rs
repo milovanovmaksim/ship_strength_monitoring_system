@@ -64,7 +64,7 @@ impl Frame {
                     return linear_interpolated.interpolated_value(draft);
                 },
                 (Some(middle), None) => { return Ok(*self.drafts.get(middle).unwrap()); }
-                _ => { unreachable!("Осадка находится в заданном диапазоне") }
+                _ => { unreachable!("Осадка находится в допустимом диапазоне") }
             }
         }
 
