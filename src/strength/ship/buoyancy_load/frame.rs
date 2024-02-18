@@ -74,28 +74,4 @@ impl Frame {
 
 
     }
-
-    fn draft_binary_search(&self, draft: f64) -> (Option<usize>, Option<usize>) {
-        let mut left_point = 0;
-        let mut right_point = self.drafts.len() - 1;
-        if *self.drafts.first().unwrap() > draft && draft > *self.drafts.last().unwrap() {
-            return (None, None);
-        }
-        while left_point != right_point - 1 {
-            let middle = (left_point + right_point) / 2;
-            let searched_draft = *self.drafts().get(middle).unwrap();
-            if searched_draft == draft {
-                return (Some(middle), None);
-            } else if searched_draft > draft {
-                right_point = middle;
-            } else { left_point = middle }
-        }
-        if *self.drafts().get(left_point).unwrap() == draft {
-            return (Some(left_point), None);
-        }
-        if *self.drafts().get(right_point).unwrap() == draft {
-            return (Some(right_point), None);
-        }
-        (Some(left_point), Some(right_point))
-    }
 }
