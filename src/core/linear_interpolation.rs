@@ -27,7 +27,7 @@ impl LinearInterpolation {
         if self.x_0 == self.x_1 {
             return Err("x_0 не должен равнятся x_1".to_string());
         }
-        if self.x_0 < x && x < self.x_1 {
+        if self.x_0 <= x && x <= self.x_1 {
             let f_x = self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1 - self.x_0)) * (x - self.x_0);
             return Ok(f_x);
         }

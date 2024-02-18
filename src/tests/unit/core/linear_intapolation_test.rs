@@ -6,7 +6,7 @@ mod tests {
     #[test]
     fn interpolated_value_ok_test() {
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 6.0);
-        assert_eq!(Ok(1.0), interpolation.interpolated_value(2.0));
+        assert_eq!(Ok(5.0), interpolation.interpolated_value(2.0));
         assert_eq!(Ok(4.0), interpolation.interpolated_value(3.0));
         assert_eq!(Ok(3.0), interpolation.interpolated_value(4.0));
         assert_eq!(Ok(2.0), interpolation.interpolated_value(5.0));
