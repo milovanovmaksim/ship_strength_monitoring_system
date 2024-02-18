@@ -1,5 +1,5 @@
 pub(crate) trait BinarySearch {
-    fn custom_binary_search(&self, value: f64) -> (Option<usize>, Option<usize>) ;
+    fn custom_binary_search(&self, value: f64) -> (Option<usize>, Option<usize>);
 }
 
 

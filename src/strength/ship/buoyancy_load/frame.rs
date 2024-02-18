@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::core::linear_interpolation::LinearInterpolation;
+use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
 
 
 
@@ -59,7 +59,7 @@ impl Frame {
             return Err(format!("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: {} метра.", min_draft));
         }
 
-        match self.draft_binary_search(draft) {
+        match self.drafts.custom_binary_search(draft) {
             (Some(left_point), Some(right_point)) => {
                 let draft_0 = *self.drafts.get(left_point).unwrap();
                 let draft_1 = *self.drafts.get(right_point).unwrap();
