@@ -71,7 +71,5 @@ impl Frame {
             (Some(middle), None) => { return Ok(*self.areas.get(middle).unwrap()); }
             _ => { unreachable!("Осадка находится в допустимом диапазоне") }
         }
-
-
     }
 }
