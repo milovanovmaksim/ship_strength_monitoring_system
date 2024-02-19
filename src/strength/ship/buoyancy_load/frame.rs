@@ -1,6 +1,5 @@
-use serde::Deserialize;
 use log::error;
-
+use serde::Deserialize;
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
 
 
@@ -23,7 +22,6 @@ pub(crate) struct Frame {
     volumes: Vec<f64>,
     masses: Vec<f64>,
     abscissa: f64
-
 }
 
 impl Frame {
@@ -136,7 +134,25 @@ impl Frame {
         match self.data_by_draft(draft, &self.volumes) {
             Ok(volume) => { Ok(volume) },
             Err(error) => {
-                error!("Frame::volume_by_dradft | error: {}", error);
+                error!("Frame::volume_by_draft | error: {}", error);
+                Err(error)
+            }
+        }
+    }
+
+    ///
+    /// Возвращает погруженную массу шпангоута для заданной осадки. [т]
+    /// Если такой осадки нет, линейно интерполирует массу погруженного шпангоута,
+    /// имея в распоряжении две известные массы шпангоутов для промежуточных осадок между
+    /// которыми лежит заданная осадка.
+    /// Parametrs:
+    ///     draft: осадка для которой нужно вернуть погруженный объем шпангоута.
+    ///     Параметр draft  не должен выходить за пределы допустимого диапазона осадки судна.
+    pub fn massa_by_draft(&self, draft: f64) -> Result<f64, String> {
+        match self.data_by_draft(draft, &self.masses) {
+            Ok(massa) => { Ok(massa) },
+            Err(error) => {
+                error!("Frame::massa_by_draft | error: {}", error);
                 Err(error)
             }
         }
