@@ -99,7 +99,7 @@ impl Frame {
                 }
             },
             Err(error) => {
-                error!("Frame::arae_by_draft | {}", error);
+                error!("Frame::data_by_draft | {}", error);
                 Err(error)
             }
         }
