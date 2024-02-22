@@ -196,3 +196,10 @@ impl Frame {
         }
     }
 }
+
+
+impl PartialEq for Frame {
+    fn eq(&self, other: &Self) -> bool {
+        self.abscissa == other.abscissa
+    }
+}
