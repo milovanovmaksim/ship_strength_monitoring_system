@@ -58,13 +58,12 @@ impl Frame {
     /// let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
     /// let abscissa =  -25.0;
     /// let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+    /// assert_eq!(0.0, frame.area_by_draft(0.5).unwrap());
     /// assert_eq!(65.12, frame.area_by_draft(2.0).unwrap());
     /// assert_eq!(32.3, frame.area_by_draft(1.0).unwrap());
     /// // Линейно интерполирует погруженную площадь шпангоута между осадками 2.0 и 3.0 метра.
     /// assert_eq!(81.605, frame.area_by_draft(2.5).unwrap());
-    /// assert_eq!(Err("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: 1 [м].".to_string()), frame.area_by_draft(0.0));
     /// assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.area_by_draft(15.0));
-    /// assert_eq!(Err("Осадка судна не может быть отрицательной.".to_string()), frame.area_by_draft(-1.0));
     /// ```
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
         match self.data_by_draft(draft, &self.areas) {
@@ -139,15 +138,14 @@ impl Frame {
     /// let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
     /// let abscissa =  -25.0;
     /// let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+    /// assert_eq!(0.0, frame.volume_by_draft(0.5).unwrap());
     /// assert_eq!(379.52, frame.volume_by_draft(1.0).unwrap());
     /// assert_eq!(765.20, frame.volume_by_draft(2.0).unwrap());
     /// assert_eq!(5146.22, frame.volume_by_draft(13.3).unwrap());
     /// assert_eq!(5029.90, frame.volume_by_draft(13.0).unwrap());
     /// // Линейно интерполирует погруженный объем шпангоута между осадками 2.0 и 3.0 метра.
     /// assert_eq!(958.855, frame.volume_by_draft(2.5).unwrap());
-    /// assert_eq!(Err("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: 1 [м].".to_string()), frame.volume_by_draft(0.0));
     /// assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.volume_by_draft(15.0));
-    /// assert_eq!(Err("Осадка судна не может быть отрицательной.".to_string()), frame.volume_by_draft(-1.0));
     /// ```
     pub fn volume_by_draft(&self, draft: f64) -> Result<f64, String> {
         match self.data_by_draft(draft, &self.volumes) {
@@ -176,15 +174,14 @@ impl Frame {
     /// let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
     /// let abscissa =  -25.0;
     /// let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+    /// assert_eq!(0.0, frame.massa_by_draft(0.5).unwrap());
     /// assert_eq!(379.52, frame.massa_by_draft(1.0).unwrap());
     /// assert_eq!(765.20, frame.massa_by_draft(2.0).unwrap());
     /// assert_eq!(5146.22, frame.massa_by_draft(13.3).unwrap());
     /// assert_eq!(5029.90, frame.massa_by_draft(13.0).unwrap());
     /// // Линейно интерполирует погруженную массу шпангоута между осадками 2.0 и 3.0 метра.
     /// assert_eq!(958.855, frame.massa_by_draft(2.5).unwrap());
-    /// assert_eq!(Err("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: 1 [м].".to_string()), frame.massa_by_draft(0.0));
     /// assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.massa_by_draft(15.0));
-    /// assert_eq!(Err("Осадка судна не может быть отрицательной.".to_string()), frame.massa_by_draft(-1.0));
     /// ```
     pub fn massa_by_draft(&self, draft: f64) -> Result<f64, String> {
         match self.data_by_draft(draft, &self.masses) {

@@ -12,8 +12,9 @@ mod tests {
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
-        assert_eq!(65.12, frame.area_by_draft(2.0).unwrap());
+        assert_eq!(0.0, frame.area_by_draft(0.5).unwrap());
         assert_eq!(32.3, frame.area_by_draft(1.0).unwrap());
+        assert_eq!(65.12, frame.area_by_draft(2.0).unwrap());
         assert_eq!(437.98, frame.area_by_draft(13.3).unwrap());
         assert_eq!(428.08, frame.area_by_draft(13.0).unwrap());
         assert_eq!(81.605, frame.area_by_draft(2.5).unwrap());
@@ -29,9 +30,7 @@ mod tests {
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
-        assert_eq!(Err("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: 1 [м].".to_string()), frame.area_by_draft(0.0));
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.area_by_draft(15.0));
-        assert_eq!(Err("Осадка судна не может быть отрицательной.".to_string()), frame.area_by_draft(-1.0));
     }
 
 
@@ -44,6 +43,7 @@ mod tests {
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        assert_eq!(0.0, frame.volume_by_draft(0.5).unwrap());
         assert_eq!(379.52, frame.volume_by_draft(1.0).unwrap());
         assert_eq!(765.20, frame.volume_by_draft(2.0).unwrap());
         assert_eq!(5146.22, frame.volume_by_draft(13.3).unwrap());
@@ -60,9 +60,7 @@ mod tests {
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
-        assert_eq!(Err("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: 1 [м].".to_string()), frame.volume_by_draft(0.0));
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.volume_by_draft(15.0));
-        assert_eq!(Err("Осадка судна не может быть отрицательной.".to_string()), frame.volume_by_draft(-1.0));
     }
 
 
@@ -75,6 +73,7 @@ mod tests {
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        assert_eq!(0.0, frame.massa_by_draft(0.5).unwrap());
         assert_eq!(379.52, frame.massa_by_draft(1.0).unwrap());
         assert_eq!(765.20, frame.massa_by_draft(2.0).unwrap());
         assert_eq!(5146.22, frame.massa_by_draft(13.3).unwrap());
@@ -91,8 +90,6 @@ mod tests {
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
-        assert_eq!(Err("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: 1 [м].".to_string()), frame.massa_by_draft(0.0));
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.massa_by_draft(15.0));
-        assert_eq!(Err("Осадка судна не может быть отрицательной.".to_string()), frame.massa_by_draft(-1.0));
     }
 }
