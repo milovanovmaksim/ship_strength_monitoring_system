@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use log::error;
 use serde::Deserialize;
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
@@ -207,6 +209,6 @@ impl PartialEq for Frame {
 
 impl PartialOrd for Frame {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.abscissa.partial_cmp(other.abscissa)
+        self.abscissa.partial_cmp(&other.abscissa)
     }
 }
