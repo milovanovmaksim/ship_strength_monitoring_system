@@ -79,6 +79,10 @@ impl Frame {
     ///
     /// Возвращает данные масштаба Бонжана для заданной осадки.
     fn data_by_draft(&self, draft: f64, data: &Vec<f64>) -> Result<f64, String> {
+        let min_draft = *self.drafts.first().unwrap();
+        if draft < min_draft {
+            return Ok(0.0);
+        }
         match self.validate_draft(draft) {
             Ok(_) => {
                 match self.drafts.custom_binary_search(draft) {
@@ -116,9 +120,6 @@ impl Frame {
             return Err("Осадка судна не может быть отрицательной.".to_string());
         } else if draft > max_draft {
             return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} [м].", max_draft));
-        }
-        if draft < min_draft {
-            return Err(format!("Осадка меньше чем минимально известная для данного шпангоута. Минимальная осадка: {} [м].", min_draft));
         }
         Ok(())
     }
