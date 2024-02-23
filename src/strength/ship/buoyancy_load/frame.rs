@@ -203,3 +203,10 @@ impl PartialEq for Frame {
         self.abscissa == other.abscissa
     }
 }
+
+
+impl PartialOrd for Frame {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.abscissa.partial_cmp(other.abscissa)
+    }
+}
