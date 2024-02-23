@@ -50,25 +50,36 @@ impl BonjeanScale {
     /// то возвращаем два ближайших шпангоута Ok((Some(&Frame), Some(&Frame))),
     /// если такой шпангоут существет, возвращаем его Ok(Some(&Frame), None).
     fn frame_by_abscissa(&self, abscissa: f64) -> Result<(&Frame, Option<&Frame>), String> {
-        if abscissa >= self.shipdimensions.coordinate_aft() && abscissa <= self.shipdimensions.coordinate_bow() {
-            let mut left_point = 0;
-            let mut right_point = self.frames.len() - 1;
-            while left_point != right_point - 1 {
-                let middle = (left_point + right_point) / 2;
-                let frame = self.frames.get(middle).unwrap();
-                if frame.abscissa() > abscissa {
-                    right_point = middle;
-                } else if frame.abscissa() < abscissa {
-                    left_point = middle
-                } else if frame.abscissa() == abscissa {
-                    return Ok((self.frames.get(middle).unwrap(), None));
+        match self.check_abscissa(abscissa) {
+            Ok(_) => {
+                let mut left_point = 0;
+                let mut right_point = self.frames.len() - 1;
+                while left_point != right_point - 1 {
+                    let middle = (left_point + right_point) / 2;
+                    let frame = self.frames.get(middle).unwrap();
+                    if frame.abscissa() > abscissa {
+                        right_point = middle;
+                    } else if frame.abscissa() < abscissa {
+                        left_point = middle
+                    } else if frame.abscissa() == abscissa {
+                        return Ok((self.frames.get(middle).unwrap(), None));
+                    }
                 }
+                Ok((self.frames.get(left_point).unwrap(), self.frames.get(right_point)))
             }
-            Ok((self.frames.get(left_point).unwrap(), self.frames.get(right_point)))
-        } else {
-            Err(format!("Абсцисса вышла за пределы координаты кормы или носа корабля. Абсцисса должна входить в диапозон между {} и {} метров",
-                self.shipdimensions.coordinate_aft(), self.shipdimensions.coordinate_bow()))
+            Err(error) => {
+                debug!("BonjeanScale::frame_by_abscissa | error: {}", error);
+                Err(error)
+            }
         }
+    }
+
+    fn check_abscissa(&self, abscissa: f64) -> Result<(), String> {
+        if abscissa >= self.shipdimensions.coordinate_aft() && abscissa <= self.shipdimensions.coordinate_bow() {
+            return Err(format!("Абсцисса вышла за пределы координаты кормы или носа корабля. Абсцисса должна входить в диапозон между {} и {} метров",
+                self.shipdimensions.coordinate_aft(), self.shipdimensions.coordinate_bow()));
+        }
+        Ok(())
     }
 
 
