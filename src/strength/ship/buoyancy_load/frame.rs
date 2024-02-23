@@ -81,7 +81,7 @@ impl Frame {
     fn data_by_draft(&self, draft: f64, data: &Vec<f64>) -> Result<f64, String> {
         match self.validate_draft(draft) {
             Ok(_) => {
-                match self.drafts.custom_binary_search(&draft) {
+                match self.drafts.custom_binary_search(draft) {
                     (Some(left_point), Some(right_point)) => {
                         let draft_0 = *self.drafts.get(left_point).unwrap();
                         let draft_1 = *self.drafts.get(right_point).unwrap();
