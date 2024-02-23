@@ -126,15 +126,6 @@ impl BonjeanScale {
     }
 }
 
-impl IntoIterator for BonjeanScale {
-    type Item = Frame;
-    type IntoIter = std::vec::IntoIter<Self::Item>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.frames.into_iter()
-    }
-}
-
 impl AsRef<Vec<Frame>> for BonjeanScale {
 
     fn as_ref(&self) -> &Vec<Frame> {
