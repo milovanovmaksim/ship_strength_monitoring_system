@@ -75,9 +75,13 @@ impl BonjeanScale {
     }
 
     fn check_abscissa(&self, abscissa: f64) -> Result<(), String> {
-        if abscissa >= self.shipdimensions.coordinate_aft() && abscissa <= self.shipdimensions.coordinate_bow() {
-            return Err(format!("Абсцисса вышла за пределы координаты кормы или носа корабля. Абсцисса должна входить в диапозон между {} и {} метров",
-                self.shipdimensions.coordinate_aft(), self.shipdimensions.coordinate_bow()));
+        if abscissa < self.shipdimensions.coordinate_aft() {
+            return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Переданно значение: {}",
+                self.shipdimensions.coordinate_aft(), abscissa));
+        }
+        if abscissa > self.shipdimensions.coordinate_bow() {
+            return Err(format!("Абсцисса вышла за пределы координаты носа судна. Координа носа: {}. Переданно значение: {}",
+                self.shipdimensions.coordinate_bow(), abscissa));
         }
         Ok(())
     }
