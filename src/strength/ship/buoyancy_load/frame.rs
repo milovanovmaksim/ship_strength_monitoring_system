@@ -114,11 +114,8 @@ impl Frame {
     ///
     /// Валидация осадки.
     fn validate_draft(&self, draft: f64) -> Result<(), String> {
-        let min_draft = *self.drafts.first().unwrap();
         let max_draft = *self.drafts.last().unwrap();
-        if draft < 0.0 {
-            return Err("Осадка судна не может быть отрицательной.".to_string());
-        } else if draft > max_draft {
+        if draft > max_draft {
             return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} [м].", max_draft));
         }
         Ok(())
