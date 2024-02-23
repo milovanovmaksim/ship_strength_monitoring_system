@@ -3,4 +3,3 @@ pub(crate) mod frame;
 pub(crate) mod bonjean_scale;
 pub(crate) mod ship_trimming;
 pub(crate) mod hydrostatic_curves;
-pub(crate) mod interpolated_frame;
