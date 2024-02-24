@@ -45,37 +45,43 @@ impl BonjeanScale {
     }
 
     ///
-    /// Бинарный поиск индекса шпангоута (Frame) по абсциссе.
+    /// Бинарный поиск индекса шпангоута по абсциссе.
     /// Возвращает индекс найденного шпангоута ```(Some(index), None)```.
     /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
     /// искомый шпангоут ```(Some(index), Some(index))```.
     /// Если шпангоут не найден, возвращает ```(None, None)```.
-    fn frame_by_abscissa(&self, abscissa: f64) -> Result<(&Frame, Option<&Frame>), String> {
-        match self.check_abscissa(abscissa) {
-            Ok(_) => {
-                let mut left_point = 0;
-                let mut right_point = self.frames.len() - 1;
-                while left_point != right_point - 1 {
-                    let middle = (left_point + right_point) / 2;
-                    let frame = self.frames.get(middle).unwrap();
-                    if frame.abscissa() > abscissa {
-                        right_point = middle;
-                    } else if frame.abscissa() < abscissa {
-                        left_point = middle
-                    } else if frame.abscissa() == abscissa {
-                        return Ok((self.frames.get(middle).unwrap(), None));
-                    }
-                }
-                Ok((self.frames.get(left_point).unwrap(), self.frames.get(right_point)))
-            }
-            Err(error) => {
-                debug!("BonjeanScale::frame_by_abscissa | error: {}", error);
-                Err(error)
+    fn frame_id_by_abscissa(&self, abscissa: f64) -> (Option<usize>, Option<usize>) {
+        if abscissa < self.shipdimensions.coordinate_aft() || abscissa > self.shipdimensions.coordinate_bow() {
+            return (None, None);
+        }
+        if self.frames.len() == 0 {
+            return (None, None)
+        }
+        let mut left_point = 0;
+        let mut right_point = self.frames.len() - 1;
+        while left_point != right_point - 1 {
+            let middle = (left_point + right_point) / 2;
+            let frame = self.frames.get(middle).unwrap();
+            if frame.abscissa() > abscissa {
+                right_point = middle;
+            } else if frame.abscissa() < abscissa {
+                left_point = middle
+            } else if frame.abscissa() == abscissa {
+                return (Some(middle), None);
             }
         }
+        let left_frame = self.frames.get(left_point).unwrap();
+        let right_frame = self.frames.get(right_point).unwrap();
+        if abscissa == left_frame.abscissa() {
+            return (Some(left_point), None);
+        }
+        if abscissa == right_frame.abscissa() {
+            return (Some(right_point), None);
+        }
+        (Some(left_point), Some(right_point))
     }
 
-    fn check_abscissa(&self, abscissa: f64) -> Result<(), String> {
+    fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
         if abscissa < self.shipdimensions.coordinate_aft() {
             return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Переданно значение: {}",
                 self.shipdimensions.coordinate_aft(), abscissa));
