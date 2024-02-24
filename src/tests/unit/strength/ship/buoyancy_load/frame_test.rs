@@ -11,7 +11,7 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts.clone(), areas.clone(), volumes, masses, abscissa);
+        let frame = Frame::frame(id, drafts.clone(), areas.clone(), volumes, masses, abscissa).unwrap();
         assert_eq!(0.0, frame.area_by_draft(0.5).unwrap());
         for i in 0..drafts.len() {
             let draft = *drafts.get(i).unwrap();
@@ -30,7 +30,7 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        let frame = Frame::frame(id, drafts, areas, volumes, masses, abscissa).unwrap();
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.area_by_draft(15.0));
     }
 
@@ -43,7 +43,7 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts.clone(), areas, volumes.clone(), masses, abscissa);
+        let frame = Frame::frame(id, drafts.clone(), areas, volumes.clone(), masses, abscissa).unwrap();
         assert_eq!(0.0, frame.volume_by_draft(0.5).unwrap());
         for i in 0..drafts.len() {
             let draft = *drafts.get(i).unwrap();
@@ -61,7 +61,7 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        let frame = Frame::frame(id, drafts, areas, volumes, masses, abscissa).unwrap();
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.volume_by_draft(15.0));
     }
 
@@ -74,7 +74,7 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts.clone(), areas, volumes, masses.clone(), abscissa);
+        let frame = Frame::frame(id, drafts.clone(), areas, volumes, masses.clone(), abscissa).unwrap();
         assert_eq!(0.0, frame.massa_by_draft(0.5).unwrap());
         for i in 0..drafts.len() {
             let draft = *drafts.get(i).unwrap();
@@ -92,7 +92,7 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        let frame = Frame::frame(id, drafts, areas, volumes, masses, abscissa).unwrap();
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.massa_by_draft(15.0));
     }
 }

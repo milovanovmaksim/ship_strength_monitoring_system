@@ -1,5 +1,3 @@
-use std::cmp::Ordering;
-
 use log::error;
 use serde::Deserialize;
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
@@ -15,7 +13,7 @@ use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInter
 ///     volumes - вектор, содержащий объемы погруженной части шпангоута от осадки,
 ///     masses - вектор, содержащий массы погруженной части шпангоута от осадки,
 ///     abscissa - абсцисса шпангоута относительно центра корабля.
-/// Длина всех векторов должна быть одинакова, в проивном случая будет возвращена ошибка.
+/// Длина всех векторов должна быть одинакова и не равна нулю, в проивном случая будет возвращена ошибка.
 #[derive(Deserialize, Debug)]
 pub(crate) struct Frame {
     id: u64,
@@ -27,8 +25,26 @@ pub(crate) struct Frame {
 }
 
 impl Frame {
-    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Self {
+    fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Self {
         Frame { id, drafts, areas, volumes, masses, abscissa }
+    }
+
+    pub fn frame(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Result<Self, String> {
+        if Frame::empty_data_validate(&drafts, &areas, &volumes, &masses) {
+            return Err("Данные масштаба Бонжана не могут быть пустыми".to_string());
+        }
+        if !Frame::same_len_data(&drafts, &areas, &volumes, &masses) {
+            return Err("Векторы, содержащие данные масштаба Бонжана для шпангоута, должны быть одинаковой длины".to_string());
+        }
+        Ok(Frame::new(id, drafts, areas, volumes, masses, abscissa))
+    }
+
+    fn empty_data_validate(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> bool {
+        drafts.len() == 0 || areas.len() == 0 || volumes.len() == 0 && masses.len() == 0
+    }
+    fn same_len_data(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> bool {
+        let draft_len = drafts.len();
+        areas.len() == draft_len && volumes.len() == draft_len && masses.len() == draft_len
     }
 
     pub fn id(&self) -> u64 { self.id }
@@ -99,8 +115,9 @@ impl Frame {
                             }
                         }
                     },
-                    (Some(middle), None) => { return Ok(*data.get(middle).unwrap()); },
-                    _ => { unreachable!("Осадка находится в допустимом диапазоне") }
+                    (Some(middle), None) => { Ok(*data.get(middle).unwrap()) },
+                    _ => { unreachable!("Осадка находится в допустимом диапазоне.
+                        Пустые векторы, содержащие данные масштаба Бонжана для шпангоута не допускаются.") }
                 }
             },
             Err(error) => {
