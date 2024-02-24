@@ -11,12 +11,13 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        let frame = Frame::new(id, drafts.clone(), areas.clone(), volumes, masses, abscissa);
         assert_eq!(0.0, frame.area_by_draft(0.5).unwrap());
-        assert_eq!(32.3, frame.area_by_draft(1.0).unwrap());
-        assert_eq!(65.12, frame.area_by_draft(2.0).unwrap());
-        assert_eq!(437.98, frame.area_by_draft(13.3).unwrap());
-        assert_eq!(428.08, frame.area_by_draft(13.0).unwrap());
+        for i in 0..drafts.len() {
+            let draft = *drafts.get(i).unwrap();
+            assert_eq!(*areas.get(i).unwrap(), frame.area_by_draft(draft).unwrap());
+        }
+        // Линейно интерполирует погруженную площадь шпангоута между осадками 2.0 и 3.0 метра.
         assert_eq!(81.605, frame.area_by_draft(2.5).unwrap());
     }
 
@@ -42,12 +43,13 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        let frame = Frame::new(id, drafts.clone(), areas, volumes.clone(), masses, abscissa);
         assert_eq!(0.0, frame.volume_by_draft(0.5).unwrap());
-        assert_eq!(379.52, frame.volume_by_draft(1.0).unwrap());
-        assert_eq!(765.20, frame.volume_by_draft(2.0).unwrap());
-        assert_eq!(5146.22, frame.volume_by_draft(13.3).unwrap());
-        assert_eq!(5029.90, frame.volume_by_draft(13.0).unwrap());
+        for i in 0..drafts.len() {
+            let draft = *drafts.get(i).unwrap();
+            assert_eq!(*volumes.get(i).unwrap(), frame.volume_by_draft(draft).unwrap());
+        }
+        // Линейно интерполирует погруженный объем шпангоута между осадками 2.0 и 3.0 метра.
         assert_eq!(958.855, frame.volume_by_draft(2.5).unwrap());
     }
 
@@ -72,12 +74,13 @@ mod tests {
         let volumes = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let masses = vec![379.52, 765.20, 1152.51, 540.16, 1927.90, 2315.65, 2703.40, 3091.15, 3478.90, 3866.65, 4254.40, 4642.15, 5029.90, 5146.22];
         let abscissa =  -25.0;
-        let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
+        let frame = Frame::new(id, drafts.clone(), areas, volumes, masses.clone(), abscissa);
         assert_eq!(0.0, frame.massa_by_draft(0.5).unwrap());
-        assert_eq!(379.52, frame.massa_by_draft(1.0).unwrap());
-        assert_eq!(765.20, frame.massa_by_draft(2.0).unwrap());
-        assert_eq!(5146.22, frame.massa_by_draft(13.3).unwrap());
-        assert_eq!(5029.90, frame.massa_by_draft(13.0).unwrap());
+        for i in 0..drafts.len() {
+            let draft = *drafts.get(i).unwrap();
+            assert_eq!(*masses.get(i).unwrap(), frame.massa_by_draft(draft).unwrap());
+        }
+        // Линейно интерполирует погруженную массу шпангоута между осадками 2.0 и 3.0 метра.
         assert_eq!(958.855, frame.massa_by_draft(2.5).unwrap());
     }
 
