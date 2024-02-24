@@ -8,7 +8,7 @@ use super::frame::Frame;
 ///
 /// Масштаб Бонжана.
 /// Parameters:
-///     frame: Vec<Frame> - список шпангоутов судна.
+///     frames: Vec<Frame> - список шпангоутов судна.
 #[derive(Deserialize, Debug)]
 pub(crate) struct BonjeanScale {
     frames: Vec<Frame>,
