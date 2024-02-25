@@ -30,21 +30,48 @@ impl Frame {
     }
 
     pub fn frame(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Result<Self, String> {
-        if Frame::empty_data_validate(&drafts, &areas, &volumes, &masses) {
-            return Err("Данные масштаба Бонжана не могут быть пустыми".to_string());
+        match Frame::validate_input_data(&drafts, &areas, &volumes, &masses) {
+            Ok(_) => { Ok(Frame::new(id, drafts, areas, volumes, masses, abscissa)) }
+            Err(err) => {
+                error!("Frame::frame | error: {}", err);
+                Err(err)
+            }
         }
-        if !Frame::same_len_data(&drafts, &areas, &volumes, &masses) {
-            return Err("Векторы, содержащие данные масштаба Бонжана для шпангоута, должны быть одинаковой длины".to_string());
-        }
-        Ok(Frame::new(id, drafts, areas, volumes, masses, abscissa))
     }
 
-    fn empty_data_validate(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> bool {
-        drafts.len() == 0 || areas.len() == 0 || volumes.len() == 0 && masses.len() == 0
+    fn validate_input_data(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> Result<(), String> {
+        match Frame::empty_data_validate(drafts, areas, volumes, masses) {
+            Ok(_) => {  },
+            Err(err) => { return Err(err); }
+        }
+        match Frame::same_len_data_validate(drafts, areas, volumes, masses) {
+            Ok(_) => { },
+            Err(err) => { return Err(err); }
+        }
+        Ok(())
     }
-    fn same_len_data(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> bool {
+
+    fn empty_data_validate(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> Result<(), String> {
+        if drafts.len() == 0 {
+            return Err("Вектор, содержащий осадки судна не может быть пустым.".to_string());
+        }
+        if areas.len() == 0 {
+            return Err("Вектор, содержащий погруженные площади шпангоута от осадки не может быть пустым".to_string());
+        }
+        if volumes.len() == 0 {
+            return Err("Вектор, содержащий погруженные объемы шпангоута от осадки не может быть пустым".to_string());
+        }
+        if masses.len() == 0 {
+            return Err("Вектор, содержащий погруженные массы шпангоута от осадки не может быть пустым.".to_string());
+        }
+        Ok(())
+    }
+    fn same_len_data_validate(drafts: &Vec<f64>, areas: &Vec<f64>, volumes: &Vec<f64>, masses: &Vec<f64>) -> Result<(), String> {
         let draft_len = drafts.len();
-        areas.len() == draft_len && volumes.len() == draft_len && masses.len() == draft_len
+        if areas.len() == draft_len && volumes.len() == draft_len && masses.len() == draft_len {
+            return Ok(());
+        }
+        Err("Длины векторов, содержащих данные масштаба Бонжана для шпангоута должны быть одинаковыми".to_string())
     }
 
     pub fn id(&self) -> u64 { self.id }
