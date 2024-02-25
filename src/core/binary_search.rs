@@ -52,7 +52,8 @@ impl BinarySearch for Vec<f64>
         }
         if *self.get(left_point).unwrap() == value {
             return (Some(left_point), None);
-        } else if *self.get(right_point).unwrap() == value {
+        }
+        if *self.get(right_point).unwrap() == value {
             return (Some(right_point), None);
         }
         (Some(left_point), Some(right_point))
