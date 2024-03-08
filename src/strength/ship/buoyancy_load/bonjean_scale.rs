@@ -1,4 +1,4 @@
-use log::{debug, warn};
+use log::{debug, error};
 use serde::Deserialize;
 
 use crate::{core::{json_file::JsonFile, linear_interpolation::LinearInterpolation}, strength::ship::ship_dimensions::ShipDimensions};
@@ -16,8 +16,14 @@ pub(crate) struct BonjeanScale {
 }
 
 impl BonjeanScale {
-    pub fn new(frames: Vec<Frame>, shipdimensions: ShipDimensions) -> Self {
-        BonjeanScale { frames, shipdimensions }
+    pub fn new(frames: Vec<Frame>, shipdimensions: ShipDimensions) -> Result<Self, String> {
+        match (BonjeanScale { frames, shipdimensions }).frames_validate() {
+            Ok(bonjean_scale) => { Ok(bonjean_scale) }
+            Err(err) => {
+                error!("BonjeanScale::new | error: {}", err);
+                Err(err)
+            }
+        }
     }
 
     ///
@@ -32,31 +38,31 @@ impl BonjeanScale {
                         Ok(frames)
                     },
                     Err(err) => {
-                        warn!("BonjeanScale::from_json_file | error: {:?}.",err);
+                        error!("BonjeanScale::from_json_file | error: {:?}.",err);
                         return Err(err.to_string());
                     }
                 }
             },
             Err(err) => {
-                warn!("BonjeanScale::from_json_file | error: {:?}.",err);
+                error!("BonjeanScale::from_json_file | error: {:?}.",err);
                 return Err(err);
             }
         }
     }
 
+    fn frames_validate(self) -> Result<BonjeanScale, String> {
+        if self.frames.len() == 0 {
+            return Err("Вектор шпангоутов пуст.".to_string());
+        }
+        Ok(self)
+    }
+
     ///
     /// Бинарный поиск индекса шпангоута по абсциссе.
-    /// Возвращает индекс найденного шпангоута ```(Some(index), None)```.
+    /// Возвращает индекс найденного шпангоута ```(index, None)```.
     /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
-    /// искомый шпангоут ```(Some(index), Some(index))```.
-    /// Если шпангоут не найден, возвращает ```(None, None)```.
-    fn frame_id_by_abscissa(&self, abscissa: f64) -> (Option<usize>, Option<usize>) {
-        if abscissa < self.shipdimensions.coordinate_aft() || abscissa > self.shipdimensions.coordinate_bow() {
-            return (None, None);
-        }
-        if self.frames.len() == 0 {
-            return (None, None)
-        }
+    /// искомый шпангоут ```(index, Some(index))```.
+    fn frame_id_by_abscissa(&self, abscissa: f64) -> (usize, Option<usize>) {
         let mut left_point = 0;
         let mut right_point = self.frames.len() - 1;
         while left_point != right_point - 1 {
@@ -67,18 +73,18 @@ impl BonjeanScale {
             } else if frame.abscissa() < abscissa {
                 left_point = middle
             } else if frame.abscissa() == abscissa {
-                return (Some(middle), None);
+                return (middle, None);
             }
         }
         let left_frame = self.frames.get(left_point).unwrap();
         let right_frame = self.frames.get(right_point).unwrap();
         if abscissa == left_frame.abscissa() {
-            return (Some(left_point), None);
+            return (left_point, None);
         }
         if abscissa == right_frame.abscissa() {
-            return (Some(right_point), None);
+            return (right_point, None);
         }
-        (Some(left_point), Some(right_point))
+        (left_point, Some(right_point))
     }
 
     fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
