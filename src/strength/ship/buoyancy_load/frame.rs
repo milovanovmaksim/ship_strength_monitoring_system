@@ -35,18 +35,23 @@ impl Frame {
         }
     }
 
+    //
+    // Валидация входных данных.
     fn validate_input_data(self) -> Result<Frame, String> {
         match self.empty_data_validate() {
             Ok(_) => {  },
             Err(err) => { return Err(err); }
         }
-        match self.same_len_data_validate() {
+        match self.same_length_data_validate() {
             Ok(_) => { },
             Err(err) => { return Err(err); }
         }
         Ok(self)
     }
 
+    //
+    // Валидция входных данных.
+    // Векторы, содержащие данные масштаба Бонжана для шпангоута, не должны быть пустыми.
     fn empty_data_validate(&self) -> Result<(), String> {
         if self.drafts.len() == 0 {
             return Err("Вектор, содержащий осадки судна не может быть пустым.".to_string());
@@ -62,7 +67,11 @@ impl Frame {
         }
         Ok(())
     }
-    fn same_len_data_validate(&self) -> Result<(), String> {
+
+    //
+    // Валидация входных данных.
+    // Векторы, содержащие данные масштаба Бонжана для шпангоута, должны иметь одинаковую длину.
+    fn same_length_data_validate(&self) -> Result<(), String> {
         let draft_len = self.drafts.len();
         if self.areas.len() == draft_len && self.volumes.len() == draft_len && self.masses.len() == draft_len {
             return Ok(());
