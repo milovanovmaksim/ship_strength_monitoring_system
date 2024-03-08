@@ -61,7 +61,7 @@ impl BonjeanScale {
     /// Бинарный поиск индекса шпангоута по абсциссе.
     /// Возвращает индекс найденного шпангоута ```(index, None)```.
     /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
-    /// искомый шпангоут ```(index, Some(index))```.
+    /// искомый шпангоут ```(left_point, Some(right_point))```.
     fn frame_id_by_abscissa(&self, abscissa: f64) -> (usize, Option<usize>) {
         let mut left_point = 0;
         let mut right_point = self.frames.len() - 1;
