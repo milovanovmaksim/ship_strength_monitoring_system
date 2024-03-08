@@ -39,13 +39,13 @@ impl BonjeanScale {
                     },
                     Err(err) => {
                         error!("BonjeanScale::from_json_file | error: {:?}.",err);
-                        return Err(err.to_string());
+                        Err(err.to_string())
                     }
                 }
             },
             Err(err) => {
                 error!("BonjeanScale::from_json_file | error: {:?}.",err);
-                return Err(err);
+                Err(err)
             }
         }
     }
