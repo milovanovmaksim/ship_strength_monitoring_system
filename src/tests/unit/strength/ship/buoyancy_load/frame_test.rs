@@ -118,7 +118,7 @@ mod tests {
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
         assert!(frame.is_err());
-        assert_eq!("Вектор, содержащий осадки судна не может быть пустым.".to_string(), frame.unwrap_err())
+        assert_eq!("Вектор, содержащий осадки судна, не может быть пустым.".to_string(), frame.unwrap_err())
     }
 
     #[test]
@@ -131,7 +131,7 @@ mod tests {
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
         assert!(frame.is_err());
-        assert_eq!("Вектор, содержащий погруженные площади шпангоута от осадки не может быть пустым".to_string(), frame.unwrap_err())
+        assert_eq!("Вектор, содержащий погруженные площади шпангоута от осадки, не может быть пустым".to_string(), frame.unwrap_err())
     }
 
     #[test]
@@ -144,7 +144,7 @@ mod tests {
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
         assert!(frame.is_err());
-        assert_eq!("Вектор, содержащий погруженные объемы шпангоута от осадки не может быть пустым".to_string(), frame.unwrap_err())
+        assert_eq!("Вектор, содержащий погруженные объемы шпангоута от осадки, не может быть пустым".to_string(), frame.unwrap_err())
     }
 
     #[test]
@@ -157,7 +157,7 @@ mod tests {
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
         assert!(frame.is_err());
-        assert_eq!("Вектор, содержащий погруженные массы шпангоута от осадки не может быть пустым.".to_string(), frame.unwrap_err())
+        assert_eq!("Вектор, содержащий погруженные массы шпангоута от осадки, не может быть пустым.".to_string(), frame.unwrap_err())
     }
 
     #[test]
@@ -170,6 +170,6 @@ mod tests {
         let abscissa =  -25.0;
         let frame = Frame::new(id, drafts, areas, volumes, masses, abscissa);
         assert!(frame.is_err());
-        assert_eq!("Длины векторов, содержащих данные масштаба Бонжана для шпангоута должны быть одинаковыми".to_string(), frame.unwrap_err())
+        assert_eq!("Длины векторов, содержащих данные масштаба Бонжана для шпангоута, должны быть одинаковыми".to_string(), frame.unwrap_err())
     }
 }
