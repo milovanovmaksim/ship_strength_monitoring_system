@@ -35,16 +35,18 @@ impl Frame {
         }
     }
 
+    pub fn abscissa(&self) -> f64 {
+        self.abscissa
+    }
+
     //
     // Валидация входных данных.
     fn validate_input_data(self) -> Result<Frame, String> {
-        match self.empty_data_validate() {
-            Ok(_) => {  },
-            Err(err) => { return Err(err); }
+        if let Err(err) = self.empty_data_validate() {
+            return Err(err);
         }
-        match self.same_length_data_validate() {
-            Ok(_) => { },
-            Err(err) => { return Err(err); }
+        if let Err(err) = self.same_length_data_validate() {
+            return Err(err);
         }
         Ok(self)
     }
@@ -78,16 +80,6 @@ impl Frame {
         }
         Err("Длины векторов, содержащих данные масштаба Бонжана для шпангоута, должны быть одинаковыми".to_string())
     }
-
-    pub fn id(&self) -> u64 { self.id }
-
-    pub fn drafts(&self) -> &Vec<f64> { &self.drafts }
-
-    pub fn abscissa(&self) ->f64 { self.abscissa }
-    pub fn areas(&self) -> &Vec<f64> { &self.areas }
-    pub fn volumes(&self) -> &Vec<f64> { &self.volumes }
-    pub fn masses(&self) -> &Vec<f64> { &self.masses }
-
 
     ///
     /// Возвращает погруженную площадь шпангоута для заданной осадки. [м^2]
