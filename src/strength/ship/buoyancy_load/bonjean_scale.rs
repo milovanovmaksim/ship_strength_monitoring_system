@@ -151,8 +151,6 @@ impl BonjeanScale {
                 Err(err)
             }
         }
-
-
     }
 
     ///
