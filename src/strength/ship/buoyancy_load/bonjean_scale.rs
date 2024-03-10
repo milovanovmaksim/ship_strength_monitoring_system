@@ -160,8 +160,50 @@ impl BonjeanScale {
     /// Parameters:
     ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
     ///     draft - осадка корабля [м].
-    pub fn underwater_area_frame(&self, abscissa: f64, draft: f64) -> f64 {
-        todo!();
+    pub fn underwater_area_frame(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
+        match self.validate_abscissa(abscissa) {
+            Ok(_) => {
+                match self.frame_id_by_abscissa(abscissa) {
+                    (index, None) => {
+                        let frame = self.frames.get(index).unwrap();
+                        match frame.area_by_draft(draft) {
+                            Ok(area) => { Ok(area) }
+                            Err(err) => {
+                                error!("BonjeanScale::underwater_area_frame | error: {}", err);
+                                Err(err)
+                            }
+                        }
+                    }
+                    (left_index, Some(right_index)) => {
+                        let left_frame = self.frames.get(left_index).unwrap();
+                        let right_frame  = self.frames.get(right_index).unwrap();
+                        let left_area = left_frame.area_by_draft(draft);
+                        if let Err(err) = left_area {
+                            error!("BonjeanScale::underwater_area_frame | error: {}", err);
+                            return Err(err);
+                        }
+                        let right_area = right_frame.area_by_draft(draft);
+                        if let Err(err) = left_area {
+                            error!("BonjeanScale::underwater_volume_frame | error: {}", err);
+                            return Err(err);
+                        }
+                        let linear_interpolation = LinearInterpolation::new(left_area.unwrap(), right_area.unwrap(),
+                            left_frame.abscissa(), right_frame.abscissa());
+                        match linear_interpolation.interpolated_value(abscissa) {
+                            Ok(area) => { Ok(area) }
+                            Err(err) => {
+                                error!("BonjeanScale::underwater_area_frame | error: {}", err);
+                                Err(err)
+                            }
+                        }
+                    }
+                }
+            }
+            Err(err) => {
+                error!("BonjeanScale::underwater_area_frame | error: {}", err);
+                Err(err)
+            }
+        }
 
 
     }
