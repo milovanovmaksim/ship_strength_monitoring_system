@@ -3,7 +3,7 @@ mod tests {
     use std::{env, sync::Once};
     use log::debug;
 
-    use crate::{core::json_file::JsonFile, strength::ship::{buoyancy_load::{bonjean_scale::BonjeanScale, frame::Frame}, ship_dimensions::ShipDimensions}};
+    use crate::{core::{json_file::JsonFile, round::Round}, strength::ship::{buoyancy_load::{bonjean_scale::BonjeanScale, frame::Frame}, ship_dimensions::ShipDimensions}};
 
     static INIT: Once = Once::new();
 
@@ -40,8 +40,13 @@ mod tests {
         let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
         let bonjean_scale = bonjean_scale(file_path.clone()).unwrap();
         let frames = frames(file_path).unwrap();
+        let ship_dimensions = ship_dimensions();
         let underwater_area_frame = bonjean_scale.underwater_area_frame(-56.25, 1.0).unwrap();
         assert_eq!(7.04, underwater_area_frame);
+
+        //// Линейно интерполирует погруженную площадь шпангоута между абсциссами -65.25 и -50.0 метра.
+        let underwater_area_frame = bonjean_scale.underwater_area_frame(-51.05, 1.0).unwrap().my_round(2);
+        assert_eq!(15.65, underwater_area_frame);
     }
 
 }
