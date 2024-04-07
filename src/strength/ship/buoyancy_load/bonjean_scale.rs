@@ -2,7 +2,7 @@ use log::{debug, error};
 use serde::Deserialize;
 
 use crate::{core::{json_file::JsonFile, linear_interpolation::LinearInterpolation}, strength::ship::ship_dimensions::ShipDimensions};
-use super::frame::Frame;
+use super::{bonjean_scale_data_type::BonjeanScaleDataType, frame::Frame};
 
 
 ///
@@ -99,22 +99,14 @@ impl BonjeanScale {
         Ok(())
     }
 
-
-    ///
-    /// Возвращает погруженный объем шпангоута для заданной осадки и абсциссы. [м^3]
-    /// Если шпангоут с заданной абсциссой отсутствует, линейно интерполирует
-    /// объем шпангоутов, имея в распоряжение объем двух соседних шпангоутов для заданной осадки.
-    /// Parameters:
-    ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
-    ///     draft - осадка корабля [м].
-    pub fn underwater_volume_frame(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
+    fn bonjean_scale_data(&self, abscissa: f64, draft: f64, type_data: BonjeanScaleDataType) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
             Ok(_) => {
                 match self.frame_id_by_abscissa(abscissa) {
                     (index, None) => {
                         let frame = self.frames.get(index).unwrap();
-                        match frame.volume_by_draft(draft) {
-                            Ok(volume) => { Ok(volume) }
+                        match frame.data_by_draft(draft, type_data) {
+                            Ok(value) => { Ok(value) }
                             Err(err) => {
                                 error!("BonjeanScale::underwater_volume_frame | error: {}", err);
                                 Err(err)
@@ -124,28 +116,46 @@ impl BonjeanScale {
                     (left_index, Some(right_index)) => {
                         let left_frame = self.frames.get(left_index).unwrap();
                         let right_frame  = self.frames.get(right_index).unwrap();
-                        let left_volume = left_frame.volume_by_draft(draft);
-                        if let Err(err) = left_volume {
+                        let left_value = left_frame.data_by_draft(draft, type_data);
+                        if let Err(err) = left_value {
                             error!("BonjeanScale::underwater_volume_frame | error: {}", err);
                             return Err(err);
                         }
-                        let right_volume = right_frame.volume_by_draft(draft);
-                        if let Err(err) = left_volume {
+                        let right_value = right_frame.data_by_draft(draft, type_data);
+                        if let Err(err) = right_value {
                             error!("BonjeanScale::underwater_volume_frame | error: {}", err);
                             return Err(err);
                         }
-                        let linear_interpolation = LinearInterpolation::new(left_volume.unwrap(), right_volume.unwrap(),
+                        let linear_interpolation = LinearInterpolation::new(left_value.unwrap(), right_value.unwrap(),
                             left_frame.abscissa(), right_frame.abscissa());
                         match linear_interpolation.interpolated_value(abscissa) {
-                            Ok(volume) => { Ok(volume) }
+                            Ok(value) => { Ok(value) }
                             Err(err) => {
-                                error!("BonjeanScale::underwater_volume_frame | error: {}", err);
+                                error!("BonjeanScale::bonjean_scale_data | error: {}", err);
                                 Err(err)
                             }
                         }
                     }
                 }
             }
+            Err(err) => {
+                error!("BonjeanScale::bonjean_scale_data | error: {}", err);
+                Err(err)
+            }
+        }
+    }
+
+
+    ///
+    /// Возвращает погруженный объем шпангоута для заданной осадки и абсциссы. [м^3]
+    /// Если шпангоут с заданной абсциссой отсутствует, линейно интерполирует
+    /// объем шпангоутов, имея в распоряжение объем двух соседних шпангоутов для заданной осадки.
+    /// Parameters:
+    ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
+    ///     draft - осадка корабля [м].
+    pub fn underwater_volume_frame(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
+        match self.bonjean_scale_data(abscissa, draft, BonjeanScaleDataType::Volume) {
+            Ok(value) => { Ok(value) }
             Err(err) => {
                 error!("BonjeanScale::underwater_volume_frame | error: {}", err);
                 Err(err)
@@ -161,46 +171,10 @@ impl BonjeanScale {
     ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
     ///     draft - осадка корабля [м].
     pub fn underwater_area_frame(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
-        match self.validate_abscissa(abscissa) {
-            Ok(_) => {
-                match self.frame_id_by_abscissa(abscissa) {
-                    (index, None) => {
-                        let frame = self.frames.get(index).unwrap();
-                        match frame.area_by_draft(draft) {
-                            Ok(area) => { Ok(area) }
-                            Err(err) => {
-                                error!("BonjeanScale::underwater_area_frame | error: {}", err);
-                                Err(err)
-                            }
-                        }
-                    }
-                    (left_index, Some(right_index)) => {
-                        let left_frame = self.frames.get(left_index).unwrap();
-                        let right_frame  = self.frames.get(right_index).unwrap();
-                        let left_area = left_frame.area_by_draft(draft);
-                        if let Err(err) = left_area {
-                            error!("BonjeanScale::underwater_area_frame | error: {}", err);
-                            return Err(err);
-                        }
-                        let right_area = right_frame.area_by_draft(draft);
-                        if let Err(err) = left_area {
-                            error!("BonjeanScale::underwater_volume_frame | error: {}", err);
-                            return Err(err);
-                        }
-                        let linear_interpolation = LinearInterpolation::new(left_area.unwrap(), right_area.unwrap(),
-                            left_frame.abscissa(), right_frame.abscissa());
-                        match linear_interpolation.interpolated_value(abscissa) {
-                            Ok(area) => { Ok(area) }
-                            Err(err) => {
-                                error!("BonjeanScale::underwater_area_frame | error: {}", err);
-                                Err(err)
-                            }
-                        }
-                    }
-                }
-            }
+        match self.bonjean_scale_data(abscissa, draft, BonjeanScaleDataType::Area) {
+            Ok(value) => { Ok(value) }
             Err(err) => {
-                error!("BonjeanScale::underwater_area_frame | error: {}", err);
+                error!("BonjeanScale::underwater_volume_frame | error: {}", err);
                 Err(err)
             }
         }
