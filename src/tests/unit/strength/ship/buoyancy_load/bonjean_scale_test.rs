@@ -44,7 +44,7 @@ mod tests {
         let underwater_area_frame = bonjean_scale.underwater_area_frame(-56.25, 1.0).unwrap();
         assert_eq!(7.04, underwater_area_frame);
 
-        //// Линейно интерполирует погруженную площадь шпангоута между абсциссами -65.25 и -50.0 метра.
+        //// Линейно интерполирует погруженную площадь шпангоута между абсциссами -65.25 м и -50.0 м.
         let underwater_area_frame = bonjean_scale.underwater_area_frame(-51.05, 1.0).unwrap().my_round(2);
         assert_eq!(15.65, underwater_area_frame);
     }
