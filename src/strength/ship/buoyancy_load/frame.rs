@@ -22,13 +22,13 @@ pub(crate) struct Frame {
     drafts: Vec<f64>,
     areas: Vec<f64>,
     volumes: Vec<f64>,
-    masses: Vec<f64>,
+    massa: Vec<f64>,
     abscissa: f64
 }
 
 impl Frame {
     pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Result<Self, String> {
-        match (Frame { id, drafts, areas, volumes, masses, abscissa }).validate_input_data() {
+        match (Frame { id, drafts, areas, volumes, massa: masses, abscissa }).validate_input_data() {
             Ok(frame) => { Ok(frame) }
             Err(err) => {
                 error!("Frame::new | error: {}", err);
@@ -66,7 +66,7 @@ impl Frame {
         if self.volumes.len() == 0 {
             return Err("Вектор, содержащий погруженные объемы шпангоута от осадки, не может быть пустым".to_string());
         }
-        if self.masses.len() == 0 {
+        if self.massa.len() == 0 {
             return Err("Вектор, содержащий погруженные массы шпангоута от осадки, не может быть пустым.".to_string());
         }
         Ok(())
@@ -77,7 +77,7 @@ impl Frame {
     // Векторы, содержащие данные масштаба Бонжана для шпангоута, должны иметь одинаковую длину.
     fn same_length_data_validate(&self) -> Result<(), String> {
         let draft_len = self.drafts.len();
-        if self.areas.len() == draft_len && self.volumes.len() == draft_len && self.masses.len() == draft_len {
+        if self.areas.len() == draft_len && self.volumes.len() == draft_len && self.massa.len() == draft_len {
             return Ok(());
         }
         Err("Длины векторов, содержащих данные масштаба Бонжана для шпангоута, должны быть одинаковыми".to_string())
@@ -113,7 +113,7 @@ impl Frame {
             match type_data {
                 BonjeanScaleDataType::Area => { &self.areas }
                 BonjeanScaleDataType::Volume => { &self.volumes },
-                BonjeanScaleDataType::Massa => { &self.masses },
+                BonjeanScaleDataType::Massa => { &self.massa },
             }
         };
         match self.validate_draft(draft) {
