@@ -145,12 +145,17 @@ impl Frame {
         }
     }
 
+    ///Максимальная осадка.
+    fn max_draft(&self) -> f64 {
+        *self.drafts.last().unwrap()
+    }
+
     ///
     /// Валидация осадки.
+    /// Осадка не должна превышать максимально допустимого значения для шпангоута.
     fn validate_draft(&self, draft: f64) -> Result<(), String> {
-        let max_draft = *self.drafts.last().unwrap();
-        if draft > max_draft {
-            return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} [м].", max_draft));
+        if draft > self.max_draft() {
+            return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} [м].", self.max_draft()));
         }
         Ok(())
     }
