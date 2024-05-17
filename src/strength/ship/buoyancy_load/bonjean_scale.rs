@@ -26,30 +26,6 @@ impl BonjeanScale {
         }
     }
 
-    ///
-    /// Create the object from json file.
-    pub fn from_json_file(file_path: String) -> Result<Self, String> {
-        let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(frames) => {
-                        debug!("BonjeanScale::from_json_file | Frames has been created sucessfuly. {:?}", frames);
-                        Ok(frames)
-                    },
-                    Err(err) => {
-                        error!("BonjeanScale::from_json_file | error: {:?}.",err);
-                        Err(err.to_string())
-                    }
-                }
-            },
-            Err(err) => {
-                error!("BonjeanScale::from_json_file | error: {:?}.",err);
-                Err(err)
-            }
-        }
-    }
-
     fn frames_validate(self) -> Result<BonjeanScale, String> {
         if self.frames.len() == 0 {
             return Err("Вектор шпангоутов пуст.".to_string());
@@ -89,11 +65,11 @@ impl BonjeanScale {
 
     fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
         if abscissa < self.shipdimensions.coordinate_aft() {
-            return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Переданно значение: {}",
+            return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Передано значение: {}",
                 self.shipdimensions.coordinate_aft(), abscissa));
         }
         if abscissa > self.shipdimensions.coordinate_bow() {
-            return Err(format!("Абсцисса вышла за пределы координаты носа судна. Координа носа: {}. Переданно значение: {}",
+            return Err(format!("Абсцисса вышла за пределы координаты носа судна. Координа носа: {}. Передано значение: {}",
                 self.shipdimensions.coordinate_bow(), abscissa));
         }
         Ok(())
