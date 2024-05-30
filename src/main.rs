@@ -24,11 +24,11 @@ fn main() {
     visualization.visualize();
 
     let lightweight_intensity = LightweightIntensity::new(&ship_dimensions);
-    let lightweight_intensity_spatium_functions = lightweight_intensity.spatium_functions(1750.56);
+    let lightweight_intensity_spatium_functions = lightweight_intensity.spatium_functions();
     let visualization = Visualisation::new(&lightweight_intensity_spatium_functions, "Lightweight intnesity".to_string(), "Lightweight intnesity".to_string(), 6.25);
     visualization.visualize();
 
-    let displacement = DisplacementIntensity::new(&deadweight_intnesity_spatium_functions, &lightweight_intensity_spatium_functions);
+    let displacement = DisplacementIntensity::new(deadweight_intnesity, lightweight_intensity);
     let spatium_functions = displacement.spatium_functions();
     let visualization = Visualisation::new(&spatium_functions, "Displacement intnesity".to_string(), "Displacement intnesity".to_string(), 6.25);
     visualization.visualize();

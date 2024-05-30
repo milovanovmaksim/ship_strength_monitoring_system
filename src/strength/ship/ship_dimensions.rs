@@ -14,11 +14,12 @@ pub struct ShipDimensions {
     length_between_perpendiculars: f64,
     number_spatiums: u64,
     completeness_coefficient: f64,
+    lightweight: f64
 }
 
 impl ShipDimensions {
-    pub fn new(length_between_perpendiculars: f64, number_spatiums: u64, completeness_coefficient: f64) -> Self {
-        ShipDimensions { length_between_perpendiculars, number_spatiums, completeness_coefficient }
+    pub fn new(length_between_perpendiculars: f64, number_spatiums: u64, completeness_coefficient: f64, lightweight: f64) -> Self {
+        ShipDimensions { length_between_perpendiculars, number_spatiums, completeness_coefficient, lightweight }
     }
 
     ///
@@ -115,5 +116,9 @@ impl ShipDimensions {
             spatium_end_coordinate += self.length_spatium();
         }
         index
+    }
+
+    pub fn lightweight(&self) -> f64 {
+        self.lightweight
     }
 }

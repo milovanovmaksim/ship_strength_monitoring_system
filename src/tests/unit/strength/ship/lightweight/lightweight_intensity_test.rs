@@ -23,9 +23,9 @@ mod tests {
     fn test_lightweight_intensity() {
         call_once();
         let test_weight = 1357.73;
-        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.5);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.5, test_weight);
         let test_lightweight = LightweightIntensity::new(&ship_dimensions);
-        let lightweight_intensity = test_lightweight.spatium_functions(test_weight);
+        let lightweight_intensity = test_lightweight.spatium_functions();
         let mut computed_weight = 0.0;
         for spatium in lightweight_intensity.as_ref() {
             computed_weight += spatium.integral();
