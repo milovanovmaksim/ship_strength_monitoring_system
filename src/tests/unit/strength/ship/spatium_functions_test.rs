@@ -300,7 +300,7 @@ mod tests {
         );
         let spatium_function = SpatiumFunction::new(0, -62.5 ,-56.25, 1.658, 1.658);
         let mut spatium_functions = SpatiumFunctions::filled_zeros(20, 125.0);
-        spatium_functions.add_spatium_function(&spatium_function);
+        spatium_functions.add(&spatium_function);
         assert_eq!(test_spatium_functions, spatium_functions);
     }
 }

@@ -28,7 +28,7 @@ mod tests {
             Shipload::new(5.0, Point::new(-64.0, 0.0, 0.0), 1.0)
         ]);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
-        let deadweight_intensity = DeadweightIntensity::new(shiploads);
+        let deadweight_intensity = DeadweightIntensity::new(shiploads, &ship_dimensions);
         let test_spatium_functions = SpatiumFunctions::new(
             vec![
                 SpatiumFunction::new(
@@ -133,8 +133,8 @@ mod tests {
                     14,
                     25.0,
                     31.25,
-                    0.37,
-                    0.37,
+                    0.36,
+                    0.36,
                 ),
                 SpatiumFunction::new(
                     15,
@@ -173,7 +173,7 @@ mod tests {
                 ),
             ]
         );
-        let spatium_functions = deadweight_intensity.deadweight_intensity(&ship_dimensions);
+        let spatium_functions = deadweight_intensity.deadweight_intensity();
         assert_eq!(test_spatium_functions, spatium_functions);
 
     }
