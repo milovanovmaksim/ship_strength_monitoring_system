@@ -3,6 +3,7 @@ use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
 use crate::strength::ship::load::shipload::Shipload;
+use crate::strength::ship::ship_dimensions::ShipDimensions;
 
 
 ///
@@ -43,6 +44,14 @@ impl Shiploads {
                 return Err(err);
             }
         }
+    }
+
+    pub fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Shiploads {
+        let mut shiploads = vec![];
+        for shipload in self.shiploads.iter() {
+            shiploads.extend(shipload.shared_shiploads(ship_dimensions))
+        }
+        Shiploads::new(shiploads)
     }
 
     ///

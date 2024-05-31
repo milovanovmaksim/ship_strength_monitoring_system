@@ -19,7 +19,7 @@ impl<'a> DeadweightIntensity<'a> {
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
         let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
-        let shiploads = self.shared_shiploads();
+        let shiploads = self.shiploads.shared_shiploads(self.ship_dimensions);
         for shipload in shiploads.into_iter() {
             for spatium_function in self.shipload_intensity(shipload).into_iter() {
                 spatium_functions.add(spatium_function)
@@ -27,15 +27,6 @@ impl<'a> DeadweightIntensity<'a> {
         }
         spatium_functions
     }
-
-    fn shared_shiploads(&self) -> Shiploads {
-        let mut shiploads = vec![];
-        for shipload in self.shiploads.as_ref() {
-            shiploads.extend(shipload.shared_shiploads(self.ship_dimensions))
-        }
-        Shiploads::new(shiploads)
-    }
-
 
     ///
     /// Compute intensity of shared shipload.
