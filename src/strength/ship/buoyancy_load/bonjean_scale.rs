@@ -37,8 +37,8 @@ impl BonjeanScale {
         for _ in 0..self.ship_dimensions.number_spatiums() {
             match linear_interpolation.interpolated_value(abscissa) {
                 Ok(draft) => {
-                    match self.frames.underwater_volume_frame(abscissa, draft, length_spatium) {
-                        Ok(underwater_volume_frame) => { ship_underwater_volume += underwater_volume_frame }
+                    match self.frames.frame_underwater_volume(abscissa, draft, length_spatium) {
+                        Ok(frame_underwater_volume) => { ship_underwater_volume += frame_underwater_volume }
                         Err(err) => {
                             error!("BonjeanScale::ship_underwater_volume | error: {}", err);
                             return Err(err);

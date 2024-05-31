@@ -118,7 +118,7 @@ impl Frames {
     /// Parameters:
     ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
     ///     draft - осадка корабля [м].
-    fn underwater_area_frame(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
+    fn frame_underwater_area(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
             Ok(_) => {
                 match self.frame_id_by_abscissa(abscissa) {
@@ -172,8 +172,8 @@ impl Frames {
     /// Parameters:
     ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
     ///     draft - осадка корабля [м].
-    pub fn underwater_volume_frame(&self, abscissa: f64, draft: f64, length_spatium: f64) -> Result<f64, String> {
-        match self.underwater_area_frame(abscissa, draft) {
+    pub fn frame_underwater_volume(&self, abscissa: f64, draft: f64, length_spatium: f64) -> Result<f64, String> {
+        match self.frame_underwater_area(abscissa, draft) {
             Ok(area) => { Ok((area * length_spatium).my_round(2)) }
             Err(err) => {
                 error!("Frames::underwater_volume_frame | error: {}", err);
