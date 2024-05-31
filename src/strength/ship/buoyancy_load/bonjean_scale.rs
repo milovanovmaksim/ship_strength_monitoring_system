@@ -1,7 +1,7 @@
-use log::{debug, error};
+use log::error;
 use serde::Deserialize;
 
-use crate::{core::{json_file::JsonFile, linear_interpolation::LinearInterpolation}, strength::ship::ship_dimensions::ShipDimensions};
+use crate::{core::linear_interpolation::LinearInterpolation, strength::ship::ship_dimensions::ShipDimensions};
 use super::{bonjean_scale_data_type::BonjeanScaleDataType, frame::Frame};
 
 
