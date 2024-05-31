@@ -7,7 +7,8 @@ use super::{bonjean_scale_data_type::BonjeanScaleDataType, frames::Frames};
 ///
 /// Масштаб Бонжана.
 /// Parameters:
-///     frames: Vec<Frame> - список шпангоутов судна.
+///     frames - шпангоуты судна.
+///     shipdimensions - размерения судна.
 pub(crate) struct BonjeanScale {
     frames: Frames,
     shipdimensions: ShipDimensions
@@ -68,7 +69,7 @@ impl BonjeanScale {
                             }
                         }
                     }
-                    _ => { unreachable!("Абсцисса лежит заданном диапазоне"); }
+                    _ => { unreachable!("Абсцисса лежит в диапазоне между координатой кормы и носа."); }
                 }
             }
             Err(err) => {
