@@ -21,14 +21,14 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let underwater_area_frame = bonjean_scale.underwater_area_frame(-56.25, 1.0).unwrap().my_round(2);
-        assert_eq!(7.04, underwater_area_frame);
+        assert_eq!(31.65, underwater_area_frame);
 
         //// Линейно интерполирует погруженную площадь шпангоута между абсциссами -65.25 м и -50.0 м.
         let underwater_area_frame = bonjean_scale.underwater_area_frame(-51.05, 1.0).unwrap().my_round(2);
-        assert_eq!(15.65, underwater_area_frame);
+        assert_eq!(32.01, underwater_area_frame);
     }
 
 
@@ -37,9 +37,9 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let ship_underwater_volume = bonjean_scale.ship_underwater_volume(3.5, 5.0).unwrap().my_round(2);
-        assert_eq!(22492.91, ship_underwater_volume);
+        let ship_underwater_volume = bonjean_scale.ship_underwater_volume(2.61, 2.61).unwrap().my_round(2);
+        assert_eq!(14329.72, ship_underwater_volume);
     }
 }

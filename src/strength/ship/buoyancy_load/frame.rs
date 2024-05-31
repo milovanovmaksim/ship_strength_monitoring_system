@@ -21,14 +21,12 @@ pub struct Frame {
     id: u64,
     drafts: Vec<f64>,
     areas: Vec<f64>,
-    volumes: Vec<f64>,
-    massa: Vec<f64>,
     abscissa: f64
 }
 
 impl Frame {
-    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, volumes: Vec<f64>, masses: Vec<f64>, abscissa: f64) -> Result<Self, String> {
-        match (Frame { id, drafts, areas, volumes, massa: masses, abscissa }).validate_input_data() {
+    pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, abscissa: f64) -> Result<Self, String> {
+        match (Frame { id, drafts, areas, abscissa }).validate_input_data() {
             Ok(frame) => { Ok(frame) }
             Err(err) => {
                 error!("Frame::new | error: {}", err);
@@ -63,12 +61,6 @@ impl Frame {
         if self.areas.len() == 0 {
             return Err("Вектор, содержащий погруженные площади шпангоута от осадки, не может быть пустым".to_string());
         }
-        if self.volumes.len() == 0 {
-            return Err("Вектор, содержащий погруженные объемы шпангоута от осадки, не может быть пустым".to_string());
-        }
-        if self.massa.len() == 0 {
-            return Err("Вектор, содержащий погруженные массы шпангоута от осадки, не может быть пустым.".to_string());
-        }
         Ok(())
     }
 
@@ -77,7 +69,7 @@ impl Frame {
     // Векторы, содержащие данные масштаба Бонжана для шпангоута, должны иметь одинаковую длину.
     fn same_length_data_validate(&self) -> Result<(), String> {
         let draft_len = self.drafts.len();
-        if self.areas.len() == draft_len && self.volumes.len() == draft_len && self.massa.len() == draft_len {
+        if self.areas.len() == draft_len {
             return Ok(());
         }
         Err("Длины векторов, содержащих данные масштаба Бонжана для шпангоута, должны быть одинаковыми".to_string())
@@ -104,26 +96,19 @@ impl Frame {
     /// //Линейно интерполирует погруженную площадь шпангоута между осадками 2.0 и 3.0 метра.
     /// assert_eq!(81.605, frame.data_by_draft(2.5, BonjeanScaleDataType::Area).unwrap());
     /// ```
-    pub fn data_by_draft(&self, draft: f64, type_data: BonjeanScaleDataType) -> Result<f64, String> {
+    pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
         let min_draft = *self.drafts.first().unwrap();
         if draft < min_draft {
             return Ok(0.0);
         }
-        let data = {
-            match type_data {
-                BonjeanScaleDataType::Area => { &self.areas }
-                BonjeanScaleDataType::Volume => { &self.volumes },
-                BonjeanScaleDataType::Massa => { &self.massa },
-            }
-        };
         match self.validate_draft(draft) {
             Ok(_) => {
                 match self.drafts.custom_binary_search(draft) {
                     (Some(left_point), Some(right_point)) => {
                         let draft_0 = *self.drafts.get(left_point).unwrap();
                         let draft_1 = *self.drafts.get(right_point).unwrap();
-                        let f_x_0 = *data.get(left_point).unwrap();
-                        let f_x_1 = *data.get(right_point).unwrap();
+                        let f_x_0 = *self.areas.get(left_point).unwrap();
+                        let f_x_1 = *self.areas.get(right_point).unwrap();
                         let linear_interpolated = LinearInterpolation::new(f_x_0, f_x_1, draft_0,draft_1);
                         match linear_interpolated.interpolated_value(draft) {
                             Ok(value) => { Ok(value) },
@@ -133,7 +118,7 @@ impl Frame {
                             }
                         }
                     },
-                    (Some(middle), None) => { Ok(*data.get(middle).unwrap()) },
+                    (Some(middle), None) => { Ok(*self.areas.get(middle).unwrap()) },
                     _ => { unreachable!("Осадка находится в допустимом диапазоне.
                         Пустые векторы, содержащие данные масштаба Бонжана для шпангоута, не допускаются.") }
                 }

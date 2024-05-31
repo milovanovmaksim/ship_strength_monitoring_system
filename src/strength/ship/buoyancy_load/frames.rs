@@ -1,5 +1,5 @@
 use log::{debug, error, warn};
-use crate::core::json_file::JsonFile;
+use crate::core::{json_file::JsonFile, linear_interpolation::LinearInterpolation, round::Round};
 
 use super::frame::Frame;
 
@@ -65,7 +65,7 @@ impl Frames {
     /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
     /// искомый шпангоут ```(Some(left_point), Some(right_point))```. Если абсцисса вышла за пределы корабля,
     /// возвращает (None, None).
-    pub fn frame_id_by_abscissa(&self, abscissa: f64) -> (Option<usize>, Option<usize>) {
+    fn frame_id_by_abscissa(&self, abscissa: f64) -> (Option<usize>, Option<usize>) {
         if abscissa > self.last().abscissa() && abscissa < self.first().abscissa() {
             return (None, None)
         }
@@ -94,8 +94,92 @@ impl Frames {
     }
 
 
-    pub fn get(&self, index: usize) -> Option<&Frame> {
+    fn get(&self, index: usize) -> Option<&Frame> {
         self.frames.get(index)
+    }
+
+
+    fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
+        if abscissa < self.first().abscissa() {
+            return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Передано значение: {}",
+                self.first().abscissa(), abscissa));
+        }
+        if abscissa > self.last().abscissa() {
+            return Err(format!("Абсцисса вышла за пределы координаты носа судна. Координа носа: {}. Передано значение: {}",
+                self.last().abscissa(), abscissa));
+        }
+        Ok(())
+    }
+
+    ///
+    /// Возвращает погруженную площадь шпангоута для заданной осадки и абсциссы. [м^2]
+    /// Если шпангоут с заданной абсциссой отсутствует, линейно инерполирует
+    /// площадь шпангоутов, имея в распоряжение площадь двух соседних шпангоутов для заданной осадки.
+    /// Parameters:
+    ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
+    ///     draft - осадка корабля [м].
+    fn underwater_area_frame(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
+        match self.validate_abscissa(abscissa) {
+            Ok(_) => {
+                match self.frame_id_by_abscissa(abscissa) {
+                    (Some(index), None) => {
+                        let frame = self.get(index).unwrap();
+                        match frame.area_by_draft(draft) {
+                            Ok(value) => { Ok(value) }
+                            Err(err) => {
+                                error!("Frames::underwater_area_frame | error: {}", err);
+                                Err(err)
+                            }
+                        }
+                    }
+                    (Some(left_index), Some(right_index)) => {
+                        let left_frame = self.frames.get(left_index).unwrap();
+                        let right_frame  = self.frames.get(right_index).unwrap();
+                        let left_value = left_frame.area_by_draft(draft);
+                        if let Err(err) = left_value {
+                            error!("Frames::underwater_area_frame | error: {}", err);
+                            return Err(err);
+                        }
+                        let right_value = right_frame.area_by_draft(draft);
+                        if let Err(err) = right_value {
+                            error!("Frames::underwater_area_frame | error: {}", err);
+                            return Err(err);
+                        }
+                        let linear_interpolation = LinearInterpolation::new(left_value.unwrap(), right_value.unwrap(),
+                            left_frame.abscissa(), right_frame.abscissa());
+                        match linear_interpolation.interpolated_value(abscissa) {
+                            Ok(value) => { Ok(value) }
+                            Err(err) => {
+                                error!("Frames::underwater_area_frame | error: {}", err);
+                                Err(err)
+                            }
+                        }
+                    }
+                    _ => { unreachable!("Абсцисса лежит в диапазоне между координатой кормы и носа."); }
+                }
+            }
+            Err(err) => {
+                error!("Frames::underwater_area_frame | error: {}", err);
+                Err(err)
+            }
+        }
+    }
+
+    ///
+    /// Возвращает погруженный объем шпангоута для заданной осадки и абсциссы. [м^3]
+    /// Если шпангоут с заданной абсциссой отсутствует, линейно интерполирует
+    /// объем шпангоутов, имея в распоряжение объем двух соседних шпангоутов для заданной осадки.
+    /// Parameters:
+    ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
+    ///     draft - осадка корабля [м].
+    pub fn underwater_volume_frame(&self, abscissa: f64, draft: f64, length_spatium: f64) -> Result<f64, String> {
+        match self.underwater_area_frame(abscissa, draft) {
+            Ok(area) => { Ok((area * length_spatium).my_round(2)) }
+            Err(err) => {
+                error!("Frames::underwater_volume_frame | error: {}", err);
+                Err(err)
+            }
+        }
     }
 }
 
