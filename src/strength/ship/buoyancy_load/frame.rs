@@ -17,7 +17,7 @@ use super::bonjean_scale_data_type::BonjeanScaleDataType;
 ///     abscissa - абсцисса шпангоута относительно центра корабля.
 /// Длина всех векторов должна быть одинакова и не равна нулю, в проивном случая будет возвращена ошибка.
 #[derive(Deserialize, Debug)]
-pub(crate) struct Frame {
+pub struct Frame {
     id: u64,
     drafts: Vec<f64>,
     areas: Vec<f64>,

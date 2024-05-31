@@ -1,5 +1,5 @@
 #[derive(Copy, Clone)]
-pub(crate) enum BonjeanScaleDataType {
+pub enum BonjeanScaleDataType {
     Volume,
     Area,
     Massa,

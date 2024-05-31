@@ -4,3 +4,4 @@ pub(crate) mod bonjean_scale;
 pub(crate) mod ship_trimming;
 pub(crate) mod hydrostatic_curves;
 pub(crate) mod bonjean_scale_data_type;
+pub(crate) mod frames;
