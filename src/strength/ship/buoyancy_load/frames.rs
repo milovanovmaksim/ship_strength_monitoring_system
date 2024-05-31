@@ -80,4 +80,16 @@ impl Frames {
         }
         (left_point, Some(right_point))
     }
+
+    pub fn get(&self, index: usize) -> Option<&Frame> {
+        self.frames.get(index)
+    }
+}
+
+
+impl AsRef<Vec<Frame>> for Frames {
+
+    fn as_ref(&self) -> &Vec<Frame> {
+        &self.frames
+    }
 }
