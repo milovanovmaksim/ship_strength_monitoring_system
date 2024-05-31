@@ -1,19 +1,22 @@
 
 use crate::{core::round::Round, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}};
 
+use super::lightweight::Lightweight;
+
 
 ///
 /// Lightweight - weight of the empty as-built ship without cargo, fuel, lubricating oil, ballast water,
 /// fresh water and feed water in tanks, consumable stores, passengers and crew and their belongings. Measured in tons.
 #[derive(Debug)]
 pub struct LightweightIntensity<'a> {
-    ship_dimensions: &'a ShipDimensions
+    ship_dimensions: &'a ShipDimensions,
+    lightweight: Lightweight
 
 }
 
 impl<'a> LightweightIntensity<'a> {
-    pub fn new(ship_dimensions: &'a ShipDimensions) -> Self {
-        LightweightIntensity { ship_dimensions }
+    pub fn new(ship_dimensions: &'a ShipDimensions, lightweight: Lightweight) -> Self {
+        LightweightIntensity { ship_dimensions, lightweight }
     }
 
     ///
@@ -24,12 +27,12 @@ impl<'a> LightweightIntensity<'a> {
         let mut current_coord = self.ship_dimensions.coordinate_aft() + half_length_spatium;
         let (a, b, c) = self.ship_dimensions.lightweight_intensity_parameters();
         let intensity_load = |ratio: f64| {
-            ((self.ship_dimensions.lightweight() / self.ship_dimensions.number_spatiums() as f64) * ratio) / self.ship_dimensions.length_spatium()
+            ((self.lightweight.lightweight() / self.ship_dimensions.number_spatiums() as f64) * ratio) / self.ship_dimensions.length_spatium()
         };
         let mut ratio: f64;
         for id in 0..self.ship_dimensions.number_spatiums() {
-            let end_coord = (current_coord + half_length_spatium);
-            let start_coord = (current_coord - half_length_spatium);
+            let end_coord = current_coord + half_length_spatium;
+            let start_coord = current_coord - half_length_spatium;
             if current_coord > self.ship_dimensions.coordinate_aft() && current_coord < (self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0) {
                 ratio = a + ((b - a) * ((self.ship_dimensions.length_between_perpendiculars() / 2.0) - current_coord.abs()))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
             } else if current_coord >= self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0 && current_coord < (self.ship_dimensions.coordinate_bow() - self.ship_dimensions.length_between_perpendiculars() / 3.0) {
