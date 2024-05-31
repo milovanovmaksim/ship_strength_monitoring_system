@@ -29,7 +29,7 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
         let frames = frames(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6, 1750.0);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions).unwrap();
         let underwater_area_frame = bonjean_scale.underwater_area_frame(-56.25, 1.0).unwrap();
         assert_eq!(7.04, underwater_area_frame);

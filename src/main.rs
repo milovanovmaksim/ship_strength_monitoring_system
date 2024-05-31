@@ -25,7 +25,7 @@ fn main() {
     visualization.visualize();
 
     let lightweight_intensity = LightweightIntensity::new(&ship_dimensions, lightweight);
-    let lightweight_intensity_spatium_functions = lightweight_intensity.spatium_functions();
+    let lightweight_intensity_spatium_functions = lightweight_intensity.lightweight_intensity();
     let visualization = Visualisation::new(&lightweight_intensity_spatium_functions, "Lightweight intnesity".to_string(), "Lightweight intnesity".to_string(), 6.25);
     visualization.visualize();
 

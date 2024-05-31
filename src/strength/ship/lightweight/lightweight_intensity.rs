@@ -21,7 +21,7 @@ impl<'a> LightweightIntensity<'a> {
 
     ///
     /// Computes the lightweight intensity for spatiums.
-    pub fn spatium_functions(&self) -> SpatiumFunctions {
+    pub fn lightweight_intensity(&self) -> SpatiumFunctions {
         let mut lightweight_intensity: Vec<SpatiumFunction> = vec![];
         let half_length_spatium = self.ship_dimensions.length_spatium() / 2.0;
         let mut current_coord = self.ship_dimensions.coordinate_aft() + half_length_spatium;
