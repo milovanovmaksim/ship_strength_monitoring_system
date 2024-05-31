@@ -5,9 +5,6 @@ use crate::{core::point::Point, strength::ship::ship_dimensions::ShipDimensions}
 
 
 
-
-
-
 ///
 /// SpatiumLoad - load acting on one spatium.
 /// value - load value in tons.
