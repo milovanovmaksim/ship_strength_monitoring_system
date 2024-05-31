@@ -1,5 +1,5 @@
 
-use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
+use crate::{core::round::Round, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}};
 
 
 ///
@@ -28,8 +28,8 @@ impl<'a> LightweightIntensity<'a> {
         };
         let mut ratio: f64;
         for id in 0..self.ship_dimensions.number_spatiums() {
-            let end_coord = current_coord + half_length_spatium;
-            let start_coord = current_coord - half_length_spatium;
+            let end_coord = (current_coord + half_length_spatium);
+            let start_coord = (current_coord - half_length_spatium);
             if current_coord > self.ship_dimensions.coordinate_aft() && current_coord < (self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0) {
                 ratio = a + ((b - a) * ((self.ship_dimensions.length_between_perpendiculars() / 2.0) - current_coord.abs()))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
             } else if current_coord >= self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0 && current_coord < (self.ship_dimensions.coordinate_bow() - self.ship_dimensions.length_between_perpendiculars() / 3.0) {
@@ -37,8 +37,8 @@ impl<'a> LightweightIntensity<'a> {
             } else {
                 ratio = c + ((b - c) * (self.ship_dimensions.length_between_perpendiculars() / 2.0 - current_coord))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
             }
-            let f_x = intensity_load(ratio);
-            let spatium_function = SpatiumFunction::new(id, start_coord, end_coord, f_x, f_x);
+            let f_x = intensity_load(ratio).my_round(2);
+            let spatium_function = SpatiumFunction::new(id, start_coord.my_round(2), end_coord.my_round(2), f_x, f_x);
             lightweight_intensity.push(spatium_function);
 
             current_coord += self.ship_dimensions.length_spatium();

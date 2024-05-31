@@ -1,6 +1,6 @@
 use log::debug;
 
-use crate::strength::ship::{load::{shipload::Shipload, shiploads::Shiploads}, ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions};
+use crate::{core::round::Round, strength::ship::{load::{shipload::Shipload, shiploads::Shiploads}, ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}};
 
 #[derive(Debug)]
 pub struct DeadweightIntensity<'a> {
@@ -21,7 +21,7 @@ impl<'a> DeadweightIntensity<'a> {
         let mut spatium_functions = SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
         let shiploads = self.shared_shiploads();
         for shipload in shiploads.into_iter() {
-            for spatium_function in self.shipload_intensity(shipload).iter() {
+            for spatium_function in self.shipload_intensity(shipload).into_iter() {
                 spatium_functions.add(spatium_function)
             }
         }
@@ -45,8 +45,8 @@ impl<'a> DeadweightIntensity<'a> {
             let min_intensity = |c_min: f64| { shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium())) / self.ship_dimensions.length_spatium() };
             let shipload_intensity_closure = |distance: f64, index: u64, next_index: u64| -> Vec<SpatiumFunction>  {
                 let mut spatium_functions = vec![];
-                let f_x_max_intensity = max_intensity(distance);
-                let f_x_min_intensity = min_intensity(distance);
+                let f_x_max_intensity = max_intensity(distance).my_round(2);
+                let f_x_min_intensity = min_intensity(distance).my_round(2);
                 let spatium_function = SpatiumFunction::from_id(index, self.ship_dimensions, f_x_max_intensity, f_x_max_intensity);
                 spatium_functions.push(spatium_function);
                 let spatium_function = SpatiumFunction::from_id(next_index,self.ship_dimensions, f_x_min_intensity, f_x_min_intensity);

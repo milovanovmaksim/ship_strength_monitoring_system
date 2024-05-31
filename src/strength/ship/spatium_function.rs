@@ -70,7 +70,7 @@ impl SpatiumFunction {
     }
 
     /// Add curretn object with another.
-    pub fn add(&self, term: &SpatiumFunction) -> SpatiumFunction {
+    pub fn add(&self, term: SpatiumFunction) -> SpatiumFunction {
         let f_x1 = self.f_x1 + term.f_x1().my_round(2);
         let f_x2 = self.f_x2 + term.f_x2().my_round(2);
         SpatiumFunction::new(self.id, self.x1, self.x2, f_x1, f_x2)
