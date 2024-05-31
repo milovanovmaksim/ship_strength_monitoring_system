@@ -28,7 +28,7 @@ impl BonjeanScale {
 
     fn frames_validate(self) -> Result<BonjeanScale, String> {
         if self.frames.len() == 0 {
-            return Err("Вектор шпангоутов пуст.".to_string());
+            return Err("Шпангоуты не заданы.".to_string());
         }
         Ok(self)
     }
