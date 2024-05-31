@@ -1,67 +1,23 @@
 use log::error;
-use serde::Deserialize;
 
 use crate::{core::linear_interpolation::LinearInterpolation, strength::ship::ship_dimensions::ShipDimensions};
-use super::{bonjean_scale_data_type::BonjeanScaleDataType, frame::Frame};
+use super::{bonjean_scale_data_type::BonjeanScaleDataType, frames::Frames};
 
 
 ///
 /// Масштаб Бонжана.
 /// Parameters:
 ///     frames: Vec<Frame> - список шпангоутов судна.
-#[derive(Deserialize, Debug)]
 pub(crate) struct BonjeanScale {
-    frames: Vec<Frame>,
+    frames: Frames,
     shipdimensions: ShipDimensions
 }
 
 impl BonjeanScale {
-    pub fn new(frames: Vec<Frame>, shipdimensions: ShipDimensions) -> Result<Self, String> {
-        match (BonjeanScale { frames, shipdimensions }).frames_validate() {
-            Ok(bonjean_scale) => { Ok(bonjean_scale) }
-            Err(err) => {
-                error!("BonjeanScale::new | error: {}", err);
-                Err(err)
-            }
-        }
+    pub fn new(frames: Frames, shipdimensions: ShipDimensions) -> Self {
+        BonjeanScale { frames, shipdimensions }
     }
 
-    fn frames_validate(self) -> Result<BonjeanScale, String> {
-        if self.frames.len() == 0 {
-            return Err("Шпангоуты не заданы.".to_string());
-        }
-        Ok(self)
-    }
-
-    ///
-    /// Бинарный поиск индекса шпангоута по абсциссе.
-    /// Возвращает индекс найденного шпангоута ```(index, None)```.
-    /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
-    /// искомый шпангоут ```(left_point, Some(right_point))```.
-    fn frame_id_by_abscissa(&self, abscissa: f64) -> (usize, Option<usize>) {
-        let mut left_point = 0;
-        let mut right_point = self.frames.len() - 1;
-        while left_point != right_point - 1 {
-            let middle = (left_point + right_point) / 2;
-            let frame = self.frames.get(middle).unwrap();
-            if frame.abscissa() > abscissa {
-                right_point = middle;
-            } else if frame.abscissa() < abscissa {
-                left_point = middle
-            } else if frame.abscissa() == abscissa {
-                return (middle, None);
-            }
-        }
-        let left_frame = self.frames.get(left_point).unwrap();
-        let right_frame = self.frames.get(right_point).unwrap();
-        if abscissa == left_frame.abscissa() {
-            return (left_point, None);
-        }
-        if abscissa == right_frame.abscissa() {
-            return (right_point, None);
-        }
-        (left_point, Some(right_point))
-    }
 
     fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
         if abscissa < self.shipdimensions.coordinate_aft() {
@@ -78,8 +34,8 @@ impl BonjeanScale {
     fn bonjean_scale_data(&self, abscissa: f64, draft: f64, type_data: BonjeanScaleDataType) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
             Ok(_) => {
-                match self.frame_id_by_abscissa(abscissa) {
-                    (index, None) => {
+                match self.frames.frame_id_by_abscissa(abscissa) {
+                    (Some(index), None) => {
                         let frame = self.frames.get(index).unwrap();
                         match frame.data_by_draft(draft, type_data) {
                             Ok(value) => { Ok(value) }
@@ -89,7 +45,7 @@ impl BonjeanScale {
                             }
                         }
                     }
-                    (left_index, Some(right_index)) => {
+                    (Some(left_index), Some(right_index)) => {
                         let left_frame = self.frames.get(left_index).unwrap();
                         let right_frame  = self.frames.get(right_index).unwrap();
                         let left_value = left_frame.data_by_draft(draft, type_data);
@@ -112,6 +68,7 @@ impl BonjeanScale {
                             }
                         }
                     }
+                    _ => { unreachable!("Абсцисса лежит заданном диапазоне"); }
                 }
             }
             Err(err) => {
@@ -166,12 +123,5 @@ impl BonjeanScale {
         todo!();
 
 
-    }
-}
-
-impl AsRef<Vec<Frame>> for BonjeanScale {
-
-    fn as_ref(&self) -> &Vec<Frame> {
-        &self.frames
     }
 }

@@ -28,7 +28,7 @@ impl Frames {
             Ok(content) => {
                 match serde_json::from_reader(content) {
                     Ok(frames) => {
-                        debug!("Frames::from_json_file | Frames has been created sucessfuly. {:?}", frames);
+                        debug!("Frames::from_json_file | Frames has been created sucessfuly.");
                         Frames::new(frames)
                     },
                     Err(err) => {
@@ -51,12 +51,24 @@ impl Frames {
         Ok(self)
     }
 
+    fn first(&self) -> &Frame {
+        self.frames.first().unwrap()
+    }
+
+    fn last(&self) -> &Frame {
+        self.frames.last().unwrap()
+    }
+
     ///
     /// Бинарный поиск индекса шпангоута по абсциссе.
-    /// Возвращает индекс найденного шпангоута ```(index, None)```.
+    /// Возвращает индекс найденного шпангоута.
     /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
-    /// искомый шпангоут ```(left_point, Some(right_point))```.
-    fn frame_id_by_abscissa(&self, abscissa: f64) -> (usize, Option<usize>) {
+    /// искомый шпангоут ```(Some(left_point), Some(right_point))```. Если абсцисса вышла за пределы корабля,
+    /// возвращает (None, None).
+    pub fn frame_id_by_abscissa(&self, abscissa: f64) -> (Option<usize>, Option<usize>) {
+        if abscissa > self.last().abscissa() && abscissa < self.first().abscissa() {
+            return (None, None)
+        }
         let mut left_point = 0;
         let mut right_point = self.frames.len() - 1;
         while left_point != right_point - 1 {
@@ -67,19 +79,20 @@ impl Frames {
             } else if frame.abscissa() < abscissa {
                 left_point = middle
             } else if frame.abscissa() == abscissa {
-                return (middle, None);
+                return (Some(middle), None);
             }
         }
         let left_frame = self.frames.get(left_point).unwrap();
         let right_frame = self.frames.get(right_point).unwrap();
         if abscissa == left_frame.abscissa() {
-            return (left_point, None);
+            return (Some(left_point), None);
         }
         if abscissa == right_frame.abscissa() {
-            return (right_point, None);
+            return (Some(right_point), None);
         }
-        (left_point, Some(right_point))
+        (Some(left_point), Some(right_point))
     }
+
 
     pub fn get(&self, index: usize) -> Option<&Frame> {
         self.frames.get(index)
