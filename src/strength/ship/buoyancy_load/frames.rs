@@ -14,7 +14,7 @@ impl Frames {
         match (Frames { frames }).frames_validate() {
             Ok(frames) => { Ok(frames) }
             Err(err) => {
-                error!("BonjeanScale::new | error: {}", err);
+                error!("Frames::new | error: {}", err);
                 Err(err)
             }
         }
@@ -126,7 +126,7 @@ impl Frames {
                         match frame.area_by_draft(draft) {
                             Ok(value) => { Ok(value) }
                             Err(err) => {
-                                error!("Frames::underwater_area_frame | error: {}", err);
+                                error!("Frames::frame_underwater_area | error: {}", err);
                                 Err(err)
                             }
                         }
@@ -134,12 +134,12 @@ impl Frames {
                     (Some(left_frame), Some(right_frame)) => {
                         let left_value = left_frame.area_by_draft(draft);
                         if let Err(err) = left_value {
-                            error!("Frames::underwater_area_frame | error: {}", err);
+                            error!("Frames::frame_underwater_area | error: {}", err);
                             return Err(err);
                         }
                         let right_value = right_frame.area_by_draft(draft);
                         if let Err(err) = right_value {
-                            error!("Frames::underwater_area_frame | error: {}", err);
+                            error!("Frames::frame_underwater_area | error: {}", err);
                             return Err(err);
                         }
                         let linear_interpolation = LinearInterpolation::new(left_value.unwrap(), right_value.unwrap(),
@@ -147,7 +147,7 @@ impl Frames {
                         match linear_interpolation.interpolated_value(abscissa) {
                             Ok(value) => { Ok(value) }
                             Err(err) => {
-                                error!("Frames::underwater_area_frame | error: {}", err);
+                                error!("Frames::frame_underwater_area | error: {}", err);
                                 Err(err)
                             }
                         }
@@ -156,7 +156,7 @@ impl Frames {
                 }
             }
             Err(err) => {
-                error!("Frames::underwater_area_frame | error: {}", err);
+                error!("Frames::frame_underwater_area | error: {}", err);
                 Err(err)
             }
         }
@@ -173,7 +173,7 @@ impl Frames {
         match self.frame_underwater_area(abscissa, draft) {
             Ok(area) => { Ok((area * length_spatium).my_round(2)) }
             Err(err) => {
-                error!("Frames::underwater_volume_frame | error: {}", err);
+                error!("Frames::frame_underwater_volume | error: {}", err);
                 Err(err)
             }
         }
