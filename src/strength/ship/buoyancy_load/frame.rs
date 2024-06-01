@@ -2,9 +2,6 @@ use log::error;
 use serde::Deserialize;
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
 
-use super::bonjean_scale_data_type::BonjeanScaleDataType;
-
-
 
 ///
 /// Содержит данные масштба Бонжана для конкретного шпангоута.
@@ -35,6 +32,8 @@ impl Frame {
         }
     }
 
+    ///
+    /// Абсцисса шпангоута относительно центра корабля.
     pub fn abscissa(&self) -> f64 {
         self.abscissa
     }
@@ -76,8 +75,8 @@ impl Frame {
     }
 
     ///
-    /// Возвращает данные масштаба Бонжана для заданной осадки.
-    /// Если такой осадки нет, линейно интерполирует данные масштаба Бонжана шпангоута
+    /// Возвращает площадь погруженной части шпангоута от осадки.
+    /// Если такой осадки нет, линейно интерполирует площадь шпангоута
     /// для промежуточных осадок, между которыми лежит заданная осадка.
     /// # Example
     /// ```
@@ -113,7 +112,7 @@ impl Frame {
                         match linear_interpolated.interpolated_value(draft) {
                             Ok(value) => { Ok(value) },
                             Err(error) => {
-                                error!("Frame::data_by_draft | error: {}", error);
+                                error!("Frame::area_by_draft | error: {}", error);
                                 Err(error)
                             }
                         }
@@ -124,7 +123,7 @@ impl Frame {
                 }
             },
             Err(error) => {
-                error!("Frame::data_by_draft | {}", error);
+                error!("Frame::area_by_draft | {}", error);
                 Err(error)
             }
         }
