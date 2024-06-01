@@ -60,12 +60,12 @@ impl Frames {
     }
 
     ///
-    /// Бинарный поиск индекса шпангоута по абсциссе.
-    /// Возвращает индекс найденного шпангоута.
-    /// Если шпангоут с заданной абсциссой отсутствует, возвращает индексы соседних шпангоутов между которыми лежит
-    /// искомый шпангоут ```(Some(left_point), Some(right_point))```. Если абсцисса вышла за пределы корабля,
+    /// Бинарный поиск шпангоута по абсциссе.
+    /// Возвращает найденный шпангоут.
+    /// Если шпангоут с заданной абсциссой отсутствует, возвращает соседние шпангоуты между которыми лежит
+    /// искомый шпангоут ```(Some(left_frame), Some(right_frame))```. Если абсцисса вышла за пределы корабля,
     /// возвращает (None, None).
-    fn frame_id_by_abscissa(&self, abscissa: f64) -> (Option<usize>, Option<usize>) {
+    fn frame_by_abscissa(&self, abscissa: f64) -> (Option<&Frame>, Option<&Frame>) {
         if abscissa > self.last().abscissa() && abscissa < self.first().abscissa() {
             return (None, None)
         }
@@ -79,18 +79,18 @@ impl Frames {
             } else if frame.abscissa() < abscissa {
                 left_point = middle
             } else if frame.abscissa() == abscissa {
-                return (Some(middle), None);
+                return (Some(frame), None);
             }
         }
         let left_frame = self.frames.get(left_point).unwrap();
         let right_frame = self.frames.get(right_point).unwrap();
         if abscissa == left_frame.abscissa() {
-            return (Some(left_point), None);
+            return (Some(left_frame), None);
         }
         if abscissa == right_frame.abscissa() {
-            return (Some(right_point), None);
+            return (Some(right_frame), None);
         }
-        (Some(left_point), Some(right_point))
+        (Some(left_frame), Some(right_frame))
     }
 
 
@@ -121,9 +121,8 @@ impl Frames {
     fn frame_underwater_area(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
             Ok(_) => {
-                match self.frame_id_by_abscissa(abscissa) {
-                    (Some(index), None) => {
-                        let frame = self.get(index).unwrap();
+                match self.frame_by_abscissa(abscissa) {
+                    (Some(frame), None) => {
                         match frame.area_by_draft(draft) {
                             Ok(value) => { Ok(value) }
                             Err(err) => {
@@ -132,9 +131,7 @@ impl Frames {
                             }
                         }
                     }
-                    (Some(left_index), Some(right_index)) => {
-                        let left_frame = self.frames.get(left_index).unwrap();
-                        let right_frame  = self.frames.get(right_index).unwrap();
+                    (Some(left_frame), Some(right_frame)) => {
                         let left_value = left_frame.area_by_draft(draft);
                         if let Err(err) = left_value {
                             error!("Frames::underwater_area_frame | error: {}", err);
