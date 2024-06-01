@@ -53,7 +53,7 @@ impl BonjeanScale {
                         match frame.area_by_draft(draft) {
                             Ok(value) => { Ok(value) }
                             Err(err) => {
-                                error!("Frames::frame_underwater_area | error: {}", err);
+                                error!("BonjeanScale::frame_underwater_area | error: {}", err);
                                 Err(err)
                             }
                         }
@@ -61,12 +61,12 @@ impl BonjeanScale {
                     (Some(left_frame), Some(right_frame)) => {
                         let left_value = left_frame.area_by_draft(draft);
                         if let Err(err) = left_value {
-                            error!("Frames::frame_underwater_area | error: {}", err);
+                            error!("BonjeanScale::frame_underwater_area | error: {}", err);
                             return Err(err);
                         }
                         let right_value = right_frame.area_by_draft(draft);
                         if let Err(err) = right_value {
-                            error!("Frames::frame_underwater_area | error: {}", err);
+                            error!("BonjeanScale::frame_underwater_area | error: {}", err);
                             return Err(err);
                         }
                         let linear_interpolation = LinearInterpolation::new(left_value.unwrap(), right_value.unwrap(),
@@ -74,7 +74,7 @@ impl BonjeanScale {
                         match linear_interpolation.interpolated_value(abscissa) {
                             Ok(value) => { Ok(value) }
                             Err(err) => {
-                                error!("Frames::frame_underwater_area | error: {}", err);
+                                error!("BonjeanScale::frame_underwater_area | error: {}", err);
                                 Err(err)
                             }
                         }
@@ -83,7 +83,7 @@ impl BonjeanScale {
                 }
             }
             Err(err) => {
-                error!("Frames::frame_underwater_area | error: {}", err);
+                error!("BonjeanScale::frame_underwater_area | error: {}", err);
                 Err(err)
             }
         }
@@ -98,7 +98,7 @@ impl BonjeanScale {
         match self.frame_underwater_area(abscissa, draft) {
             Ok(area) => { Ok((area * length_spatium).my_round(2)) }
             Err(err) => {
-                error!("Frames::frame_underwater_volume | error: {}", err);
+                error!("BonjeanScale::frame_underwater_volume | error: {}", err);
                 Err(err)
             }
         }
