@@ -3,9 +3,15 @@ use log::error;
 use crate::{core::linear_interpolation::LinearInterpolation, strength::ship::ship_dimensions::ShipDimensions};
 use super::frames::Frames;
 
+
+///
+/// Абсцисса центра велечины (центр тяжести погруженного объема судна)
 #[derive(Clone, Copy)]
 pub struct LCB(pub f64);
 
+
+///
+/// О0бъемное водоизмещение судна
 #[derive(Clone, Copy)]
 pub struct Displacement(pub f64);
 
