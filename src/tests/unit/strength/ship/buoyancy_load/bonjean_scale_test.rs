@@ -2,7 +2,7 @@
 mod tests {
     use std::{env, sync::Once};
 
-     use crate::{core::round::Round, strength::ship::{buoyancy_load::{bonjean_scale::BonjeanScale, frames::Frames}, ship_dimensions::ShipDimensions}};
+     use crate::{core::round::Round, strength::ship::{buoyancy_load::{bonjean_scale::{BonjeanScale, LCB}, frames::Frames}, ship_dimensions::ShipDimensions}};
 
     static INIT: Once = Once::new();
 
@@ -18,13 +18,15 @@ mod tests {
 
 
     #[test]
-    fn ship_underwater_volume_ok_test() {
+    fn run_ok_test() {
         call_once();
         let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let ship_underwater_volume = bonjean_scale.ship_underwater_volume(2.61, 2.61).unwrap().my_round(2);
-        assert_eq!(14329.62, ship_underwater_volume);
+        let mut bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
+        let result = bonjean_scale.bonjean_scale(2.61, 2.61).unwrap();
+        assert_eq!(-11.47, result.0.0.my_round(2));
+        assert_eq!(14351.77, result.1.0.my_round(2));
     }
+
 }
