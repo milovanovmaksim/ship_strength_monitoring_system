@@ -9,13 +9,13 @@ use super::frames::Frames;
 /// Parameters:
 ///     frames - шпангоуты судна.
 ///     shipdimensions - размерения судна.
-pub(crate) struct BonjeanScale {
-    frames: Frames,
+pub(crate) struct BonjeanScale<'a> {
+    frames: &'a Frames,
     ship_dimensions: ShipDimensions,
 }
 
-impl BonjeanScale {
-    pub fn new(frames: Frames, shipdimensions: ShipDimensions) -> Self {
+impl<'a> BonjeanScale<'a> {
+    pub fn new(frames: &'a Frames, shipdimensions: ShipDimensions) -> Self {
         BonjeanScale { frames, ship_dimensions: shipdimensions }
     }
 
