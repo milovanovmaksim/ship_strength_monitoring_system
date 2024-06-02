@@ -25,7 +25,20 @@ mod tests {
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
         let frame_underwater_volume = bonjean_scale.frame_underwater_volume(-58.75, 2.61).unwrap();
+        let frame_underwater_volume2 = bonjean_scale.frame_underwater_volume_trapezoid(-58.75, 2.61).unwrap();
         assert_eq!(977.62, frame_underwater_volume.my_round(2));
+        assert_eq!(989.54, frame_underwater_volume2.my_round(2));
+        let err = {
+            if frame_underwater_volume > frame_underwater_volume2 {
+                ((frame_underwater_volume - frame_underwater_volume2) / frame_underwater_volume2) * 100.0
+
+            } else if frame_underwater_volume2 > frame_underwater_volume {
+                ((frame_underwater_volume2 - frame_underwater_volume) / frame_underwater_volume) * 100.0
+            } else {
+                0.0
+            }
+        };
+        assert!(err < 5.0);
     }
 
     #[test]

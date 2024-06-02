@@ -24,7 +24,7 @@ impl<'a> BonjeanScale<'a> {
     /// Валидация абсциссы.
     /// Абсцисса не должна выходить за пределы координаты кормы или носа судна.
     /// Parameters:
-    ///     abscissa - координата шпангоута относительно центра корабля [м],
+    ///     abscissa - координата шпангоута относительно центра судна [м],
     fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
         if abscissa < self.frames.first().abscissa() {
             return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Передано значение: {}",
@@ -43,8 +43,8 @@ impl<'a> BonjeanScale<'a> {
     /// Если шпангоут с заданной абсциссой отсутствует, линейно инерполирует
     /// площадь шпангоутов, имея в распоряжение площадь двух соседних шпангоутов для заданной осадки.
     /// Parameters:
-    ///     abscissa - координата шпангоута относительно центра корабля [м],
-    ///     draft - осадка корабля [м].
+    ///     abscissa - координата шпангоута относительно центра судна [м],
+    ///     draft - осадка судна [м].
     pub fn frame_underwater_area(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
             Ok(_) => {
@@ -92,8 +92,8 @@ impl<'a> BonjeanScale<'a> {
     ///
     /// Возвращает погруженный объем шпангоута для заданной осадки и абсциссы. [м^3]
     /// Parameters:
-    ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
-    ///     draft - осадка корабля [м].
+    ///     x - координата шпангоута относительно центра судна (абсцисса) [м],
+    ///     draft - осадка судна [м].
     pub fn frame_underwater_volume(&self, abscissa: f64, draft: f64,) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         match self.frame_underwater_area(abscissa, draft) {
@@ -103,6 +103,19 @@ impl<'a> BonjeanScale<'a> {
                 Err(err)
             }
         }
+    }
+
+    ///
+    /// Возвращает погруженный объем шпангоута для заданной осадки и абсциссы. [м^3]
+    /// Используется численное интегрирование методом трапеций.
+    /// Parameters:
+    ///     x - координата шпангоута относительно центра судна (абсцисса) [м],
+    ///     draft - осадка судна [м].
+    pub fn frame_underwater_volume_trapezoid(&self, abscissa: f64, draft: f64,) -> Result<f64, String> {
+        let length_spatium = self.ship_dimensions.length_spatium();
+        let area_left_frame = self.frame_underwater_area(abscissa, draft)?;
+        let area_right_frame = self.frame_underwater_area(abscissa + length_spatium, draft)?;
+        Ok(((area_left_frame + area_right_frame) / 2.0) * length_spatium)
     }
 
 }
