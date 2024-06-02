@@ -76,10 +76,10 @@ mod tests {
         let shipload = Shipload::new(4.2, center_gravity, 12.5);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_shared_loads = vec![
-            Shipload::new(2.1, Point::new(-3.125, 0.0, 0.0), 6.25),
-            Shipload::new(2.1, Point::new(3.125, 0.0, 0.0), 6.25),
+            Shipload::new(2.1, Point::new(-3.13, 0.0, 0.0), 6.25),
+            Shipload::new(2.1, Point::new(3.13, 0.0, 0.0), 6.25),
         ];
-        let shared_loads = shipload.shared_shiploads(&ship_dimensions);;
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }
 
@@ -90,10 +90,10 @@ mod tests {
         let shipload = Shipload::new(4.2, center_gravity, 14.5);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_shared_loads = vec![
-            Shipload::new(0.2896551724137931, Point::new( -6.75, 0.0, 0.0 ), 1.0),
-            Shipload::new(1.8103448275862069, Point::new(-3.125, 0.0, 0.0), 6.25),
-            Shipload::new(1.8103448275862069, Point::new(3.125, 0.0, 0.0), 6.25),
-            Shipload::new(0.2896551724137931, Point::new(6.75, 0.0, 0.0 ), 1.0 )];
+            Shipload::new(0.29, Point::new( -6.75, 0.0, 0.0 ), 1.0),
+            Shipload::new(1.81, Point::new(-3.13, 0.0, 0.0), 6.25),
+            Shipload::new(1.81, Point::new(3.13, 0.0, 0.0), 6.25),
+            Shipload::new(0.29, Point::new(6.75, 0.0, 0.0 ), 1.0 )];
         let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }
@@ -105,9 +105,9 @@ mod tests {
         let shipload = Shipload::new(10.0, center_gravity, 12.5);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_shared_loads = vec![
-            Shipload::new(2.5, Point::new(-1.5625, 0.0, 0.0 ), 3.125),
-            Shipload::new(5.0, Point::new(3.125, 0.0, 0.0), 6.25),
-            Shipload::new(2.5, Point::new(7.8125, 0.0, 0.0), 3.125),];
+            Shipload::new(2.5, Point::new(-1.56, 0.0, 0.0 ), 3.13),
+            Shipload::new(5.0, Point::new(3.13, 0.0, 0.0), 6.25),
+            Shipload::new(2.5, Point::new(7.81, 0.0, 0.0), 3.13),];
         let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }
@@ -119,8 +119,8 @@ mod tests {
         let shipload = Shipload::new(10.0, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_shared_loads = vec![
-            Shipload::new(6.469147894221355, Point::new(-65.80250000000001,0.0, 0.0 ), 6.605000000000004),
-            Shipload::new(3.530852105778652, Point::new(-60.6975, 0.0, 0.0), 3.605000000000004)];
+            Shipload::new(6.47, Point::new(-65.80,0.0, 0.0 ), 6.61),
+            Shipload::new(3.53, Point::new(-60.70, 0.0, 0.0), 3.61)];
         let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }
@@ -132,9 +132,9 @@ mod tests {
         let shipload = Shipload::new(10.0, center_gravity, 10.21);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_shared_loads = vec![
-            Shipload::new(3.530852105778652, Point::new(60.6975, 0.0, 0.0), 3.605000000000004),
-            Shipload::new(6.121449559255632, Point::new(65.625, 0.0, 0.0), 6.25),
-            Shipload::new(0.3476983349657237, Point::new(68.92750000000001, 0.0, 0.0), 0.355000000000004)];
+            Shipload::new(3.53, Point::new(60.70, 0.0, 0.0), 3.61),
+            Shipload::new(6.12, Point::new(65.63, 0.0, 0.0), 6.25),
+            Shipload::new(0.35, Point::new(68.93, 0.0, 0.0), 0.36)];
         let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }

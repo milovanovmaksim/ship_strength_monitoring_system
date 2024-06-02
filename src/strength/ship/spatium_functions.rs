@@ -2,6 +2,7 @@ use crate::core::round::Round;
 
 use super::spatium_function::SpatiumFunction;
 
+
 #[derive(Debug, PartialEq)]
 pub struct SpatiumFunctions {
     spatium_functions: Vec<SpatiumFunction>
@@ -25,7 +26,7 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
-    pub fn add_spatium_function(&mut self, term: &SpatiumFunction) {
+    pub fn add(&mut self, term: SpatiumFunction) {
         let id = term.id() as usize;
         if let Some(spatium_function) =  self.spatium_functions.get_mut(id) {
             let new_spatium_function = spatium_function.add(term);

@@ -13,17 +13,21 @@ Cистема контроля прочности корабля (прибор �
 ```mermaid
 graph TD;
 Strength--> BendingMoment;
-BendingMoment -.-> NormalStress;
+BendingMoment-.->Strength;
 BendingMoment-->ShearForce;
 ShearForce -.->BendingMoment;
 ShearForce-->TotalShipLoad;
 TotalShipLoad -.-> ShearForce;
-TotalShipLoad-->Displacement;
-TotalShipLoad-->BuoyantLoad;
-BuoyantLoad -.->TotalShipLoad;
-Displacement-->Deadweight;
-Displacement-->Lightweight;
-Displacement -.-> TotalShipLoad;
-Lightweight -.->Displacement;
-Deadweight -.->Displacement;
+TotalShipLoad-->DisplacementIntensity;
+TotalShipLoad-->BuoyancyLoadIntensity;
+BuoyancyLoadIntensity -.->TotalShipLoad;
+BuoyancyLoadIntensity-->ShipTrimming;
+ShipTrimming-.->BuoyancyLoadIntensity;
+DisplacementIntensity-->DeadweightIntensity;
+DisplacementIntensity-->LightweightIntensity;
+DisplacementIntensity -.-> TotalShipLoad;
+LightweightIntensity -.->DisplacementIntensity;
+DeadweightIntensity -.->DisplacementIntensity;
+DeadweightIntensity-->LoadSharing;
+LoadSharing-.->DeadweightIntensity;
 ```
