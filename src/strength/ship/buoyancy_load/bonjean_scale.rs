@@ -5,18 +5,6 @@ use super::frames::Frames;
 
 
 ///
-/// Абсцисса центра велечины (центр тяжести погруженного объема судна)
-#[derive(Clone, Copy)]
-pub struct LCB(pub f64);
-
-
-///
-/// О0бъемное водоизмещение судна
-#[derive(Clone, Copy)]
-pub struct Displacement(pub f64);
-
-
-///
 /// Масштаб Бонжана.
 /// Parameters:
 ///     frames - шпангоуты судна.
@@ -57,7 +45,7 @@ impl BonjeanScale {
     /// Parameters:
     ///     abscissa - координата шпангоута относительно центра корабля [м],
     ///     draft - осадка корабля [м].
-    fn frame_underwater_area(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
+    pub fn frame_underwater_area(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
             Ok(_) => {
                 match self.frames.frame_by_abscissa(abscissa) {
@@ -106,7 +94,7 @@ impl BonjeanScale {
     /// Parameters:
     ///     x - координата шпангоута относительно центра корабля (абсцисса) [м],
     ///     draft - осадка корабля [м].
-    fn frame_underwater_volume(&self, abscissa: f64, draft: f64,) -> Result<f64, String> {
+    pub fn frame_underwater_volume(&self, abscissa: f64, draft: f64,) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         match self.frame_underwater_area(abscissa, draft) {
             Ok(area) => { Ok(area * length_spatium) }
@@ -115,41 +103,6 @@ impl BonjeanScale {
                 Err(err)
             }
         }
-    }
-
-    ///
-    /// Вычисляет данные масштаба Бонжана.
-    pub fn bonjean_scale(&mut self, aft_draft: f64, nose_draft: f64) -> Result<(LCB, Displacement), String>{
-        let length_spatium = self.ship_dimensions.length_spatium();
-        let coordinate_aft = self.ship_dimensions.coordinate_aft();
-        let mut abscissa = coordinate_aft;
-        let coordinate_bow = self.ship_dimensions.coordinate_bow();
-        let linear_interpolation = LinearInterpolation::new(aft_draft, nose_draft,
-                                                                                coordinate_aft, coordinate_bow);
-        let mut ship_underwater_volume = 0.0;
-        let mut moment = 0.0;
-        for _ in 0..self.ship_dimensions.number_spatiums() {
-            match linear_interpolation.interpolated_value(abscissa) {
-                Ok(draft) => {
-                    match self.frame_underwater_volume(abscissa, draft) {
-                        Ok(frame_underwater_volume) => {
-                            moment += frame_underwater_volume * abscissa;
-                            ship_underwater_volume += frame_underwater_volume;
-                        }
-                        Err(err) => {
-                            error!("BonjeanScale::ship_underwater_volume | error: {}", err);
-                            return Err(err);
-                        }
-                    }
-                }
-                Err(err) => {
-                    error!("BonjeanScale::ship_underwater_volume | error: {}", err);
-                    return Err(err);
-                }
-            }
-            abscissa += length_spatium
-        }
-        Ok((LCB((moment / ship_underwater_volume)), Displacement(ship_underwater_volume)))
     }
 
 }
