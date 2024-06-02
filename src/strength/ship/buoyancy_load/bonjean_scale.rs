@@ -9,7 +9,7 @@ use super::frames::Frames;
 /// Parameters:
 ///     frames - шпангоуты судна.
 ///     shipdimensions - размерения судна.
-pub(crate) struct BonjeanScale<'a> {
+pub struct BonjeanScale<'a> {
     frames: &'a Frames,
     ship_dimensions: ShipDimensions,
 }
