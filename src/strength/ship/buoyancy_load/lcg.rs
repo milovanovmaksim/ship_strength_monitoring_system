@@ -1,22 +1,13 @@
-use crate::strength::ship::load::shiploads::Shiploads;
+use crate::strength::ship::displacement::displacement_intensity::DisplacementIntensity;
 
-pub struct LCG<'a> {
-    shiploads: &'a Shiploads
+
+
+
+///
+/// Абcцисса центр тяжести судна. Англ.: Longitudinal Center of Gravity (LCG).
+/// Отсчитывается от мидель шпангоута. Имеет положительный знак от мидель шпангоута в нос судна.
+pub struct LCG {
+    shiploads: DisplacementIntensity
 
 }
 
-
-impl<'a> LCG<'a> {
-    pub fn new(shiploads: &'a Shiploads) -> Self {
-        LCG { shiploads }
-    }
-
-
-    pub fn lcg(&self) -> f64 {
-        let mut moment = 0.0;
-        for shiplod in self.shiploads.as_ref() {
-            moment += shiplod.moment();
-        }
-        moment / self.shiploads.sum()
-    }
-}
