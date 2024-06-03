@@ -74,6 +74,10 @@ impl Shipload {
         Shipload::new(load_value.my_round(2), center_gravity, load_length.my_round(2))
     }
 
+    pub fn moment(&self) -> f64 {
+        self.value * self.longitudinal_center_gravity()
+    }
+
     ///
     /// Share the shipload by spatiums.
     pub fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Vec<Shipload> {
