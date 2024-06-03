@@ -1,13 +1,13 @@
 use crate::strength::ship::{deadweight::deadweight_intensity::DeadweightIntensity, lightweight::lightweight_intensity::LightweightIntensity, spatium_functions::SpatiumFunctions};
 
-pub struct DisplacementIntensity<'a>{
-    deadweight_intensity: DeadweightIntensity<'a>,
-    lightweight_intnesity: LightweightIntensity<'a>,
+pub struct DisplacementIntensity{
+    deadweight_intensity: DeadweightIntensity,
+    lightweight_intnesity: LightweightIntensity,
 }
 
 
-impl<'a> DisplacementIntensity<'a> {
-    pub fn new(deadweight_intensity: DeadweightIntensity<'a>, lightweight_intnesity: LightweightIntensity<'a>) -> Self {
+impl DisplacementIntensity {
+    pub fn new(deadweight_intensity: DeadweightIntensity, lightweight_intnesity: LightweightIntensity) -> Self {
         DisplacementIntensity { deadweight_intensity, lightweight_intnesity }
     }
 

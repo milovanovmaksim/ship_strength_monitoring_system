@@ -19,12 +19,12 @@ fn main() {
     let shiploads = Shiploads::from_json_file("./input_data/input_data.json".to_string()).unwrap();
     let lightweight = Lightweight::from_json_file("./input_data/input_data.json".to_string()).unwrap();
     let ship_dimensions = ShipDimensions::from_json_file("./input_data/input_data.json".to_string()).unwrap();
-    let deadweight_intnesity = DeadweightIntensity::new(shiploads, &ship_dimensions);
+    let deadweight_intnesity = DeadweightIntensity::new(shiploads, ship_dimensions.clone());
     let deadweight_intnesity_spatium_functions = deadweight_intnesity.deadweight_intensity();
     let visualization = Visualisation::new(&deadweight_intnesity_spatium_functions, "Deadweight intnesity".to_string(), "Deadweight intnesity".to_string(), 6.25);
     visualization.visualize();
 
-    let lightweight_intensity = LightweightIntensity::new(&ship_dimensions, lightweight);
+    let lightweight_intensity = LightweightIntensity::new(ship_dimensions, lightweight);
     let lightweight_intensity_spatium_functions = lightweight_intensity.lightweight_intensity();
     let visualization = Visualisation::new(&lightweight_intensity_spatium_functions, "Lightweight intnesity".to_string(), "Lightweight intnesity".to_string(), 6.25);
     visualization.visualize();

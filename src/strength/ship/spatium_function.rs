@@ -39,6 +39,12 @@ impl SpatiumFunction {
         ((self.f_x1 + self.f_x2) / 2.0) * (self.x2 - self.x1)
     }
 
+    pub fn abscissa(&self) -> f64 {
+        let delta = (self.x2 - self.x1).abs();
+        self.x1 + delta / 2.0
+
+    }
+
     ///
     /// Return id of the object.
     pub fn id(&self) -> u64 {

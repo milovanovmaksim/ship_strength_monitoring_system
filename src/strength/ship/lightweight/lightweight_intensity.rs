@@ -8,14 +8,14 @@ use super::lightweight::Lightweight;
 /// Lightweight - weight of the empty as-built ship without cargo, fuel, lubricating oil, ballast water,
 /// fresh water and feed water in tanks, consumable stores, passengers and crew and their belongings. Measured in tons.
 #[derive(Debug)]
-pub struct LightweightIntensity<'a> {
-    ship_dimensions: &'a ShipDimensions,
+pub struct LightweightIntensity {
+    ship_dimensions: ShipDimensions,
     lightweight: Lightweight
 
 }
 
-impl<'a> LightweightIntensity<'a> {
-    pub fn new(ship_dimensions: &'a ShipDimensions, lightweight: Lightweight) -> Self {
+impl LightweightIntensity {
+    pub fn new(ship_dimensions: ShipDimensions, lightweight: Lightweight) -> Self {
         LightweightIntensity { ship_dimensions, lightweight }
     }
 
