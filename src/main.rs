@@ -34,3 +34,37 @@ fn main() {
     let visualization = Visualisation::new(&spatium_functions, "Displacement intnesity".to_string(), "Displacement intnesity".to_string(), 6.25);
     visualization.visualize();
 }
+
+
+// Strength {
+//     BendingMoment {
+//         Sheareforce {
+//             TotalShipload {
+//                 BuoyancyLoadintensity {
+//                     ShipTrimming {
+//                         LCB{
+//                             BonjeanScale{
+//                                 Frames
+//                             }
+//                         },
+//                         Displacement {
+//                             BonjeanScale{
+//                                 Frames
+//                             }
+//                         },
+//                         LCG {
+//                             DisplacementIntensity {
+//                                 DeadweightIntensity {},
+//                                 LightweightIntensity {}
+//                             }
+//                         },
+//                         DisplacementTonnage{
+//                             Lightweight{},
+//                             Deadweight{}
+//                         },
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
