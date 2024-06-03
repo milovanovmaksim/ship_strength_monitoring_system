@@ -36,4 +36,11 @@ DisplacementIntensity-->DeadweightIntensity;
 DisplacementIntensity-->LightweightIntensity;
 LightweightIntensity -.->DisplacementIntensity;
 DeadweightIntensity -.->DisplacementIntensity;
+ShipTrimming--> DisplacementTonnage;
+DisplacementTonnage -.-> ShipTrimming;
+DisplacementTonnage -->Lightweight;
+DisplacementTonnage -->Deadweight; 
+Lightweight -.-> DisplacementTonnage;
+Deadweight -.-> DisplacementTonnage;
+BonjeanScale--> Frames;
 ```
