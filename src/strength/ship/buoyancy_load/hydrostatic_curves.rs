@@ -1,5 +1,7 @@
 use log::error;
 
+use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
+
 
 ///
 /// HydrostaticCurves(гидростатические кривые) - кривые элементов теоретического чертежа, графические зависимости
@@ -94,12 +96,34 @@ impl HydrostaticCurves {
         Ok(())
     }
 
-    pub fn displacement_tonnage_by_draft(&self, draft: f64) -> Result<f64, String> {
-        match self.validate_draft(draft) {
-            Ok(_) => {todo!()}
-            Err(err) => {
-                error!("HydrostaticCurves::displacement_tonnage_by_draft | error: {}", err);
-                Err(err)
+    ///
+    /// Возвращает осадку судна по заданному весовому водоизмещению [м].
+    pub fn draft_by_displacement_tonnage(&self, dispalcement_tonnage: f64) -> Result<f64, String> {
+        match self.validate_dispalcement_tonnage(dispalcement_tonnage) {
+            Ok(_) => {
+                match self.displacement_tonnage.custom_binary_search(dispalcement_tonnage) {
+                    (Some(left_id), Some(right_id)) => {
+                        let linear_interpolation = LinearInterpolation::new(
+                            *self.drafts.get(left_id).unwrap(),
+                            *self.drafts.get(right_id).unwrap(),
+                            *self.displacement_tonnage.get(left_id).unwrap(),
+                            *self.displacement_tonnage.get(right_id).unwrap()
+                        );
+                        match linear_interpolation.interpolated_value(dispalcement_tonnage) {
+                            Ok(draft) => { Ok(draft) }
+                            Err(error) => {
+                                error!("HydrostaticCurves::draft_by_displacement_tonnage | {}", error);
+                                Err(error)
+                            }
+                        }
+                    }
+                    (Some(id), None) => { Ok(*self.drafts.get(id).unwrap()) }
+                    _ => unreachable!("Весовое водоизмещение находится в заданном диапазоне.")
+                }
+            }
+            Err(error) => {
+                error!("HydrostaticCurves::draft_by_displacement_tonnage | {}", error);
+                Err(error)
             }
         }
     }
