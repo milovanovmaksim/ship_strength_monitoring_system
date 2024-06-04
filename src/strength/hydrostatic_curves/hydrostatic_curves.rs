@@ -2,6 +2,8 @@ use log::error;
 
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
 
+use super::hydrostatic_typedata::HydrostaticTypeData;
+
 
 ///
 /// HydrostaticCurves(гидростатические кривые) - кривые элементов теоретического чертежа, графические зависимости
@@ -127,6 +129,44 @@ impl HydrostaticCurves {
             }
             Err(error) => {
                 error!("HydrostaticCurves::draft_by_displacement_tonnage | {}", error);
+                Err(error)
+            }
+        }
+    }
+
+    pub fn get_data_by_draft(&self, draft: f64, type_data: HydrostaticTypeData) -> Result<f64, String> {
+        let data = {
+            match type_data {
+                HydrostaticTypeData::LCB => { &self.x_c }
+                HydrostaticTypeData::LCF => { &self.x_f }
+                HydrostaticTypeData::WaterlineArea => { &self.waterline_area }
+                HydrostaticTypeData::LongitudinalMetacentricRadius => { &self.r_l }
+            }
+        };
+        match self.validate_draft(draft) {
+            Ok(_) => {
+                match data.custom_binary_search(draft) {
+                    (Some(left_index), Some(right_index)) => {
+                        let linear_interpolation = LinearInterpolation::new(
+                            *data.get(left_index).unwrap(),
+                            *data.get(right_index).unwrap(),
+                            *self.drafts.get(left_index).unwrap(),
+                            *self.drafts.get(right_index).unwrap()
+                        );
+                        match linear_interpolation.interpolated_value(draft) {
+                            Ok(value) => { return Ok(value); }
+                            Err(error) => {
+                                error!("HydrostaticCurves::get_data_by_draft | {}", error);
+                                return Err(error);
+                            }
+                        }
+                    }
+                    (Some(index), None) => { Ok(*data.get(index).unwrap()) }
+                    _ => { unreachable!("Осадка находится в допустимом диапазоне.") }
+                }
+            }
+            Err(error) => {
+                error!("HydrostaticCurves::get_data_by_draft | {}", error);
                 Err(error)
             }
         }
