@@ -22,7 +22,7 @@ impl<'a> LCB<'a> {
     }
 
     ///
-    /// Возвращает абсциссу центра велечины (центр тяжести погруженного объема судна).
+    /// Возвращает абсциссу центра велечины (центр тяжести погруженного объема судна). [м]
     /// Parameters:
     ///     aft_draft - осадка кормы [м],
     ///     node_draft - осадка носа [м].
@@ -44,13 +44,13 @@ impl<'a> LCB<'a> {
                             ship_underwater_volume += frame_underwater_volume;
                         }
                         Err(err) => {
-                            error!("BonjeanScale::ship_underwater_volume | error: {}", err);
+                            error!("LCB::lcb | error: {}", err);
                             return Err(err);
                         }
                     }
                 }
                 Err(err) => {
-                    error!("BonjeanScale::ship_underwater_volume | error: {}", err);
+                    error!("LCB::lcb | error: {}", err);
                     return Err(err);
                 }
             }
