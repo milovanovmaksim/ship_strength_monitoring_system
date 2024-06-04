@@ -21,6 +21,15 @@ impl ShipDimensions {
         ShipDimensions { length_between_perpendiculars, number_spatiums, completeness_coefficient }
     }
 
+
+    fn validate_number_spatiums(self) -> Result<ShipDimensions, String> {
+        if self.number_spatiums > 200 {
+            return Err("Количество шпаций превысило максимально допустимое значение. Максимальное количество шпаций: 200".to_string());
+        }
+        Ok(self)
+
+    }
+
     ///
     /// Return length spatium
     pub fn length_spatium(&self) -> f64 {
