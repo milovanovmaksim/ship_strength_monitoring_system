@@ -104,11 +104,11 @@ impl Frame {
             Ok(_) => {
                 match self.drafts.custom_binary_search(draft) {
                     (Some(left_point), Some(right_point)) => {
-                        let draft_0 = *self.drafts.get(left_point).unwrap();
-                        let draft_1 = *self.drafts.get(right_point).unwrap();
-                        let f_x_0 = *self.areas.get(left_point).unwrap();
-                        let f_x_1 = *self.areas.get(right_point).unwrap();
-                        let linear_interpolated = LinearInterpolation::new(f_x_0, f_x_1, draft_0,draft_1);
+                        let linear_interpolated = LinearInterpolation::new(
+                            *self.areas.get(left_point).unwrap(),
+                            *self.areas.get(right_point).unwrap(),
+                            *self.drafts.get(left_point).unwrap(),
+                            *self.drafts.get(right_point).unwrap());
                         match linear_interpolated.interpolated_value(draft) {
                             Ok(value) => { Ok(value) },
                             Err(error) => {
