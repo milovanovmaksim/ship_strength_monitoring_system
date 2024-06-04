@@ -37,13 +37,13 @@ impl<'a> Displacement<'a> {
                             ship_underwater_volume += frame_underwater_volume;
                         }
                         Err(err) => {
-                            error!("LCB::lcb | error: {}", err);
+                            error!("Displacement::displacement | error: {}", err);
                             return Err(err);
                         }
                     }
                 }
                 Err(err) => {
-                    error!("LCB::lcb | error: {}", err);
+                    error!("Displacement::displacement | error: {}", err);
                     return Err(err);
                 }
             }
