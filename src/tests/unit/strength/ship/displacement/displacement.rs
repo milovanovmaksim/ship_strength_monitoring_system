@@ -21,9 +21,22 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(235.0, 2000000, 0.6);
         let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
         let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
         assert_eq!(14329.62, displacement.displacement(2.61, 2.61).unwrap().my_round(2));
+    }
+
+    #[test]
+    fn displacement_error_test() {
+        call_once();
+        let file_path = "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
+        let frames = Frames::from_json_file(file_path).unwrap();
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
+        let ship_underwater_volume = displacement.displacement(2.61, 20.61);
+        assert!(ship_underwater_volume.is_err());
+        assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), ship_underwater_volume)
     }
 }
