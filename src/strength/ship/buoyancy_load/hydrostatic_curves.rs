@@ -1,3 +1,5 @@
+use log::error;
+
 
 ///
 /// HydrostaticCurves(гидростатические кривые) - кривые элементов теоретического чертежа, графические зависимости
@@ -5,7 +7,7 @@
 /// и центра тяжести, водоизмещения, положения центра величины по длине и по высоте, возвышения поперечного
 /// и продольного метацентров над килем.
 /// Paramenters:
-///     drafts: осадка,
+///     drafts: осадка, вектор должен быть отсортирован по возрастанию,
 ///     displacement: Весовое водоизмещение,
 ///     x_c: абсцисса центра велечины,
 ///     waterline_area: площадь ватерлинии,
@@ -20,11 +22,18 @@ pub(crate) struct HydrostaticCurves {
 
 
 impl HydrostaticCurves {
-    pub fn new(drafts: Vec<f64>, displacement_tonnage: Vec<f64>, x_c: Vec<f64>, waterline_area: Vec<f64>, x_f: Vec<f64>) -> Result<Self, String> {
-        HydrostaticCurves { drafts, displacement_tonnage, x_c, waterline_area, x_f }.validate_data()
+    pub fn new(mut drafts: Vec<f64>, displacement_tonnage: Vec<f64>, x_c: Vec<f64>, waterline_area: Vec<f64>, x_f: Vec<f64>) -> Result<Self, String> {
+        match (HydrostaticCurves { drafts, displacement_tonnage, x_c, waterline_area, x_f }).validate_data() {
+            Ok(hydrostatic_curves) => { Ok(hydrostatic_curves) }
+            Err(err) => {
+                error!("HydrostaticCurves::new | error: {}", err);
+                Err(err)
+            }
+        }
     }
 
-    fn validate_data(self) -> Result<HydrostaticCurves, String> {
+    fn validate_data(mut self) -> Result<HydrostaticCurves, String> {
+        self.drafts.sort_by(|a, b| a.partial_cmp(b).unwrap());
         if let Err(err) = self.validate_empty_data() {
             return Err(err);
         }
@@ -69,5 +78,33 @@ impl HydrostaticCurves {
         Err("Осадка судна (drafts), площадь ватерлинии (waterline_area), весовое водоизмещение (displacement_tonnage) должны быть больше нуля.".to_string())
     }
 
-    
+    fn validate_draft(&self, draft: f64) -> Result<(), String> {
+        let max_draft = *self.drafts.last().unwrap();
+        if draft > max_draft {
+            return Err(format!("Осадка превысила максимальную осадку для данного судна. Максимальная осадка по гидростатическим кривым составляет: {}, передано значение: {}", max_draft, draft));
+        }
+        Ok(())
+    }
+
+    fn validate_dispalcement_tonnage(&self, dispalcement_tonnage: f64) -> Result<(), String> {
+        let max_dispalcement_tonnage = *self.displacement_tonnage.last().unwrap();
+        if dispalcement_tonnage > max_dispalcement_tonnage {
+            return Err(format!("Весовое водоизмещение превысило максимальное водоизмещение для данного судна. Максимальное весовое водоизмещение по гидростатическим кривым составляет: {}, передано значение: {}", max_dispalcement_tonnage, dispalcement_tonnage));
+        }
+        Ok(())
+    }
+
+    pub fn displacement_tonnage_by_draft(&self, draft: f64) -> Result<f64, String> {
+        match self.validate_draft(draft) {
+            Ok(_) => {todo!()}
+            Err(err) => {
+                error!("HydrostaticCurves::displacement_tonnage_by_draft | error: {}", err);
+                Err(err)
+            }
+        }
+    }
+
+
+
+
 }
