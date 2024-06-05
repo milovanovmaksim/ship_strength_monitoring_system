@@ -164,6 +164,8 @@ impl HydrostaticCurves {
 
     ///
     /// Валидация: осадка не должна превышать осадку судна в полном грузу.
+    /// Parameters:
+    ///     draft - осадка судна.
     fn validate_draft(&self, draft: f64) -> Result<(), String> {
         let max_draft = *self.drafts.last().unwrap();
         if draft > max_draft {
@@ -174,6 +176,8 @@ impl HydrostaticCurves {
 
     ///
     /// Валидация: весовое водоизмещение не должно превышать максимальное весовое водоизмещение судна в полном грузу.
+    /// Parameters:
+    ///     dispalcement_tonnage - весовое вододоизмещение.
     fn validate_dispalcement_tonnage(&self, dispalcement_tonnage: f64) -> Result<(), String> {
         let max_dispalcement_tonnage = *self.displacement_tonnage.last().unwrap();
         if dispalcement_tonnage > max_dispalcement_tonnage {
@@ -185,6 +189,8 @@ impl HydrostaticCurves {
     ///
     /// Возвращает осадку судна по заданному весовому водоизмещению [м].
     /// Если весовое водоизмещение меньше чем весовое водоизмещение судна порожнем, возвращает 0.0.
+    /// Parameters:
+    ///     dispalcement_tonnage - весовое вододоизмещение.
     pub fn draft_by_displacement_tonnage(&self, dispalcement_tonnage: f64) -> Result<f64, String> {
         match self.validate_dispalcement_tonnage(dispalcement_tonnage) {
             Ok(_) => {
@@ -227,6 +233,9 @@ impl HydrostaticCurves {
 
     ///
     /// Возвращает данные элементов теоретического чертежа от осадки судна.
+    /// Parameters:
+    ///     draft - осадка судна,
+    ///     type_data - enum HydrostaticTypeData
     pub fn get_data_by_draft(
         &self,
         draft: f64,
