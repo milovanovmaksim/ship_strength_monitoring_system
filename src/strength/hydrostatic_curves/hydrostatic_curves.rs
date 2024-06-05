@@ -82,7 +82,7 @@ impl HydrostaticCurves {
 
     ///
     /// Валидация входных данных.
-    fn validate_data(mut self) -> Result<HydrostaticCurves, String> {
+    fn validate_data(self) -> Result<HydrostaticCurves, String> {
         if let Err(err) = self.validate_empty_data() {
             return Err(err);
         }
@@ -92,8 +92,12 @@ impl HydrostaticCurves {
         if let Err(err) = self.validate_more_zero() {
             return Err(err);
         }
+        if let Err(err) = self.validate_drafts() {
+            return Err(err);
+        }
         Ok(self)
     }
+
 
     ///
     /// Валидация: все элементы теоретического чертежа должны быть заданы.
@@ -106,6 +110,16 @@ impl HydrostaticCurves {
             || self.r_l.len() == 0
         {
             return Err("Гидростатические кривые не заданы".to_string());
+        }
+        Ok(())
+    }
+
+    fn validate_drafts(&self) -> Result<(), String>{
+        let priviuse_draft = self.drafts.first().unwrap();
+        for draft in self.drafts[1..].iter() {
+            if draft < priviuse_draft {
+                return Err("Осадка `drafts` должна быть отсортированна по возрастанию и не содержать повторяющихся значений.".to_string());
+            }
         }
         Ok(())
     }
