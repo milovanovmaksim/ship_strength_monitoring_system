@@ -118,14 +118,14 @@ impl HydrostaticCurves {
         let priviuse_draft = self.drafts.first().unwrap();
         for draft in self.drafts[1..].iter() {
             if draft < priviuse_draft {
-                return Err("Осадка `drafts` должна быть отсортированна по возрастанию и не содержать повторяющихся значений.".to_string());
+                return Err("Осадка `drafts` должна быть отсортирована по возрастанию и не содержать повторяющихся значений.".to_string());
             }
         }
         Ok(())
     }
 
     ///
-    /// Валидация: массивы, содержащие данные элементов теоретического чертежа должны иметь одинаковую длину.
+    /// Валидация: массивы, содержащие данные элементов теоретического чертежа, должны иметь одинаковую длину.
     fn validate_same_length(&self) -> Result<(), String> {
         let drafts_len = self.drafts.len();
         if drafts_len == self.displacement_tonnage.len()
@@ -169,7 +169,7 @@ impl HydrostaticCurves {
     fn validate_draft(&self, draft: f64) -> Result<(), String> {
         let max_draft = *self.drafts.last().unwrap();
         if draft > max_draft {
-            return Err(format!("Осадка превысила максимальную осадку для данного судна. Максимальная осадка по гидростатическим кривым составляет: {}, передано значение: {}", max_draft, draft));
+            return Err(format!("Осадка превысила осадку судна в полном грузу. Осадка судна в полном грузу составляет: {}, передано значение: {}", max_draft, draft));
         }
         Ok(())
     }
@@ -181,7 +181,7 @@ impl HydrostaticCurves {
     fn validate_dispalcement_tonnage(&self, dispalcement_tonnage: f64) -> Result<(), String> {
         let max_dispalcement_tonnage = *self.displacement_tonnage.last().unwrap();
         if dispalcement_tonnage > max_dispalcement_tonnage {
-            return Err(format!("Весовое водоизмещение превысило максимальное водоизмещение судна в полном грузу. Максимальное весовое водоизмещение судна в полном грузу составляет: {}, передано значение: {}", max_dispalcement_tonnage, dispalcement_tonnage));
+            return Err(format!("Весовое водоизмещение превысило водоизмещение судна в полном грузу. Весовое водоизмещение судна в полном грузу составляет: {}, передано значение: {}", max_dispalcement_tonnage, dispalcement_tonnage));
         }
         Ok(())
     }
