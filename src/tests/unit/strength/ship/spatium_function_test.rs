@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction};
+    use crate::strength::ship::{
+        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
+    };
 
     #[test]
     fn from_id_test() {

@@ -1,19 +1,17 @@
 use crate::strength::ship::displacement::displacement_intensity::DisplacementIntensity;
 
-
-
-
 ///
 /// Абcцисса центр тяжести судна. Англ.: Longitudinal Center of Gravity (LCG).
 /// Отсчитывается от мидель шпангоута. Имеет положительный знак от мидель шпангоута в нос судна.
 pub struct LCG {
-    displacement_intensity: DisplacementIntensity
+    displacement_intensity: DisplacementIntensity,
 }
-
 
 impl LCG {
     pub fn new(displacement_intensity: DisplacementIntensity) -> Self {
-        LCG { displacement_intensity }
+        LCG {
+            displacement_intensity,
+        }
     }
 
     pub fn lcg(&self) -> f64 {
@@ -27,4 +25,3 @@ impl LCG {
         moment / displacement
     }
 }
-

@@ -1,4 +1,3 @@
-
 ///
 /// Линейная интерполяция.
 /// Parameters:
@@ -9,12 +8,17 @@ pub(crate) struct LinearInterpolation {
     f_x_0: f64,
     f_x_1: f64,
     x_0: f64,
-    x_1: f64
+    x_1: f64,
 }
 
 impl LinearInterpolation {
     pub fn new(f_x_0: f64, f_x_1: f64, x_0: f64, x_1: f64) -> Self {
-        LinearInterpolation {f_x_0, f_x_1, x_0, x_1}
+        LinearInterpolation {
+            f_x_0,
+            f_x_1,
+            x_0,
+            x_1,
+        }
     }
 
     ///
@@ -28,10 +32,10 @@ impl LinearInterpolation {
             return Err("x_0 должен быть строго меньше чем x_1".to_string());
         }
         if self.x_0 <= x && x <= self.x_1 {
-            let f_x = self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1 - self.x_0)) * (x - self.x_0);
+            let f_x =
+                self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1 - self.x_0)) * (x - self.x_0);
             return Ok(f_x);
         }
         Err("Function argument 'x' should be x_0 < x < x_1.".to_owned())
-
     }
 }

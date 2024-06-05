@@ -1,8 +1,12 @@
-
-use crate::{core::round::Round, strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}};
+use crate::{
+    core::round::Round,
+    strength::ship::{
+        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
+        spatium_functions::SpatiumFunctions,
+    },
+};
 
 use super::lightweight::Lightweight;
-
 
 ///
 /// Lightweight - weight of the empty as-built ship without cargo, fuel, lubricating oil, ballast water,
@@ -10,13 +14,15 @@ use super::lightweight::Lightweight;
 #[derive(Debug)]
 pub struct LightweightIntensity {
     ship_dimensions: ShipDimensions,
-    lightweight: Lightweight
-
+    lightweight: Lightweight,
 }
 
 impl LightweightIntensity {
     pub fn new(ship_dimensions: ShipDimensions, lightweight: Lightweight) -> Self {
-        LightweightIntensity { ship_dimensions, lightweight }
+        LightweightIntensity {
+            ship_dimensions,
+            lightweight,
+        }
     }
 
     ///
@@ -27,21 +33,42 @@ impl LightweightIntensity {
         let mut current_coord = self.ship_dimensions.coordinate_aft() + half_length_spatium;
         let (a, b, c) = self.ship_dimensions.lightweight_intensity_parameters();
         let intensity_load = |ratio: f64| {
-            ((self.lightweight.lightweight() / self.ship_dimensions.number_spatiums() as f64) * ratio) / self.ship_dimensions.length_spatium()
+            ((self.lightweight.lightweight() / self.ship_dimensions.number_spatiums() as f64)
+                * ratio)
+                / self.ship_dimensions.length_spatium()
         };
         let mut ratio: f64;
         for id in 0..self.ship_dimensions.number_spatiums() {
             let end_coord = current_coord + half_length_spatium;
             let start_coord = current_coord - half_length_spatium;
-            if current_coord > self.ship_dimensions.coordinate_aft() && current_coord < (self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0) {
-                ratio = a + ((b - a) * ((self.ship_dimensions.length_between_perpendiculars() / 2.0) - current_coord.abs()))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
-            } else if current_coord >= self.ship_dimensions.coordinate_aft() + self.ship_dimensions.length_between_perpendiculars() / 3.0 && current_coord < (self.ship_dimensions.coordinate_bow() - self.ship_dimensions.length_between_perpendiculars() / 3.0) {
+            if current_coord > self.ship_dimensions.coordinate_aft()
+                && current_coord
+                    < (self.ship_dimensions.coordinate_aft()
+                        + self.ship_dimensions.length_between_perpendiculars() / 3.0)
+            {
+                ratio = a
+                    + ((b - a)
+                        * ((self.ship_dimensions.length_between_perpendiculars() / 2.0)
+                            - current_coord.abs()))
+                        / (self.ship_dimensions.length_between_perpendiculars() / 3.0);
+            } else if current_coord
+                >= self.ship_dimensions.coordinate_aft()
+                    + self.ship_dimensions.length_between_perpendiculars() / 3.0
+                && current_coord
+                    < (self.ship_dimensions.coordinate_bow()
+                        - self.ship_dimensions.length_between_perpendiculars() / 3.0)
+            {
                 ratio = b;
             } else {
-                ratio = c + ((b - c) * (self.ship_dimensions.length_between_perpendiculars() / 2.0 - current_coord))/(self.ship_dimensions.length_between_perpendiculars() / 3.0);
+                ratio = c
+                    + ((b - c)
+                        * (self.ship_dimensions.length_between_perpendiculars() / 2.0
+                            - current_coord))
+                        / (self.ship_dimensions.length_between_perpendiculars() / 3.0);
             }
             let f_x = intensity_load(ratio).my_round(2);
-            let spatium_function = SpatiumFunction::new(id, start_coord.my_round(2), end_coord.my_round(2), f_x, f_x);
+            let spatium_function =
+                SpatiumFunction::new(id, start_coord.my_round(2), end_coord.my_round(2), f_x, f_x);
             lightweight_intensity.push(spatium_function);
 
             current_coord += self.ship_dimensions.length_spatium();
@@ -49,5 +76,3 @@ impl LightweightIntensity {
         SpatiumFunctions::new(lightweight_intensity)
     }
 }
-
-

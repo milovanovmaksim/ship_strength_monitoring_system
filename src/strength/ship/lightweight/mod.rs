@@ -1,2 +1,2 @@
-pub mod lightweight_intensity;
 pub mod lightweight;
+pub mod lightweight_intensity;

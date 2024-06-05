@@ -2,7 +2,6 @@
 mod tests {
     use crate::core::linear_interpolation::LinearInterpolation;
 
-
     #[test]
     fn interpolated_value_ok_test() {
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 6.0);
@@ -16,11 +15,23 @@ mod tests {
     #[test]
     fn interpolated_value_error_test() {
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 6.0);
-        assert_eq!(Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()), interpolation.interpolated_value(1.0));
-        assert_eq!(Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()), interpolation.interpolated_value(7.0));
+        assert_eq!(
+            Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()),
+            interpolation.interpolated_value(1.0)
+        );
+        assert_eq!(
+            Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()),
+            interpolation.interpolated_value(7.0)
+        );
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 2.0);
-        assert_eq!(Err("x_0 должен быть строго меньше чем x_1".to_owned()), interpolation.interpolated_value(1.0));
+        assert_eq!(
+            Err("x_0 должен быть строго меньше чем x_1".to_owned()),
+            interpolation.interpolated_value(1.0)
+        );
         let interpolation = LinearInterpolation::new(5.0, 1.0, 3.0, 2.0);
-        assert_eq!(Err("x_0 должен быть строго меньше чем x_1".to_owned()), interpolation.interpolated_value(1.0));
+        assert_eq!(
+            Err("x_0 должен быть строго меньше чем x_1".to_owned()),
+            interpolation.interpolated_value(1.0)
+        );
     }
 }

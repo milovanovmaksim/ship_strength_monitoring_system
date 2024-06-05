@@ -1,6 +1,5 @@
 use serde::Deserialize;
 
-
 #[derive(Deserialize, Debug, Clone, Copy)]
 pub struct Point {
     pub x: f64,
@@ -13,4 +12,3 @@ impl Point {
         Point { x, y, z }
     }
 }
-

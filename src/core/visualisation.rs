@@ -1,4 +1,8 @@
-use plotly::{Scatter, common::{Mode, LineShape, Line, Title, Font}, Layout, layout::{Axis, RangeMode, Legend}, Plot};
+use plotly::{
+    common::{Font, Line, LineShape, Mode, Title},
+    layout::{Axis, Legend, RangeMode},
+    Layout, Plot, Scatter,
+};
 
 use crate::strength::ship::spatium_functions::SpatiumFunctions;
 
@@ -9,11 +13,19 @@ pub struct Visualisation<'a> {
     spatium_length: f64,
 }
 
-
-
 impl<'a> Visualisation<'a> {
-    pub fn new(result: &'a SpatiumFunctions, name: String, title: String, spatium_length: f64) -> Self {
-        Visualisation { result, name, title, spatium_length, }
+    pub fn new(
+        result: &'a SpatiumFunctions,
+        name: String,
+        title: String,
+        spatium_length: f64,
+    ) -> Self {
+        Visualisation {
+            result,
+            name,
+            title,
+            spatium_length,
+        }
     }
 
     pub fn visualize(&self) {
@@ -27,9 +39,9 @@ impl<'a> Visualisation<'a> {
         }
 
         let trace1 = Scatter::new(x, y)
-        .mode(Mode::LinesMarkers)
-        .name(&self.name)
-        .line(Line::new().shape(LineShape::Linear));
+            .mode(Mode::LinesMarkers)
+            .name(&self.name)
+            .line(Line::new().shape(LineShape::Linear));
         let mut plot = Plot::new();
         let layout = Layout::new()
             .x_axis(Axis::new().dtick(self.spatium_length))
