@@ -1,22 +1,22 @@
 #[cfg(test)]
 mod tests {
-    use std::{sync::Once, env};
     use log::debug;
+    use std::{env, sync::Once};
 
-    use crate::strength::ship::{lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity}, ship_dimensions::ShipDimensions};
-
-
+    use crate::strength::ship::{
+        lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
+        ship_dimensions::ShipDimensions,
+    };
 
     static INIT: Once = Once::new();
 
     fn call_once() {
         INIT.call_once(|| {
-                env::set_var("RUST_LOG", "debug");  // off / error / warn / info / debug / trace
-                // env::set_var("RUST_BACKTRACE", "1");
-                env::set_var("RUST_BACKTRACE", "full");
-                let _ = env_logger::try_init();
-            }
-        )
+            env::set_var("RUST_LOG", "debug"); // off / error / warn / info / debug / trace
+                                               // env::set_var("RUST_BACKTRACE", "1");
+            env::set_var("RUST_BACKTRACE", "full");
+            let _ = env_logger::try_init();
+        })
     }
 
     #[test]
@@ -35,7 +35,6 @@ mod tests {
         let err = {
             if computed_weight > test_weight {
                 ((computed_weight - test_weight) / test_weight) * 100.0
-
             } else if test_weight > computed_weight {
                 ((test_weight - computed_weight) / computed_weight) * 100.0
             } else {

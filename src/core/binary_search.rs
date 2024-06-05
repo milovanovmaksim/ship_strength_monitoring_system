@@ -1,12 +1,8 @@
-pub(crate) trait BinarySearch
-{
+pub(crate) trait BinarySearch {
     fn custom_binary_search(&self, value: f64) -> (Option<usize>, Option<usize>);
 }
 
-
-impl BinarySearch for Vec<f64>
-{
-
+impl BinarySearch for Vec<f64> {
     ///
     /// Бинарный поиск. Вектор должен быть отсортирован по возрастанию иначе результат бессмысленен.
     /// Возвращает индекс найденного элемента в векторе ```(Some(index), None)```.
@@ -31,9 +27,9 @@ impl BinarySearch for Vec<f64>
     /// assert_eq!((Some(6), Some(7)), data.custom_binary_search(2.5));
     /// assert_eq!((Some(7), Some(8)), data.custom_binary_search(3.0));
     /// ```
-    fn custom_binary_search(&self, value: f64) -> (Option<usize>, Option<usize>)  {
+    fn custom_binary_search(&self, value: f64) -> (Option<usize>, Option<usize>) {
         if self.len() == 0 {
-            return (None, None)
+            return (None, None);
         }
         let mut left_point = 0;
         let mut right_point = self.len() - 1;
@@ -48,7 +44,9 @@ impl BinarySearch for Vec<f64>
             }
             if searched_value > value {
                 right_point = middle;
-            } else { left_point = middle }
+            } else {
+                left_point = middle
+            }
         }
         if *self.get(left_point).unwrap() == value {
             return (Some(left_point), None);

@@ -1,8 +1,10 @@
 use log::error;
 
-use crate::{core::linear_interpolation::LinearInterpolation, strength::ship::ship_dimensions::ShipDimensions};
 use super::frames::Frames;
-
+use crate::{
+    core::linear_interpolation::LinearInterpolation,
+    strength::ship::ship_dimensions::ShipDimensions,
+};
 
 ///
 /// Масштаб Бонжана.
@@ -16,9 +18,11 @@ pub struct BonjeanScale<'a> {
 
 impl<'a> BonjeanScale<'a> {
     pub fn new(frames: &'a Frames, shipdimensions: ShipDimensions) -> Self {
-        BonjeanScale { frames, ship_dimensions: shipdimensions }
+        BonjeanScale {
+            frames,
+            ship_dimensions: shipdimensions,
+        }
     }
-
 
     ///
     /// Валидация абсциссы.
@@ -37,7 +41,6 @@ impl<'a> BonjeanScale<'a> {
         Ok(())
     }
 
-
     ///
     /// Возвращает погруженную площадь шпангоута для заданной осадки и абсциссы. [м^2]
     /// Если шпангоут с заданной абсциссой отсутствует, линейно инерполирует
@@ -47,41 +50,43 @@ impl<'a> BonjeanScale<'a> {
     ///     draft - осадка судна [м].
     pub fn frame_underwater_area(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
         match self.validate_abscissa(abscissa) {
-            Ok(_) => {
-                match self.frames.frame_by_abscissa(abscissa) {
-                    (Some(frame), None) => {
-                        match frame.area_by_draft(draft) {
-                            Ok(value) => { Ok(value) }
-                            Err(err) => {
-                                error!("BonjeanScale::frame_underwater_area | error: {}", err);
-                                Err(err)
-                            }
+            Ok(_) => match self.frames.frame_by_abscissa(abscissa) {
+                (Some(frame), None) => match frame.area_by_draft(draft) {
+                    Ok(value) => Ok(value),
+                    Err(err) => {
+                        error!("BonjeanScale::frame_underwater_area | error: {}", err);
+                        Err(err)
+                    }
+                },
+                (Some(left_frame), Some(right_frame)) => {
+                    let left_value = left_frame.area_by_draft(draft);
+                    if let Err(err) = left_value {
+                        error!("BonjeanScale::frame_underwater_area | error: {}", err);
+                        return Err(err);
+                    }
+                    let right_value = right_frame.area_by_draft(draft);
+                    if let Err(err) = right_value {
+                        error!("BonjeanScale::frame_underwater_area | error: {}", err);
+                        return Err(err);
+                    }
+                    let linear_interpolation = LinearInterpolation::new(
+                        left_value.unwrap(),
+                        right_value.unwrap(),
+                        left_frame.abscissa(),
+                        right_frame.abscissa(),
+                    );
+                    match linear_interpolation.interpolated_value(abscissa) {
+                        Ok(value) => Ok(value),
+                        Err(err) => {
+                            error!("BonjeanScale::frame_underwater_area | error: {}", err);
+                            Err(err)
                         }
                     }
-                    (Some(left_frame), Some(right_frame)) => {
-                        let left_value = left_frame.area_by_draft(draft);
-                        if let Err(err) = left_value {
-                            error!("BonjeanScale::frame_underwater_area | error: {}", err);
-                            return Err(err);
-                        }
-                        let right_value = right_frame.area_by_draft(draft);
-                        if let Err(err) = right_value {
-                            error!("BonjeanScale::frame_underwater_area | error: {}", err);
-                            return Err(err);
-                        }
-                        let linear_interpolation = LinearInterpolation::new(left_value.unwrap(), right_value.unwrap(),
-                            left_frame.abscissa(), right_frame.abscissa());
-                        match linear_interpolation.interpolated_value(abscissa) {
-                            Ok(value) => { Ok(value) }
-                            Err(err) => {
-                                error!("BonjeanScale::frame_underwater_area | error: {}", err);
-                                Err(err)
-                            }
-                        }
-                    }
-                    _ => { unreachable!("Абсцисса лежит в диапазоне между координатой кормы и носа."); }
                 }
-            }
+                _ => {
+                    unreachable!("Абсцисса лежит в диапазоне между координатой кормы и носа.");
+                }
+            },
             Err(err) => {
                 error!("BonjeanScale::frame_underwater_area | error: {}", err);
                 Err(err)
@@ -94,10 +99,10 @@ impl<'a> BonjeanScale<'a> {
     /// Parameters:
     ///     x - координата шпангоута относительно центра судна (абсцисса) [м],
     ///     draft - осадка судна [м].
-    pub fn frame_underwater_volume(&self, abscissa: f64, draft: f64,) -> Result<f64, String> {
+    pub fn frame_underwater_volume(&self, abscissa: f64, draft: f64) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         match self.frame_underwater_area(abscissa, draft) {
-            Ok(area) => { Ok(area * length_spatium) }
+            Ok(area) => Ok(area * length_spatium),
             Err(err) => {
                 error!("BonjeanScale::frame_underwater_volume | error: {}", err);
                 Err(err)
@@ -111,11 +116,14 @@ impl<'a> BonjeanScale<'a> {
     /// Parameters:
     ///     x - координата шпангоута относительно центра судна (абсцисса) [м],
     ///     draft - осадка судна [м].
-    pub fn frame_underwater_volume_trapezoid(&self, abscissa: f64, draft: f64,) -> Result<f64, String> {
+    pub fn frame_underwater_volume_trapezoid(
+        &self,
+        abscissa: f64,
+        draft: f64,
+    ) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let area_left_frame = self.frame_underwater_area(abscissa, draft)?;
         let area_right_frame = self.frame_underwater_area(abscissa + length_spatium, draft)?;
         Ok(((area_left_frame + area_right_frame) / 2.0) * length_spatium)
     }
-
 }

@@ -4,7 +4,6 @@ use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInter
 
 use super::hydrostatic_typedata::HydrostaticTypeData;
 
-
 ///
 /// HydrostaticCurves(гидростатические кривые) - кривые элементов теоретического чертежа, графические зависимости
 /// от осадки судна характеристик его плавучести и начальной остойчивости: площади ватерлинии, ее моментов инерции
@@ -23,14 +22,29 @@ pub(crate) struct HydrostaticCurves {
     x_c: Vec<f64>,
     waterline_area: Vec<f64>,
     x_f: Vec<f64>,
-    r_l: Vec<f64>
+    r_l: Vec<f64>,
 }
 
-
 impl HydrostaticCurves {
-    pub fn new(mut drafts: Vec<f64>, displacement_tonnage: Vec<f64>, x_c: Vec<f64>, waterline_area: Vec<f64>, x_f: Vec<f64>, r_l: Vec<f64>) -> Result<Self, String> {
-        match (HydrostaticCurves { drafts, displacement_tonnage, x_c, waterline_area, x_f, r_l }).validate_data() {
-            Ok(hydrostatic_curves) => { Ok(hydrostatic_curves) }
+    pub fn new(
+        mut drafts: Vec<f64>,
+        displacement_tonnage: Vec<f64>,
+        x_c: Vec<f64>,
+        waterline_area: Vec<f64>,
+        x_f: Vec<f64>,
+        r_l: Vec<f64>,
+    ) -> Result<Self, String> {
+        match (HydrostaticCurves {
+            drafts,
+            displacement_tonnage,
+            x_c,
+            waterline_area,
+            x_f,
+            r_l,
+        })
+        .validate_data()
+        {
+            Ok(hydrostatic_curves) => Ok(hydrostatic_curves),
             Err(err) => {
                 error!("HydrostaticCurves::new | error: {}", err);
                 Err(err)
@@ -53,17 +67,26 @@ impl HydrostaticCurves {
     }
 
     fn validate_empty_data(&self) -> Result<(), String> {
-        if self.drafts.len() == 0 || self.displacement_tonnage.len() == 0
-            || self.x_c.len() == 0 || self.waterline_area.len() == 0 || self.x_f.len() == 0 || self.r_l.len() == 0 {
-           return Err("Гидростатические кривые не заданы".to_string());
+        if self.drafts.len() == 0
+            || self.displacement_tonnage.len() == 0
+            || self.x_c.len() == 0
+            || self.waterline_area.len() == 0
+            || self.x_f.len() == 0
+            || self.r_l.len() == 0
+        {
+            return Err("Гидростатические кривые не заданы".to_string());
         }
         Ok(())
     }
 
     fn validate_same_length(&self) -> Result<(), String> {
         let drafts_len = self.drafts.len();
-        if drafts_len == self.displacement_tonnage.len() && drafts_len == self.x_c.len()
-            && drafts_len == self.waterline_area.len() && drafts_len == self.x_f.len() && drafts_len == self.r_l.len() {
+        if drafts_len == self.displacement_tonnage.len()
+            && drafts_len == self.x_c.len()
+            && drafts_len == self.waterline_area.len()
+            && drafts_len == self.x_f.len()
+            && drafts_len == self.r_l.len()
+        {
             return Ok(());
         }
         Err("Массивы значений элементов теоретического чертежа имеют разную длину.".to_string())
@@ -79,8 +102,11 @@ impl HydrostaticCurves {
             true
         };
 
-        if more_than_zero(&self.drafts) && more_than_zero(&self.displacement_tonnage)
-            && more_than_zero(&self.waterline_area) && more_than_zero(&self.r_l) {
+        if more_than_zero(&self.drafts)
+            && more_than_zero(&self.displacement_tonnage)
+            && more_than_zero(&self.waterline_area)
+            && more_than_zero(&self.r_l)
+        {
             return Ok(());
         }
         Err("Осадка судна (drafts), площадь ватерлинии (waterline_area), весовое водоизмещение (displacement_tonnage) должны быть больше нуля.".to_string())
@@ -107,72 +133,83 @@ impl HydrostaticCurves {
     pub fn draft_by_displacement_tonnage(&self, dispalcement_tonnage: f64) -> Result<f64, String> {
         match self.validate_dispalcement_tonnage(dispalcement_tonnage) {
             Ok(_) => {
-                match self.displacement_tonnage.custom_binary_search(dispalcement_tonnage) {
+                match self
+                    .displacement_tonnage
+                    .custom_binary_search(dispalcement_tonnage)
+                {
                     (Some(left_id), Some(right_id)) => {
                         let linear_interpolation = LinearInterpolation::new(
                             *self.drafts.get(left_id).unwrap(),
                             *self.drafts.get(right_id).unwrap(),
                             *self.displacement_tonnage.get(left_id).unwrap(),
-                            *self.displacement_tonnage.get(right_id).unwrap()
+                            *self.displacement_tonnage.get(right_id).unwrap(),
                         );
                         match linear_interpolation.interpolated_value(dispalcement_tonnage) {
-                            Ok(draft) => { Ok(draft) }
+                            Ok(draft) => Ok(draft),
                             Err(error) => {
-                                error!("HydrostaticCurves::draft_by_displacement_tonnage | {}", error);
+                                error!(
+                                    "HydrostaticCurves::draft_by_displacement_tonnage | {}",
+                                    error
+                                );
                                 Err(error)
                             }
                         }
                     }
-                    (Some(id), None) => { Ok(*self.drafts.get(id).unwrap()) }
-                    _ => unreachable!("Весовое водоизмещение находится в заданном диапазоне.")
+                    (Some(id), None) => Ok(*self.drafts.get(id).unwrap()),
+                    _ => unreachable!("Весовое водоизмещение находится в заданном диапазоне."),
                 }
             }
             Err(error) => {
-                error!("HydrostaticCurves::draft_by_displacement_tonnage | {}", error);
+                error!(
+                    "HydrostaticCurves::draft_by_displacement_tonnage | {}",
+                    error
+                );
                 Err(error)
             }
         }
     }
 
-    pub fn get_data_by_draft(&self, draft: f64, type_data: HydrostaticTypeData) -> Result<f64, String> {
+    pub fn get_data_by_draft(
+        &self,
+        draft: f64,
+        type_data: HydrostaticTypeData,
+    ) -> Result<f64, String> {
         let data = {
             match type_data {
-                HydrostaticTypeData::LCB => { &self.x_c }
-                HydrostaticTypeData::LCF => { &self.x_f }
-                HydrostaticTypeData::WaterlineArea => { &self.waterline_area }
-                HydrostaticTypeData::LongitudinalMetacentricRadius => { &self.r_l }
+                HydrostaticTypeData::LCB => &self.x_c,
+                HydrostaticTypeData::LCF => &self.x_f,
+                HydrostaticTypeData::WaterlineArea => &self.waterline_area,
+                HydrostaticTypeData::LongitudinalMetacentricRadius => &self.r_l,
             }
         };
         match self.validate_draft(draft) {
-            Ok(_) => {
-                match data.custom_binary_search(draft) {
-                    (Some(left_index), Some(right_index)) => {
-                        let linear_interpolation = LinearInterpolation::new(
-                            *data.get(left_index).unwrap(),
-                            *data.get(right_index).unwrap(),
-                            *self.drafts.get(left_index).unwrap(),
-                            *self.drafts.get(right_index).unwrap()
-                        );
-                        match linear_interpolation.interpolated_value(draft) {
-                            Ok(value) => { return Ok(value); }
-                            Err(error) => {
-                                error!("HydrostaticCurves::get_data_by_draft | {}", error);
-                                return Err(error);
-                            }
+            Ok(_) => match data.custom_binary_search(draft) {
+                (Some(left_index), Some(right_index)) => {
+                    let linear_interpolation = LinearInterpolation::new(
+                        *data.get(left_index).unwrap(),
+                        *data.get(right_index).unwrap(),
+                        *self.drafts.get(left_index).unwrap(),
+                        *self.drafts.get(right_index).unwrap(),
+                    );
+                    match linear_interpolation.interpolated_value(draft) {
+                        Ok(value) => {
+                            return Ok(value);
+                        }
+                        Err(error) => {
+                            error!("HydrostaticCurves::get_data_by_draft | {}", error);
+                            return Err(error);
                         }
                     }
-                    (Some(index), None) => { Ok(*data.get(index).unwrap()) }
-                    _ => { unreachable!("Осадка находится в допустимом диапазоне.") }
                 }
-            }
+                (Some(index), None) => Ok(*data.get(index).unwrap()),
+                _ => {
+                    unreachable!("Осадка находится в допустимом диапазоне.")
+                }
+            },
             Err(error) => {
                 error!("HydrostaticCurves::get_data_by_draft | {}", error);
                 Err(error)
             }
         }
     }
-
-
-
-
 }

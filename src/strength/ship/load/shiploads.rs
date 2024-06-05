@@ -5,7 +5,6 @@ use crate::core::json_file::JsonFile;
 use crate::strength::ship::load::shipload::Shipload;
 use crate::strength::ship::ship_dimensions::ShipDimensions;
 
-
 ///
 /// Сontains all the loads acting on the ship
 #[derive(Deserialize, Debug)]
@@ -13,9 +12,7 @@ pub struct Shiploads {
     shiploads: Vec<Shipload>,
 }
 
-
 impl Shiploads {
-
     ///
     /// Create new object.
     pub fn new(shiploads: Vec<Shipload>) -> Self {
@@ -32,15 +29,15 @@ impl Shiploads {
                     Ok(shiploads) => {
                         debug!("Shiploads::from_json_file | Shiploads has been created sucessfuly. {:?}", shiploads);
                         Ok(shiploads)
-                    },
+                    }
                     Err(err) => {
-                        warn!("Shiploads::from_json_file | error: {:?}.",err);
+                        warn!("Shiploads::from_json_file | error: {:?}.", err);
                         return Err(err.to_string());
                     }
                 }
-            },
+            }
             Err(err) => {
-                warn!("Shiploads::from_json_file | error: {:?}.",err);
+                warn!("Shiploads::from_json_file | error: {:?}.", err);
                 return Err(err);
             }
         }
@@ -65,8 +62,6 @@ impl Shiploads {
     }
 }
 
-
-
 impl IntoIterator for Shiploads {
     type Item = Shipload;
     type IntoIter = std::vec::IntoIter<Self::Item>;
@@ -77,7 +72,6 @@ impl IntoIterator for Shiploads {
 }
 
 impl AsRef<Vec<Shipload>> for Shiploads {
-
     fn as_ref(&self) -> &Vec<Shipload> {
         &self.shiploads
     }

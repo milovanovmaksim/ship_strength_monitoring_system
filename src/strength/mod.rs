@@ -1,2 +1,2 @@
-pub mod ship;
 pub mod hydrostatic_curves;
+pub mod ship;

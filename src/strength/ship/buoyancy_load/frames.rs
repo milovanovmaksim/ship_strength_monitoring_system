@@ -1,21 +1,20 @@
-use log::{debug, error, warn};
 use crate::core::json_file::JsonFile;
+use log::{debug, error, warn};
 
 use super::frame::Frame;
 
 ///
 /// Шпангоуты судна.
 pub struct Frames {
-    frames: Vec<Frame>
+    frames: Vec<Frame>,
 }
-
 
 impl Frames {
     ///
     /// Основной конструктор.
     pub fn new(frames: Vec<Frame>) -> Result<Self, String> {
         match (Frames { frames }).frames_validate() {
-            Ok(frames) => { Ok(frames) }
+            Ok(frames) => Ok(frames),
             Err(err) => {
                 error!("Frames::new | error: {}", err);
                 Err(err)
@@ -28,20 +27,18 @@ impl Frames {
     pub fn from_json_file(file_path: String) -> Result<Frames, String> {
         let json = JsonFile::new(file_path);
         match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(frames) => {
-                        debug!("Frames::from_json_file | Frames has been created sucessfuly.");
-                        Frames::new(frames)
-                    },
-                    Err(err) => {
-                        warn!("Frames::from_json_file | error: {:?}.",err);
-                        return Err(err.to_string());
-                    }
+            Ok(content) => match serde_json::from_reader(content) {
+                Ok(frames) => {
+                    debug!("Frames::from_json_file | Frames has been created sucessfuly.");
+                    Frames::new(frames)
+                }
+                Err(err) => {
+                    warn!("Frames::from_json_file | error: {:?}.", err);
+                    return Err(err.to_string());
                 }
             },
             Err(err) => {
-                warn!("Frames::from_json_file | error: {:?}.",err);
+                warn!("Frames::from_json_file | error: {:?}.", err);
                 return Err(err);
             }
         }
@@ -76,7 +73,7 @@ impl Frames {
     /// возвращает (None, None).
     pub fn frame_by_abscissa(&self, abscissa: f64) -> (Option<&Frame>, Option<&Frame>) {
         if abscissa > self.last().abscissa() && abscissa < self.first().abscissa() {
-            return (None, None)
+            return (None, None);
         }
         let mut left_point = 0;
         let mut right_point = self.frames.len() - 1;
@@ -102,15 +99,12 @@ impl Frames {
         (Some(left_frame), Some(right_frame))
     }
 
-
     fn get(&self, index: usize) -> Option<&Frame> {
         self.frames.get(index)
     }
 }
 
-
 impl AsRef<Vec<Frame>> for Frames {
-
     fn as_ref(&self) -> &Vec<Frame> {
         &self.frames
     }

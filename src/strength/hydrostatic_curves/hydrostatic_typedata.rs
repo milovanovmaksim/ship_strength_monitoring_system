@@ -9,5 +9,5 @@ pub(crate) enum HydrostaticTypeData {
     LCB,
     LCF,
     WaterlineArea,
-    LongitudinalMetacentricRadius
+    LongitudinalMetacentricRadius,
 }

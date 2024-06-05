@@ -10,12 +10,10 @@ mod tests {
 
     fn call_once() {
         INIT.call_once(|| {
-                env::set_var("RUST_LOG", "debug");  // off / error / warn / info / debug / trace
-                // env::set_var("RUST_BACKTRACE", "1");
-                env::set_var("RUST_BACKTRACE", "full");
-                let _ = env_logger::try_init();
-            }
-        )
+            env::set_var("RUST_LOG", "debug"); // off / error / warn / info / debug / trace
+                                               // env::set_var("RUST_BACKTRACE", "1");
+            env::set_var("RUST_BACKTRACE", "full");
+            let _ = env_logger::try_init();
+        })
     }
-
 }

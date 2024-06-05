@@ -1,22 +1,25 @@
 use log::error;
 
-use crate::{core::linear_interpolation::LinearInterpolation, strength::ship::{buoyancy_load::bonjean_scale::BonjeanScale, ship_dimensions::ShipDimensions}};
-
+use crate::{
+    core::linear_interpolation::LinearInterpolation,
+    strength::ship::{buoyancy_load::bonjean_scale::BonjeanScale, ship_dimensions::ShipDimensions},
+};
 
 ///
 /// Объемное водоизмещение судна.
 pub struct Displacement<'a> {
     bonjean_scale: &'a BonjeanScale<'a>,
-    ship_dimensions: ShipDimensions
+    ship_dimensions: ShipDimensions,
 }
 
-
 impl<'a> Displacement<'a> {
-
     ///
     /// Конструктор.
     pub fn new(bonjean_scale: &'a BonjeanScale, ship_dimensions: ShipDimensions) -> Self {
-        Displacement { bonjean_scale, ship_dimensions }
+        Displacement {
+            bonjean_scale,
+            ship_dimensions,
+        }
     }
 
     ///
@@ -26,22 +29,20 @@ impl<'a> Displacement<'a> {
         let coordinate_aft = self.ship_dimensions.coordinate_aft();
         let mut abscissa = coordinate_aft + length_spatium / 2.0;
         let coordinate_bow = self.ship_dimensions.coordinate_bow();
-        let linear_interpolation = LinearInterpolation::new(aft_draft, nose_draft,
-                                                                                 coordinate_aft, coordinate_bow);
+        let linear_interpolation =
+            LinearInterpolation::new(aft_draft, nose_draft, coordinate_aft, coordinate_bow);
         let mut ship_underwater_volume = 0.0;
         for _ in 0..self.ship_dimensions.number_spatiums() {
             match linear_interpolation.interpolated_value(abscissa) {
-                Ok(draft) => {
-                    match self.bonjean_scale.frame_underwater_volume(abscissa, draft) {
-                        Ok(frame_underwater_volume) => {
-                            ship_underwater_volume += frame_underwater_volume;
-                        }
-                        Err(err) => {
-                            error!("Displacement::displacement | error: {}", err);
-                            return Err(err);
-                        }
+                Ok(draft) => match self.bonjean_scale.frame_underwater_volume(abscissa, draft) {
+                    Ok(frame_underwater_volume) => {
+                        ship_underwater_volume += frame_underwater_volume;
                     }
-                }
+                    Err(err) => {
+                        error!("Displacement::displacement | error: {}", err);
+                        return Err(err);
+                    }
+                },
                 Err(err) => {
                     error!("Displacement::displacement | error: {}", err);
                     return Err(err);

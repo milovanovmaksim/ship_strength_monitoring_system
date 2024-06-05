@@ -1,8 +1,7 @@
-use log::{warn, debug};
+use log::{debug, warn};
 use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
-
 
 ///
 /// ShipDimensions struct contains ship dimensions.
@@ -17,17 +16,23 @@ pub struct ShipDimensions {
 }
 
 impl ShipDimensions {
-    pub fn new(length_between_perpendiculars: f64, number_spatiums: u64, completeness_coefficient: f64) -> Self {
-        ShipDimensions { length_between_perpendiculars, number_spatiums, completeness_coefficient }
+    pub fn new(
+        length_between_perpendiculars: f64,
+        number_spatiums: u64,
+        completeness_coefficient: f64,
+    ) -> Self {
+        ShipDimensions {
+            length_between_perpendiculars,
+            number_spatiums,
+            completeness_coefficient,
+        }
     }
-
 
     fn validate_number_spatiums(self) -> Result<ShipDimensions, String> {
         if self.number_spatiums > 200 {
             return Err("Количество шпаций превысило максимально допустимое значение. Максимальное количество шпаций: 200".to_string());
         }
         Ok(self)
-
     }
 
     ///
@@ -40,7 +45,7 @@ impl ShipDimensions {
     /// Return parameters of the ship hull weight distribution function.
     /// TODO: добавить ссылку на литература, откуда эти формулы были взяты.
     pub fn lightweight_intensity_parameters(&self) -> (f64, f64, f64) {
-        if self.completeness_coefficient  <= 0.7 {
+        if self.completeness_coefficient <= 0.7 {
             (0.64, 1.20, 0.56)
         } else {
             (0.72, 1.17, 0.6)
@@ -52,20 +57,18 @@ impl ShipDimensions {
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
         let json = JsonFile::new(file_path);
         match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(ship_dimensions) => {
-                        debug!("ShipDimensions::from_json_file | ShipDimensions has been created sucessfuly. {:?}", ship_dimensions);
-                        Ok(ship_dimensions)
-                    },
-                    Err(err) => {
-                        warn!("ShipDimensions::from_json_file | error: {:?}.",err);
-                        return Err(err.to_string());
-                    }
+            Ok(content) => match serde_json::from_reader(content) {
+                Ok(ship_dimensions) => {
+                    debug!("ShipDimensions::from_json_file | ShipDimensions has been created sucessfuly. {:?}", ship_dimensions);
+                    Ok(ship_dimensions)
+                }
+                Err(err) => {
+                    warn!("ShipDimensions::from_json_file | error: {:?}.", err);
+                    return Err(err.to_string());
                 }
             },
             Err(err) => {
-                warn!("ShipDimensions::from_json_file | error: {:?}.",err);
+                warn!("ShipDimensions::from_json_file | error: {:?}.", err);
                 return Err(err);
             }
         }
@@ -80,7 +83,7 @@ impl ShipDimensions {
     ///
     /// Returns the aft cordinate of the ship
     pub fn coordinate_aft(&self) -> f64 {
-        - self.length_between_perpendiculars / 2.0
+        -self.length_between_perpendiculars / 2.0
     }
 
     ///
@@ -94,7 +97,6 @@ impl ShipDimensions {
     pub fn length_between_perpendiculars(&self) -> f64 {
         self.length_between_perpendiculars
     }
-
 
     ///
     /// Return spatium start coordinate.

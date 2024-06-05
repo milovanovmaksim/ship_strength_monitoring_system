@@ -1,7 +1,6 @@
+use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
 use log::error;
 use serde::Deserialize;
-use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
-
 
 ///
 /// Содержит данные масштба Бонжана для конкретного шпангоута.
@@ -18,13 +17,20 @@ pub struct Frame {
     id: u64,
     drafts: Vec<f64>,
     areas: Vec<f64>,
-    abscissa: f64
+    abscissa: f64,
 }
 
 impl Frame {
     pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, abscissa: f64) -> Result<Self, String> {
-        match (Frame { id, drafts, areas, abscissa }).validate_input_data() {
-            Ok(frame) => { Ok(frame) }
+        match (Frame {
+            id,
+            drafts,
+            areas,
+            abscissa,
+        })
+        .validate_input_data()
+        {
+            Ok(frame) => Ok(frame),
             Err(err) => {
                 error!("Frame::new | error: {}", err);
                 Err(err)
@@ -58,7 +64,10 @@ impl Frame {
             return Err("Вектор, содержащий осадки судна, не может быть пустым.".to_string());
         }
         if self.areas.len() == 0 {
-            return Err("Вектор, содержащий погруженные площади шпангоута от осадки, не может быть пустым".to_string());
+            return Err(
+                "Вектор, содержащий погруженные площади шпангоута от осадки, не может быть пустым"
+                    .to_string(),
+            );
         }
         Ok(())
     }
@@ -101,25 +110,26 @@ impl Frame {
             return Ok(0.0);
         }
         match self.validate_draft(draft) {
-            Ok(_) => {
-                match self.drafts.custom_binary_search(draft) {
-                    (Some(left_point), Some(right_point)) => {
-                        let linear_interpolated = LinearInterpolation::new(
-                            *self.areas.get(left_point).unwrap(),
-                            *self.areas.get(right_point).unwrap(),
-                            *self.drafts.get(left_point).unwrap(),
-                            *self.drafts.get(right_point).unwrap());
-                        match linear_interpolated.interpolated_value(draft) {
-                            Ok(value) => { Ok(value) },
-                            Err(error) => {
-                                error!("Frame::area_by_draft | error: {}", error);
-                                Err(error)
-                            }
+            Ok(_) => match self.drafts.custom_binary_search(draft) {
+                (Some(left_point), Some(right_point)) => {
+                    let linear_interpolated = LinearInterpolation::new(
+                        *self.areas.get(left_point).unwrap(),
+                        *self.areas.get(right_point).unwrap(),
+                        *self.drafts.get(left_point).unwrap(),
+                        *self.drafts.get(right_point).unwrap(),
+                    );
+                    match linear_interpolated.interpolated_value(draft) {
+                        Ok(value) => Ok(value),
+                        Err(error) => {
+                            error!("Frame::area_by_draft | error: {}", error);
+                            Err(error)
                         }
-                    },
-                    (Some(middle), None) => { Ok(*self.areas.get(middle).unwrap()) },
-                    _ => { unreachable!("Осадка находится в допустимом диапазоне.
-                        Пустые векторы, содержащие данные масштаба Бонжана для шпангоута, не допускаются.") }
+                    }
+                }
+                (Some(middle), None) => Ok(*self.areas.get(middle).unwrap()),
+                _ => {
+                    unreachable!("Осадка находится в допустимом диапазоне.
+                        Пустые векторы, содержащие данные масштаба Бонжана для шпангоута, не допускаются.")
                 }
             },
             Err(error) => {
