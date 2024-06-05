@@ -1,10 +1,9 @@
-use std::collections::HashMap;
-
-use log::{debug, error, warn};
+use log::{debug, error};
 use serde::Deserialize;
-use serde_json::{Map, Number, Value};
 
-use crate::core::{binary_search::BinarySearch, json_file::JsonFile, linear_interpolation::LinearInterpolation};
+use crate::core::{
+    binary_search::BinarySearch, json_file::JsonFile, linear_interpolation::LinearInterpolation,
+};
 
 use super::hydrostatic_typedata::HydrostaticTypeData;
 
@@ -57,7 +56,6 @@ impl HydrostaticCurves {
         }
     }
 
-
     ///
     /// Create the object from json file.
     pub fn from_json_file(file_path: String) -> Result<HydrostaticCurves, String> {
@@ -69,12 +67,12 @@ impl HydrostaticCurves {
                     Ok(value)
                 }
                 Err(err) => {
-                    warn!("HydrostaticCurves::from_json_file | error: {:?}.", err);
+                    error!("HydrostaticCurves::from_json_file | error: {:?}.", err);
                     return Err(err.to_string());
                 }
             },
             Err(err) => {
-                warn!("HydrostaticCurves::from_json_file | error: {:?}.", err);
+                error!("HydrostaticCurves::from_json_file | error: {:?}.", err);
                 return Err(err);
             }
         }
