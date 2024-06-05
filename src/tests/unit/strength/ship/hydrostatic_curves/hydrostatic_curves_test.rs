@@ -2,8 +2,6 @@
 mod tests {
     use std::{env, sync::Once};
 
-    use log::debug;
-
     use crate::{
         core::round::Round,
         strength::hydrostatic_curves::{
@@ -65,7 +63,7 @@ mod tests {
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves.get_data_by_draft(20.1, HydrostaticTypeData::LCB);
         assert!(value.is_err());
-        assert_eq!(Err("Осадка превысила максимальную осадку для данного судна. Максимальная осадка по гидростатическим кривым составляет: 13.3, передано значение: 20.1".to_string()), value);
+        assert_eq!(Err("Осадка превысила осадку судна в полном грузу. Осадка судна в полном грузу составляет: 13.3, передано значение: 20.1".to_string()), value);
     }
 
     #[test]
@@ -94,6 +92,6 @@ mod tests {
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves.draft_by_displacement_tonnage(85365.01);
         assert!(value.is_err());
-        assert_eq!(Err("Весовое водоизмещение превысило максимальное водоизмещение для данного судна. Максимальное весовое водоизмещение по гидростатическим кривым составляет: 85365, передано значение: 85365.01".to_string()), value);
+        assert_eq!(Err("Весовое водоизмещение превысило водоизмещение судна в полном грузу. Весовое водоизмещение судна в полном грузу составляет: 85365, передано значение: 85365.01".to_string()), value);
     }
 }
