@@ -30,6 +30,8 @@ pub(crate) struct HydrostaticCurves {
 }
 
 impl HydrostaticCurves {
+    ///
+    /// Основной конструктор.
     pub fn new(
         drafts: Vec<f64>,
         displacement_tonnage: Vec<f64>,
@@ -78,6 +80,8 @@ impl HydrostaticCurves {
         }
     }
 
+    ///
+    /// Валидация входных данных.
     fn validate_data(mut self) -> Result<HydrostaticCurves, String> {
         if let Err(err) = self.validate_empty_data() {
             return Err(err);
@@ -91,6 +95,8 @@ impl HydrostaticCurves {
         Ok(self)
     }
 
+    ///
+    /// Валидация: все элементы теоретического чертежа должны быть заданы.
     fn validate_empty_data(&self) -> Result<(), String> {
         if self.drafts.len() == 0
             || self.displacement_tonnage.len() == 0
@@ -104,6 +110,8 @@ impl HydrostaticCurves {
         Ok(())
     }
 
+    ///
+    /// Валидация: массивы, содержащие данные элементов теоретического чертежа должны иметь одинаковую длину.
     fn validate_same_length(&self) -> Result<(), String> {
         let drafts_len = self.drafts.len();
         if drafts_len == self.displacement_tonnage.len()
@@ -117,6 +125,9 @@ impl HydrostaticCurves {
         Err("Массивы значений элементов теоретического чертежа имеют разную длину.".to_string())
     }
 
+    ///
+    /// Валидация: осадка судна (drafts), площадь ватерлинии (waterline_area),
+    /// весовое водоизмещение (displacement_tonnage) должны быть больше нуля.
     fn validate_more_zero(&self) -> Result<(), String> {
         let more_than_zero = |data: &Vec<f64>| -> bool {
             for item in data {
@@ -137,6 +148,8 @@ impl HydrostaticCurves {
         Err("Осадка судна (drafts), площадь ватерлинии (waterline_area), весовое водоизмещение (displacement_tonnage) должны быть больше нуля.".to_string())
     }
 
+    ///
+    /// Валидация: осадка не должна превышать осадку судна в полном грузу.
     fn validate_draft(&self, draft: f64) -> Result<(), String> {
         let max_draft = *self.drafts.last().unwrap();
         if draft > max_draft {
@@ -145,16 +158,19 @@ impl HydrostaticCurves {
         Ok(())
     }
 
+    ///
+    /// Валидация: весовое водоизмещение не должно превышать максимальное весовое водоизмещение судна в полном грузу.
     fn validate_dispalcement_tonnage(&self, dispalcement_tonnage: f64) -> Result<(), String> {
         let max_dispalcement_tonnage = *self.displacement_tonnage.last().unwrap();
         if dispalcement_tonnage > max_dispalcement_tonnage {
-            return Err(format!("Весовое водоизмещение превысило максимальное водоизмещение для данного судна. Максимальное весовое водоизмещение по гидростатическим кривым составляет: {}, передано значение: {}", max_dispalcement_tonnage, dispalcement_tonnage));
+            return Err(format!("Весовое водоизмещение превысило максимальное водоизмещение судна в полном грузу. Максимальное весовое водоизмещение судна в полном грузу составляет: {}, передано значение: {}", max_dispalcement_tonnage, dispalcement_tonnage));
         }
         Ok(())
     }
 
     ///
     /// Возвращает осадку судна по заданному весовому водоизмещению [м].
+    /// Если весовое водоизмещение меньше чем весовое водоизмещение судна порожнем, возвращает 0.0.
     pub fn draft_by_displacement_tonnage(&self, dispalcement_tonnage: f64) -> Result<f64, String> {
         match self.validate_dispalcement_tonnage(dispalcement_tonnage) {
             Ok(_) => {
@@ -194,6 +210,9 @@ impl HydrostaticCurves {
         }
     }
 
+
+    ///
+    /// Возвращает данные элементов теоретического чертежа от осадки судна.
     pub fn get_data_by_draft(
         &self,
         draft: f64,
@@ -227,9 +246,7 @@ impl HydrostaticCurves {
                     }
                 }
                 (Some(index), None) => Ok(*data.get(index).unwrap()),
-                _ => {
-                    unreachable!("Осадка находится в заданном диапазоне.")
-                }
+                _ => { Ok(0.0) }
             },
             Err(error) => {
                 error!("HydrostaticCurves::get_data_by_draft | {}", error);
