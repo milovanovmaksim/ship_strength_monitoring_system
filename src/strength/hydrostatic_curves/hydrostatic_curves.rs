@@ -1,4 +1,5 @@
 use log::error;
+use serde::Deserialize;
 
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
 
@@ -16,6 +17,7 @@ use super::hydrostatic_typedata::HydrostaticTypeData;
 ///     waterline_area: площадь ватерлинии,
 ///     x_f: абсцисса центра тяжести ватерлиниии,
 ///     r_l - продольный(большой) метацентрический радиус.
+#[derive(Deserialize)]
 pub(crate) struct HydrostaticCurves {
     drafts: Vec<f64>,
     displacement_tonnage: Vec<f64>,
