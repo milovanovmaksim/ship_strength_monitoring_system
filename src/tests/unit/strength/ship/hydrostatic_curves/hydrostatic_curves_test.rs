@@ -75,9 +75,13 @@ mod tests {
             "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
-        let value = hidrostatic_curves.draft_by_displacement_tonnage(5605.2).unwrap();
+        let value = hidrostatic_curves
+            .draft_by_displacement_tonnage(5605.2)
+            .unwrap();
         assert_eq!(1.0, value);
-        let value = hidrostatic_curves.draft_by_displacement_tonnage(1.0).unwrap();
+        let value = hidrostatic_curves
+            .draft_by_displacement_tonnage(1.0)
+            .unwrap();
         assert_eq!(0.0, value);
     }
 

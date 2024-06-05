@@ -98,7 +98,6 @@ impl HydrostaticCurves {
         Ok(self)
     }
 
-
     ///
     /// Валидация: все элементы теоретического чертежа должны быть заданы.
     fn validate_empty_data(&self) -> Result<(), String> {
@@ -114,7 +113,7 @@ impl HydrostaticCurves {
         Ok(())
     }
 
-    fn validate_drafts(&self) -> Result<(), String>{
+    fn validate_drafts(&self) -> Result<(), String> {
         let priviuse_draft = self.drafts.first().unwrap();
         for draft in self.drafts[1..].iter() {
             if draft < priviuse_draft {
@@ -230,7 +229,6 @@ impl HydrostaticCurves {
         }
     }
 
-
     ///
     /// Возвращает данные элементов теоретического чертежа от осадки судна.
     /// Parameters:
@@ -269,7 +267,7 @@ impl HydrostaticCurves {
                     }
                 }
                 (Some(index), None) => Ok(*data.get(index).unwrap()),
-                _ => { Ok(0.0) }
+                _ => Ok(0.0),
             },
             Err(error) => {
                 error!("HydrostaticCurves::get_data_by_draft | {}", error);
