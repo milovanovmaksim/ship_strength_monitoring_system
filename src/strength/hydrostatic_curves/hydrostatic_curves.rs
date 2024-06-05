@@ -1,7 +1,10 @@
-use log::error;
-use serde::Deserialize;
+use std::collections::HashMap;
 
-use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
+use log::{debug, error, warn};
+use serde::Deserialize;
+use serde_json::{Map, Number, Value};
+
+use crate::core::{binary_search::BinarySearch, json_file::JsonFile, linear_interpolation::LinearInterpolation};
 
 use super::hydrostatic_typedata::HydrostaticTypeData;
 
@@ -17,7 +20,7 @@ use super::hydrostatic_typedata::HydrostaticTypeData;
 ///     waterline_area: площадь ватерлинии,
 ///     x_f: абсцисса центра тяжести ватерлиниии,
 ///     r_l - продольный(большой) метацентрический радиус.
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub(crate) struct HydrostaticCurves {
     drafts: Vec<f64>,
     displacement_tonnage: Vec<f64>,
@@ -29,7 +32,7 @@ pub(crate) struct HydrostaticCurves {
 
 impl HydrostaticCurves {
     pub fn new(
-        mut drafts: Vec<f64>,
+        drafts: Vec<f64>,
         displacement_tonnage: Vec<f64>,
         x_c: Vec<f64>,
         waterline_area: Vec<f64>,
@@ -54,8 +57,30 @@ impl HydrostaticCurves {
         }
     }
 
+
+    ///
+    /// Create the object from json file.
+    pub fn from_json_file(file_path: String) -> Result<HydrostaticCurves, String> {
+        let json = JsonFile::new(file_path);
+        match json.content() {
+            Ok(content) => match serde_json::from_reader(content) {
+                Ok(value) => {
+                    debug!("HydrostaticCurves::from_json_file | HydrostaticCurves has been created sucessfuly.");
+                    Ok(value)
+                }
+                Err(err) => {
+                    warn!("HydrostaticCurves::from_json_file | error: {:?}.", err);
+                    return Err(err.to_string());
+                }
+            },
+            Err(err) => {
+                warn!("HydrostaticCurves::from_json_file | error: {:?}.", err);
+                return Err(err);
+            }
+        }
+    }
+
     fn validate_data(mut self) -> Result<HydrostaticCurves, String> {
-        self.drafts.sort_by(|a, b| a.partial_cmp(b).unwrap());
         if let Err(err) = self.validate_empty_data() {
             return Err(err);
         }
@@ -185,7 +210,7 @@ impl HydrostaticCurves {
             }
         };
         match self.validate_draft(draft) {
-            Ok(_) => match data.custom_binary_search(draft) {
+            Ok(_) => match self.drafts.custom_binary_search(draft) {
                 (Some(left_index), Some(right_index)) => {
                     let linear_interpolation = LinearInterpolation::new(
                         *data.get(left_index).unwrap(),
