@@ -205,7 +205,7 @@ impl HydrostaticCurves {
                 }
                 (Some(index), None) => Ok(*data.get(index).unwrap()),
                 _ => {
-                    unreachable!("Осадка находится в допустимом диапазоне.")
+                    unreachable!("Осадка находится в заданном диапазоне.")
                 }
             },
             Err(error) => {

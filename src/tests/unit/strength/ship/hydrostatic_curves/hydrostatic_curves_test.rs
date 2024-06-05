@@ -17,7 +17,6 @@ mod tests {
         })
     }
 
-
     #[test]
     fn get_data_by_draft_test() {
         todo!()
