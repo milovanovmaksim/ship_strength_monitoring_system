@@ -181,7 +181,7 @@ impl HydrostaticCurves {
                         }
                     }
                     (Some(id), None) => Ok(*self.drafts.get(id).unwrap()),
-                    _ => unreachable!("Весовое водоизмещение находится в заданном диапазоне."),
+                    _ => Ok(0.0),
                 }
             }
             Err(error) => {

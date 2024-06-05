@@ -67,4 +67,29 @@ mod tests {
         assert!(value.is_err());
         assert_eq!(Err("Осадка превысила максимальную осадку для данного судна. Максимальная осадка по гидростатическим кривым составляет: 13.3, передано значение: 20.1".to_string()), value);
     }
+
+    #[test]
+    fn draft_by_displacement_tonnage_ok_test() {
+        call_once();
+        let file_path =
+            "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
+                .to_string();
+        let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
+        let value = hidrostatic_curves.draft_by_displacement_tonnage(5605.2).unwrap();
+        assert_eq!(1.0, value);
+        let value = hidrostatic_curves.draft_by_displacement_tonnage(1.0).unwrap();
+        assert_eq!(0.0, value);
+    }
+
+    #[test]
+    fn draft_by_displacement_tonnage_error_test() {
+        call_once();
+        let file_path =
+            "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
+                .to_string();
+        let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
+        let value = hidrostatic_curves.draft_by_displacement_tonnage(85365.01);
+        assert!(value.is_err());
+        assert_eq!(Err("Весовое водоизмещение превысило максимальное водоизмещение для данного судна. Максимальное весовое водоизмещение по гидростатическим кривым составляет: 85365, передано значение: 85365.01".to_string()), value);
+    }
 }
