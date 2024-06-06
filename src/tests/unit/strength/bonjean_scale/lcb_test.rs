@@ -23,8 +23,7 @@ mod tests {
     #[test]
     fn lcb_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/frames.json".to_string();
+        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
@@ -35,8 +34,7 @@ mod tests {
     #[test]
     fn lcb_error_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/frames.json".to_string();
+        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);

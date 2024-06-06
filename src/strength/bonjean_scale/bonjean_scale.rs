@@ -126,5 +126,4 @@ impl BonjeanScale {
         let area_right_frame = self.frame_underwater_area(abscissa + length_spatium, draft)?;
         Ok(((area_left_frame + area_right_frame) / 2.0) * length_spatium)
     }
-    
 }

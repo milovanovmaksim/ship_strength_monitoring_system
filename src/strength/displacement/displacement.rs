@@ -53,7 +53,6 @@ impl<'a> Displacement<'a> {
         Ok(ship_underwater_volume)
     }
 
-
     pub fn displacement_by_mass(&self, massa: f64) -> f64 {
         2.0
     }

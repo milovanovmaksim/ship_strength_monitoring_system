@@ -190,7 +190,10 @@ impl HydrostaticCurves {
     /// Если весовое водоизмещение меньше чем весовое водоизмещение судна порожнем, возвращает 0.0.
     /// Parameters:
     ///     dispalcement_tonnage - весовое вододоизмещение.
-    pub fn mean_draft_by_displacement_tonnage(&self, displacement_tonnage: f64) -> Result<f64, String> {
+    pub fn mean_draft_by_displacement_tonnage(
+        &self,
+        displacement_tonnage: f64,
+    ) -> Result<f64, String> {
         match self.validate_dispalcement_tonnage(displacement_tonnage) {
             Ok(_) => {
                 match self

@@ -20,9 +20,7 @@ mod tests {
     #[test]
     fn get_data_by_draft_ok_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
-                .to_string();
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         assert_eq!(
             -11.3,
@@ -54,9 +52,7 @@ mod tests {
     #[test]
     fn get_data_by_draft_error_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
-                .to_string();
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves.get_data_by_draft(20.1, HydrostaticTypeData::LCB);
         assert!(value.is_err());
@@ -66,9 +62,7 @@ mod tests {
     #[test]
     fn draft_by_displacement_tonnage_ok_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
-                .to_string();
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves
             .mean_draft_by_displacement_tonnage(5605.2)
@@ -83,9 +77,7 @@ mod tests {
     #[test]
     fn draft_by_displacement_tonnage_error_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
-                .to_string();
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves.mean_draft_by_displacement_tonnage(85365.01);
         assert!(value.is_err());

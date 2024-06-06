@@ -24,23 +24,24 @@ mod tests {
     #[test]
     fn displacement_ok_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/frames.json".to_string();
+        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 2000000, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
         assert_eq!(
             14329.62,
-            displacement.displacement_by_drafts(2.61, 2.61).unwrap().my_round(2)
+            displacement
+                .displacement_by_drafts(2.61, 2.61)
+                .unwrap()
+                .my_round(2)
         );
     }
 
     #[test]
     fn displacement_error_test() {
         call_once();
-        let file_path =
-            "src/tests/unit/strength/test_data/frames.json".to_string();
+        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
