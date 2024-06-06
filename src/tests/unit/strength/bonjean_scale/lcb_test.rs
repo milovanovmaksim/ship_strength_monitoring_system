@@ -27,7 +27,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let lcb = LCB::new(&bonjean_scale, ship_dimensions);
         assert_eq!(-11.29, lcb.lcb(2.61, 2.61).unwrap().my_round(2));
     }
@@ -39,7 +39,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let lcb = LCB::new(&bonjean_scale, ship_dimensions);
         let xc = lcb.lcb(2.61, 20.61);
         assert!(xc.is_err());

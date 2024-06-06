@@ -8,7 +8,7 @@ use crate::{
 ///
 /// Объемное водоизмещение судна.
 pub struct Displacement<'a> {
-    bonjean_scale: &'a BonjeanScale<'a>,
+    bonjean_scale: &'a BonjeanScale,
     ship_dimensions: ShipDimensions,
 }
 

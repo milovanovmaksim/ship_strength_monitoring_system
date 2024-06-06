@@ -11,13 +11,13 @@ use crate::{
 /// Parameters:
 ///     frames - шпангоуты судна.
 ///     shipdimensions - размерения судна.
-pub struct BonjeanScale<'a> {
-    frames: &'a Frames,
+pub struct BonjeanScale {
+    frames: Frames,
     ship_dimensions: ShipDimensions,
 }
 
-impl<'a> BonjeanScale<'a> {
-    pub fn new(frames: &'a Frames, shipdimensions: ShipDimensions) -> Self {
+impl BonjeanScale {
+    pub fn new(frames: Frames, shipdimensions: ShipDimensions) -> Self {
         BonjeanScale {
             frames,
             ship_dimensions: shipdimensions,

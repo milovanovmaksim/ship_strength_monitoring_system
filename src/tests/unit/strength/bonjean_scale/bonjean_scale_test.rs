@@ -28,7 +28,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let frame_underwater_volume = bonjean_scale.frame_underwater_volume(-58.75, 2.61).unwrap();
         let frame_underwater_volume2 = bonjean_scale
             .frame_underwater_volume_trapezoid(-58.75, 2.61)
@@ -56,7 +56,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let frame_underwater_volume = bonjean_scale.frame_underwater_volume(-58.75, 20.61);
         assert!(frame_underwater_volume.is_err());
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame_underwater_volume)
@@ -69,7 +69,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let frame_underwater_volume = bonjean_scale.frame_underwater_volume(-158.75, 2.61);
         assert!(frame_underwater_volume.is_err());
         assert_eq!(Err("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: -117.5. Передано значение: -158.75".to_string()), frame_underwater_volume)
@@ -82,7 +82,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let frame_underwater_area = bonjean_scale.frame_underwater_area(-58.75, 2.61).unwrap();
         assert_eq!(83.2, frame_underwater_area.my_round(2));
     }

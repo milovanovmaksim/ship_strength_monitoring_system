@@ -10,7 +10,7 @@ use super::bonjean_scale::BonjeanScale;
 ///
 /// Абсцисса центра велечины (центр тяжести погруженного объема судна) LCB.
 pub struct LCB<'a> {
-    bonjean_scale: &'a BonjeanScale<'a>,
+    bonjean_scale: &'a BonjeanScale,
     ship_dimensions: ShipDimensions,
 }
 

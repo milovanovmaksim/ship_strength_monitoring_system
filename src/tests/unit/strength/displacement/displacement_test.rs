@@ -28,7 +28,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 2000000, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
         assert_eq!(
             14329.62,
@@ -43,7 +43,7 @@ mod tests {
             "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
         let ship_underwater_volume = displacement.displacement(2.61, 20.61);
         assert!(ship_underwater_volume.is_err());
