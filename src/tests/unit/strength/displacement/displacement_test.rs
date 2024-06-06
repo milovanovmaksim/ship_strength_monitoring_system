@@ -32,7 +32,7 @@ mod tests {
         let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
         assert_eq!(
             14329.62,
-            displacement.displacement(2.61, 2.61).unwrap().my_round(2)
+            displacement.displacement_by_drafts(2.61, 2.61).unwrap().my_round(2)
         );
     }
 
@@ -45,7 +45,7 @@ mod tests {
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
-        let ship_underwater_volume = displacement.displacement(2.61, 20.61);
+        let ship_underwater_volume = displacement.displacement_by_drafts(2.61, 20.61);
         assert!(ship_underwater_volume.is_err());
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), ship_underwater_volume)
     }

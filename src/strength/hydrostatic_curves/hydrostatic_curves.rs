@@ -190,12 +190,12 @@ impl HydrostaticCurves {
     /// Если весовое водоизмещение меньше чем весовое водоизмещение судна порожнем, возвращает 0.0.
     /// Parameters:
     ///     dispalcement_tonnage - весовое вододоизмещение.
-    pub fn draft_by_displacement_tonnage(&self, dispalcement_tonnage: f64) -> Result<f64, String> {
-        match self.validate_dispalcement_tonnage(dispalcement_tonnage) {
+    pub fn mean_draft_by_displacement_tonnage(&self, displacement_tonnage: f64) -> Result<f64, String> {
+        match self.validate_dispalcement_tonnage(displacement_tonnage) {
             Ok(_) => {
                 match self
                     .displacement_tonnage
-                    .custom_binary_search(dispalcement_tonnage)
+                    .custom_binary_search(displacement_tonnage)
                 {
                     (Some(left_id), Some(right_id)) => {
                         let linear_interpolation = LinearInterpolation::new(
@@ -204,7 +204,7 @@ impl HydrostaticCurves {
                             *self.displacement_tonnage.get(left_id).unwrap(),
                             *self.displacement_tonnage.get(right_id).unwrap(),
                         );
-                        match linear_interpolation.interpolated_value(dispalcement_tonnage) {
+                        match linear_interpolation.interpolated_value(displacement_tonnage) {
                             Ok(draft) => Ok(draft),
                             Err(error) => {
                                 error!(

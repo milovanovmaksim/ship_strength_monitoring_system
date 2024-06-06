@@ -24,7 +24,7 @@ impl<'a> Displacement<'a> {
 
     ///
     /// Возвращает объемное водоизмещение судна от осадки. [м^3]
-    pub fn displacement(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
+    pub fn displacement_by_drafts(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let coordinate_aft = self.ship_dimensions.coordinate_aft();
         let mut abscissa = coordinate_aft + length_spatium / 2.0;
@@ -51,5 +51,10 @@ impl<'a> Displacement<'a> {
             abscissa += length_spatium
         }
         Ok(ship_underwater_volume)
+    }
+
+
+    pub fn displacement_by_mass(&self, massa: f64) -> f64 {
+        2.0
     }
 }

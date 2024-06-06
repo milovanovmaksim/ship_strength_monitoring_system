@@ -71,11 +71,11 @@ mod tests {
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves
-            .draft_by_displacement_tonnage(5605.2)
+            .mean_draft_by_displacement_tonnage(5605.2)
             .unwrap();
         assert_eq!(1.0, value);
         let value = hidrostatic_curves
-            .draft_by_displacement_tonnage(1.0)
+            .mean_draft_by_displacement_tonnage(1.0)
             .unwrap();
         assert_eq!(0.0, value);
     }
@@ -87,7 +87,7 @@ mod tests {
             "src/tests/unit/strength/test_data/hydrostatic_curves.json"
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
-        let value = hidrostatic_curves.draft_by_displacement_tonnage(85365.01);
+        let value = hidrostatic_curves.mean_draft_by_displacement_tonnage(85365.01);
         assert!(value.is_err());
         assert_eq!(Err("Весовое водоизмещение превысило водоизмещение судна в полном грузу. Весовое водоизмещение судна в полном грузу составляет: 85365, передано значение: 85365.01".to_string()), value);
     }
