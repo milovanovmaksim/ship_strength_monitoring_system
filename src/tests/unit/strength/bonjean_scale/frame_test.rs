@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::strength::ship::bonjean_scale::frame::Frame;
+    use crate::strength::bonjean_scale::frame::Frame;
 
     #[test]
     fn area_by_draft_ok_test() {

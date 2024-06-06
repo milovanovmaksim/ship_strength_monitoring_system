@@ -2,9 +2,9 @@
 mod tests {
     use crate::{
         core::round::Round,
-        strength::ship::{
+        strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
-            ship_dimensions::ShipDimensions,
+            ship::ship_dimensions::ShipDimensions,
         },
     };
     use std::{env, sync::Once};
@@ -24,7 +24,7 @@ mod tests {
     fn lcb_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/bonjean_scale/test_data/frames.json".to_string();
+            "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
@@ -36,7 +36,7 @@ mod tests {
     fn lcb_error_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/bonjean_scale/test_data/frames.json".to_string();
+            "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);

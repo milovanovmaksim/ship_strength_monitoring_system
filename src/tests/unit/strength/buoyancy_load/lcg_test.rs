@@ -1,14 +1,14 @@
 #[cfg(test)]
 mod tests {
+    use crate::strength::ship::ship_dimensions::ShipDimensions;
     use crate::{
         core::{point::Point, round::Round},
-        strength::ship::{
+        strength::{
             buoyancy_load::lcg::LCG,
             deadweight::deadweight_intensity::DeadweightIntensity,
             displacement::displacement_intensity::DisplacementIntensity,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
             load::{shipload::Shipload, shiploads::Shiploads},
-            ship_dimensions::ShipDimensions,
         },
     };
     use std::{env, sync::Once};

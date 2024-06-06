@@ -4,7 +4,7 @@ mod tests {
 
     use crate::{
         core::point::Point,
-        strength::ship::{load::shipload::Shipload, ship_dimensions::ShipDimensions},
+        strength::{load::shipload::Shipload, ship::ship_dimensions::ShipDimensions},
     };
 
     static INIT: Once = Once::new();

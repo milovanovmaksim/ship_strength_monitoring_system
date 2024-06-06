@@ -2,14 +2,9 @@
 mod tests {
     use std::{env, sync::Once};
 
-    use log::debug;
-
-    use crate::{
-        core::round::Round,
-        strength::hydrostatic_curves::{
-            hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
-        },
-    };
+    use crate::core::round::Round;
+    use crate::strength::hydrostatic_curves::hydrostatic_curves::HydrostaticCurves;
+    use crate::strength::hydrostatic_curves::hydrostatic_typedata::HydrostaticTypeData;
 
     static INIT: Once = Once::new();
 
@@ -26,7 +21,7 @@ mod tests {
     fn get_data_by_draft_ok_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         assert_eq!(
@@ -60,7 +55,7 @@ mod tests {
     fn get_data_by_draft_error_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves.get_data_by_draft(20.1, HydrostaticTypeData::LCB);
@@ -72,7 +67,7 @@ mod tests {
     fn draft_by_displacement_tonnage_ok_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves
@@ -89,7 +84,7 @@ mod tests {
     fn draft_by_displacement_tonnage_error_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/hydrostatic_curves/test_data/hydrostatic_curves.json"
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json"
                 .to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves.draft_by_displacement_tonnage(85365.01);

@@ -1,4 +1,4 @@
-use crate::strength::ship::load::shiploads::Shiploads;
+use crate::strength::load::shiploads::Shiploads;
 
 pub struct Deadweight {
     shiploads: Shiploads,

@@ -2,7 +2,7 @@ use log::{debug, warn};
 use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
-use crate::strength::ship::load::shipload::Shipload;
+use crate::strength::load::shipload::Shipload;
 use crate::strength::ship::ship_dimensions::ShipDimensions;
 
 ///

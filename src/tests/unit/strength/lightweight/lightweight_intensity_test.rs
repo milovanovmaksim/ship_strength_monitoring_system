@@ -3,9 +3,9 @@ mod tests {
     use log::debug;
     use std::{env, sync::Once};
 
-    use crate::strength::ship::{
+    use crate::strength::{
         lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-        ship_dimensions::ShipDimensions,
+        ship::ship_dimensions::ShipDimensions,
     };
 
     static INIT: Once = Once::new();

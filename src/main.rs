@@ -6,15 +6,13 @@ use core::{point::Point, visualisation::Visualisation};
 use std::env;
 
 use log::debug;
-use strength::ship::{
-    deadweight::deadweight::Deadweight,
+use strength::{
+    deadweight::deadweight_intensity::DeadweightIntensity,
     displacement::displacement_intensity::DisplacementIntensity,
     lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
     load::{shipload::Shipload, shiploads::Shiploads},
-    ship_dimensions::ShipDimensions,
+    ship::ship_dimensions::ShipDimensions,
 };
-
-use crate::strength::ship::deadweight::deadweight_intensity::DeadweightIntensity;
 
 fn main() {
     env::set_var("RUST_LOG", "debug");

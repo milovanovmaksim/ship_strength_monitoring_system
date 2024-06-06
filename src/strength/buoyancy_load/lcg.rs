@@ -1,4 +1,4 @@
-use crate::strength::ship::displacement::displacement_intensity::DisplacementIntensity;
+use crate::strength::displacement::displacement_intensity::DisplacementIntensity;
 
 ///
 /// Абcцисса центр тяжести судна. Англ.: Longitudinal Center of Gravity (LCG).

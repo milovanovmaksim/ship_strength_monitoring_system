@@ -3,12 +3,12 @@ use log::debug;
 use crate::{
     core::round::Round,
     strength::ship::{
-        load::{shipload::Shipload, shiploads::Shiploads},
-        ship_dimensions::ShipDimensions,
-        spatium_function::SpatiumFunction,
+        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
         spatium_functions::SpatiumFunctions,
     },
 };
+
+use crate::strength::load::{shipload::Shipload, shiploads::Shiploads};
 
 #[derive(Debug)]
 pub struct DeadweightIntensity {
