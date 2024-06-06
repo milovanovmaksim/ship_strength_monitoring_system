@@ -3,7 +3,7 @@ mod tests {
     use crate::{
         core::round::Round,
         strength::ship::{
-            buoyancy_load::{bonjean_scale::BonjeanScale, frames::Frames},
+            bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames},
             displacement::displacement::Displacement,
             ship_dimensions::ShipDimensions,
         },
@@ -25,7 +25,7 @@ mod tests {
     fn displacement_ok_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
+            "src/tests/unit/strength/ship/bonjean_scale/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 2000000, 0.6);
         let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);
@@ -40,7 +40,7 @@ mod tests {
     fn displacement_error_test() {
         call_once();
         let file_path =
-            "src/tests/unit/strength/ship/buoyancy_load/test_data/frames.json".to_string();
+            "src/tests/unit/strength/ship/bonjean_scale/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(&frames, ship_dimensions);

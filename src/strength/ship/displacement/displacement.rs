@@ -2,7 +2,7 @@ use log::error;
 
 use crate::{
     core::linear_interpolation::LinearInterpolation,
-    strength::ship::{buoyancy_load::bonjean_scale::BonjeanScale, ship_dimensions::ShipDimensions},
+    strength::ship::{bonjean_scale::bonjean_scale::BonjeanScale, ship_dimensions::ShipDimensions},
 };
 
 ///

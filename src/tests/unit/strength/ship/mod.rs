@@ -1,3 +1,4 @@
+mod bonjean_scale;
 mod buoyancy_load;
 mod deadweight;
 mod displacement;

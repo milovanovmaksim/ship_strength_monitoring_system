@@ -1,3 +1,4 @@
+pub(crate) mod bonjean_scale;
 pub(crate) mod buoyancy_load;
 pub(crate) mod deadweight;
 pub(crate) mod displacement;
