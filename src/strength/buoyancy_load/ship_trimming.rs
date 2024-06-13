@@ -46,7 +46,7 @@ impl<'a> ShipTrimming<'a> {
         let r_l = self.hydrastatic_curves.get_data_by_draft(
             mean_draft,
             HydrostaticTypeData::LongitudinalMetacentricRadius,
-        );
+        )?;
         todo!();
     }
 }

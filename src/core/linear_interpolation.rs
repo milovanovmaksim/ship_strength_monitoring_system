@@ -28,10 +28,12 @@ impl LinearInterpolation {
     /// Примечание:
     ///    x_0 < x < x_1
     pub fn interpolated_value(&self, x: f64) -> Result<f64, String> {
-        if self.x_0 >= self.x_1 {
-            return Err("x_0 должен быть строго меньше чем x_1".to_string());
+        if self.x_0 == self.x_1 {
+            return Err("x_0 и x_1 не должны быть равны между собой".to_string());
         }
-        if self.x_0 <= x && x <= self.x_1 {
+        let min_x = self.x_0.min(self.x_1);
+        let max_x = self.x_0.max(self.x_1);
+        if min_x <= x && x <= max_x {
             let f_x =
                 self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1 - self.x_0)) * (x - self.x_0);
             return Ok(f_x);
