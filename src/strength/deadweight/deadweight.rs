@@ -1,11 +1,11 @@
 use crate::strength::load::shiploads::Shiploads;
 
-pub struct Deadweight {
-    shiploads: Shiploads,
+pub struct Deadweight<'a> {
+    shiploads: &'a Shiploads,
 }
 
-impl Deadweight {
-    pub fn new(shiploads: Shiploads) -> Self {
+impl<'a> Deadweight<'a> {
+    pub fn new(shiploads: &'a Shiploads) -> Self {
         Deadweight { shiploads }
     }
 

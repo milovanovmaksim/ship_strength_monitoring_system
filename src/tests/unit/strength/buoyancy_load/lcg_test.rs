@@ -38,7 +38,7 @@ mod tests {
         ]);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let lightweight_intensity = LightweightIntensity::new(ship_dimensions.clone(), lightweight);
-        let deadweight_intensity = DeadweightIntensity::new(shiploads, ship_dimensions);
+        let deadweight_intensity = DeadweightIntensity::new(&shiploads, ship_dimensions);
         let displacement_intensity =
             DisplacementIntensity::new(deadweight_intensity, lightweight_intensity);
         let lcb = LCG::new(displacement_intensity);

@@ -16,8 +16,8 @@ use crate::{
 pub(crate) struct ShipTrimming<'a> {
     lcb: LCB<'a>,
     displacement: Displacement<'a>,
-    lcg: LCG,
-    displacement_tonnage: DisplacementTonnage,
+    lcg: LCG<'a>,
+    displacement_tonnage: DisplacementTonnage<'a>,
     hydrastatic_curves: HydrostaticCurves,
     ship_dimensions: ShipDimensions,
     bonjean_scale: &'a BonjeanScale,
@@ -27,8 +27,8 @@ impl<'a> ShipTrimming<'a> {
     pub fn new(
         lcb: LCB<'a>,
         displacement: Displacement<'a>,
-        lcg: LCG,
-        displacement_tonnage: DisplacementTonnage,
+        lcg: LCG<'a>,
+        displacement_tonnage: DisplacementTonnage<'a>,
         hydrostatic_curves: HydrostaticCurves,
         ship_dimensions: ShipDimensions,
         bonjean_scale: &'a BonjeanScale,

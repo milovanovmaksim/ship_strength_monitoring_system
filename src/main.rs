@@ -29,7 +29,7 @@ fn main() {
     ]);
     let ship_dimensions =
         ShipDimensions::from_json_file("./input_data/input_data.json".to_string()).unwrap();
-    let deadweight_intnesity = DeadweightIntensity::new(shiploads, ship_dimensions.clone());
+    let deadweight_intnesity = DeadweightIntensity::new(&shiploads, ship_dimensions.clone());
     let deadweight_intnesity_spatium_functions = deadweight_intnesity.deadweight_intensity();
     let visualization = Visualisation::new(
         &deadweight_intnesity_spatium_functions,

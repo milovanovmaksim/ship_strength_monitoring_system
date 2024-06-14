@@ -4,14 +4,14 @@ use crate::strength::{
     ship::spatium_functions::SpatiumFunctions,
 };
 
-pub struct DisplacementIntensity {
-    deadweight_intensity: DeadweightIntensity,
+pub struct DisplacementIntensity<'a> {
+    deadweight_intensity: DeadweightIntensity<'a>,
     lightweight_intnesity: LightweightIntensity,
 }
 
-impl DisplacementIntensity {
+impl<'a> DisplacementIntensity<'a> {
     pub fn new(
-        deadweight_intensity: DeadweightIntensity,
+        deadweight_intensity: DeadweightIntensity<'a>,
         lightweight_intensity: LightweightIntensity,
     ) -> Self {
         DisplacementIntensity {
