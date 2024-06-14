@@ -2,7 +2,7 @@ use log::info;
 
 use super::lcg::LCG;
 use crate::{
-    core::physical_constants,
+    core::{physical_constants, water_density::WaterDensity},
     strength::{
         bonjean_scale::{bonjean_scale::BonjeanScale, lcb::LCB},
         displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
@@ -21,6 +21,7 @@ pub(crate) struct ShipTrimming<'a> {
     hydrastatic_curves: HydrostaticCurves,
     ship_dimensions: ShipDimensions,
     bonjean_scale: &'a BonjeanScale,
+    water_density: WaterDensity,
 }
 
 impl<'a> ShipTrimming<'a> {
@@ -32,6 +33,7 @@ impl<'a> ShipTrimming<'a> {
         hydrostatic_curves: HydrostaticCurves,
         ship_dimensions: ShipDimensions,
         bonjean_scale: &'a BonjeanScale,
+        water_density: WaterDensity,
     ) -> Self {
         ShipTrimming {
             lcb,
@@ -41,6 +43,7 @@ impl<'a> ShipTrimming<'a> {
             hydrastatic_curves: hydrostatic_curves,
             ship_dimensions,
             bonjean_scale,
+            water_density,
         }
     }
 
@@ -75,13 +78,14 @@ impl<'a> ShipTrimming<'a> {
             return Err(format!("Удифферентовка судна не достигнута из-за превышения максимальной средней осадки судна.\
             Средняя осадка судна для данной схемы загрузки = {} м.", ship_mean_draft));
         }
-        if displacement_tonnage - 1.0 * physical_constants::EART_GRAVITY * current_displacement
+        if displacement_tonnage
+            - self.water_density.water_density()
+                * physical_constants::EART_GRAVITY
+                * current_displacement
             <= 0.004 * displacement_tonnage
-            && lcg - lcb <= 0.001 * self.ship_dimensions.length_between_perpendiculars()
+            && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.length_between_perpendiculars()
         {
-            info!(
-                "Удифферентовка судна на тихой воде достигнута за 1 итерацию."
-            );
+            info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
             return Ok((aft_draft, nose_draft));
         };
         for i in 0..100 {
@@ -104,9 +108,12 @@ impl<'a> ShipTrimming<'a> {
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;
             let lcb = self.lcb.lcb(aft_draft, nose_draft)?;
-            if displacement_tonnage - 1.0 * physical_constants::EART_GRAVITY * current_displacement
+            if displacement_tonnage
+                - self.water_density.water_density()
+                    * physical_constants::EART_GRAVITY
+                    * current_displacement
                 <= 0.004 * displacement_tonnage
-                && lcg - lcb <= 0.001 * self.ship_dimensions.length_between_perpendiculars()
+                && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.length_between_perpendiculars()
             {
                 info!(
                     "Удифферентовка судна на тихой воде достигнута за {} итераций.",

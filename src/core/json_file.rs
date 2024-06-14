@@ -1,7 +1,6 @@
 use std::{fs::File, io::BufReader};
 
 use log::warn;
-use serde::Deserialize;
 
 ///
 /// Reads json file

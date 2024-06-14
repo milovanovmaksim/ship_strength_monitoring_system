@@ -53,6 +53,8 @@ impl<'a> Displacement<'a> {
         Ok(ship_underwater_volume)
     }
 
+    ///
+    /// Возвращает объемное водоизмещение судна от массы. [м^3]
     pub fn displacement_by_mass(&self, massa: f64) -> f64 {
         2.0
     }

@@ -1,6 +1,21 @@
 #[cfg(test)]
 mod tests {
-    use crate::{core::{point::Point, round::Round}, strength::{bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB}, buoyancy_load::{lcg::LCG, ship_trimming::ShipTrimming}, deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity}, displacement::{displacement::Displacement, displacement_intensity::DisplacementIntensity, displacement_tonnage::DisplacementTonnage}, hydrostatic_curves::hydrostatic_curves::HydrostaticCurves, lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity}, load::{shipload::Shipload, shiploads::Shiploads}, ship::ship_dimensions::ShipDimensions}};
+    use crate::{
+        core::{point::Point, round::Round},
+        strength::{
+            bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
+            buoyancy_load::{lcg::LCG, ship_trimming::ShipTrimming},
+            deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
+            displacement::{
+                displacement::Displacement, displacement_intensity::DisplacementIntensity,
+                displacement_tonnage::DisplacementTonnage,
+            },
+            hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
+            lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
+            load::{shipload::Shipload, shiploads::Shiploads},
+            ship::ship_dimensions::ShipDimensions,
+        },
+    };
     use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
@@ -35,14 +50,17 @@ mod tests {
             Displacement::new(&bonjean_scale, ship_dimensions.clone()),
             LCG::new(DisplacementIntensity::new(
                 DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
-                LightweightIntensity::new(ship_dimensions.clone(), Lightweight::new(13567.0)))
-            ),
+                LightweightIntensity::new(ship_dimensions.clone(), Lightweight::new(13567.0)),
+            )),
             DisplacementTonnage::new(Lightweight::new(13567.0), Deadweight::new(&shiploads)),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
             ship_dimensions.clone(),
-            &bonjean_scale
+            &bonjean_scale,
         );
         let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
-        assert_eq!((1.34, 3.34), (aft_draft.my_round(2), nose_draft.my_round(2)));
+        assert_eq!(
+            (1.34, 3.34),
+            (aft_draft.my_round(2), nose_draft.my_round(2))
+        );
     }
 }
