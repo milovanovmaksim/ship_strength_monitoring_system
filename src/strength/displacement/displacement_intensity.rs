@@ -12,11 +12,11 @@ pub struct DisplacementIntensity {
 impl DisplacementIntensity {
     pub fn new(
         deadweight_intensity: DeadweightIntensity,
-        lightweight_intnesity: LightweightIntensity,
+        lightweight_intensity: LightweightIntensity,
     ) -> Self {
         DisplacementIntensity {
             deadweight_intensity,
-            lightweight_intnesity,
+            lightweight_intnesity: lightweight_intensity,
         }
     }
 

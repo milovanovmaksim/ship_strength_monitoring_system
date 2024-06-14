@@ -29,7 +29,7 @@ impl<'a> ShipTrimming<'a> {
         displacement: Displacement<'a>,
         lcg: LCG,
         displacement_tonnage: DisplacementTonnage,
-        hydrastatic_curves: HydrostaticCurves,
+        hydrostatic_curves: HydrostaticCurves,
         ship_dimensions: ShipDimensions,
         bonjean_scale: &'a BonjeanScale,
     ) -> Self {
@@ -38,7 +38,7 @@ impl<'a> ShipTrimming<'a> {
             displacement,
             lcg,
             displacement_tonnage,
-            hydrastatic_curves,
+            hydrastatic_curves: hydrostatic_curves,
             ship_dimensions,
             bonjean_scale,
         }
@@ -60,10 +60,10 @@ impl<'a> ShipTrimming<'a> {
             .hydrastatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?;
         let nose_draft = mean_draft
-            + (self.ship_dimensions.length_between_perpendiculars() / 2.0 - lcf)
+            + ((self.ship_dimensions.length_between_perpendiculars() / 2.0) - lcf)
                 * ((lcg - lcb) / r_l);
         let aft_draft = mean_draft
-            - (self.ship_dimensions.length_between_perpendiculars() / 2.0 - lcf)
+            - ((self.ship_dimensions.length_between_perpendiculars() / 2.0) - lcf)
                 * ((lcg - lcb) / r_l);
         let current_displacement = self
             .displacement
@@ -73,6 +73,9 @@ impl<'a> ShipTrimming<'a> {
             <= 0.004 * displacement_tonnage
             && lcg - lcb <= 0.001 * self.ship_dimensions.length_between_perpendiculars()
         {
+            info!(
+                "Удифферентовка судна на тихой воде достигнута за 1 итерацию."
+            );
             return Ok((aft_draft, nose_draft));
         };
         for i in 0..100 {
@@ -95,12 +98,12 @@ impl<'a> ShipTrimming<'a> {
                 && lcg - lcb <= 0.001 * self.ship_dimensions.length_between_perpendiculars()
             {
                 info!(
-                    "Удифферентовка судна на тихой воде осуществлена за {} итераций.",
+                    "Удифферентовка судна на тихой воде достигнута за {} итераций.",
                     i
                 );
                 return Ok((aft_draft, nose_draft));
             };
         }
-        Err("При удиферентовки судна количество итераций превысило максимально допустимое значение в 100 итераций".to_string())
+        Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.".to_string())
     }
 }

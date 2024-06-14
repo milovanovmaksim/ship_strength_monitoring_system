@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 pub struct Lightweight {
     lightweight: f64,
 }
