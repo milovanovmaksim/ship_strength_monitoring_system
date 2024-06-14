@@ -278,4 +278,8 @@ impl HydrostaticCurves {
             }
         }
     }
+
+    pub fn max_draft(&self) -> f64 {
+        *self.drafts.last().unwrap()
+    }
 }

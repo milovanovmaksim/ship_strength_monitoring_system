@@ -45,6 +45,7 @@ impl<'a> ShipTrimming<'a> {
     }
 
     pub fn trim(&self) -> Result<(f64, f64), String> {
+        let max_draft = self.hydrastatic_curves.max_draft();
         let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
         let mean_draft = self
             .hydrastatic_curves
@@ -69,6 +70,10 @@ impl<'a> ShipTrimming<'a> {
             .displacement
             .displacement_by_drafts(aft_draft, nose_draft)?;
         let lcb = self.lcb.lcb(aft_draft, nose_draft)?;
+        let ship_mean_draft = (aft_draft + nose_draft) * 0.5;
+        if ship_mean_draft * 0.5 > max_draft {
+            return Err(format!("Удифферентовка судна не достигнута из-за превышения максимальной средней осадки судна. Средняя осадка судна достигла = {} м.", ship_mean_draft));
+        }
         if displacement_tonnage - 1.0 * physical_constants::EART_GRAVITY * current_displacement
             <= 0.004 * displacement_tonnage
             && lcg - lcb <= 0.001 * self.ship_dimensions.length_between_perpendiculars()

@@ -31,15 +31,15 @@ mod tests {
         ]);
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let ship_trimming = ShipTrimming::new(
-            LCB::new(&bonjean_scale, ShipDimensions::new(235.0, 20, 0.6)),
-            Displacement::new(&bonjean_scale, ShipDimensions::new(235.0, 20, 0.6)),
+            LCB::new(&bonjean_scale, ship_dimensions.clone()),
+            Displacement::new(&bonjean_scale, ship_dimensions.clone()),
             LCG::new(DisplacementIntensity::new(
-                DeadweightIntensity::new(&shiploads, ShipDimensions::new(235.0, 20, 0.6)),
-                LightweightIntensity::new(ShipDimensions::new(235.0, 20, 0.6), Lightweight::new(13567.0)))
+                DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
+                LightweightIntensity::new(ship_dimensions.clone(), Lightweight::new(13567.0)))
             ),
             DisplacementTonnage::new(Lightweight::new(13567.0), Deadweight::new(&shiploads)),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
-            ShipDimensions::new(235.0, 20, 0.6),
+            ship_dimensions.clone(),
             &bonjean_scale
         );
         let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
