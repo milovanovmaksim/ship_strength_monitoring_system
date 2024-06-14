@@ -72,7 +72,8 @@ impl<'a> ShipTrimming<'a> {
         let lcb = self.lcb.lcb(aft_draft, nose_draft)?;
         let ship_mean_draft = (aft_draft + nose_draft) * 0.5;
         if ship_mean_draft * 0.5 > max_draft {
-            return Err(format!("Удифферентовка судна не достигнута из-за превышения максимальной средней осадки судна. Средняя осадка судна достигла = {} м.", ship_mean_draft));
+            return Err(format!("Удифферентовка судна не достигнута из-за превышения максимальной средней осадки судна.\
+            Средняя осадка судна для данной схемы загрузки = {} м.", ship_mean_draft));
         }
         if displacement_tonnage - 1.0 * physical_constants::EART_GRAVITY * current_displacement
             <= 0.004 * displacement_tonnage
@@ -94,6 +95,11 @@ impl<'a> ShipTrimming<'a> {
             let aft_draft = mean_draft + ((displacement - current_displacement) / area_water_line)
                 - (self.ship_dimensions.length_between_perpendiculars() / 2.0 + lcf)
                     * ((lcg - lcb) / r_l);
+            let ship_mean_draft = (aft_draft + nose_draft) * 0.5;
+            if ship_mean_draft * 0.5 > max_draft {
+                return Err(format!("Удифферентовка судна не достигнута из-за превышения максимальной средней осадки судна.\
+                Средняя осадка судна для данной схемы загрузки = {} м.", ship_mean_draft));
+            }
             let current_displacement = self
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;
