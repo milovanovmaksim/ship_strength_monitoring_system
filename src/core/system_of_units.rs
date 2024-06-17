@@ -7,14 +7,12 @@ pub struct Newton(pub f64);
 #[derive(Deserialize, Debug)]
 pub struct Tons(pub f64);
 
-
 impl From<f64> for Newton {
     fn from(value: f64) -> Self {
         let newton = value * 1000.0 * 9.81;
         Newton(newton)
     }
 }
-
 
 impl From<Tons> for Newton {
     fn from(tonn: Tons) -> Newton {

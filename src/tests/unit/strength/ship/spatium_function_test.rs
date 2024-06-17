@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction};
+    use crate::strength::ship::{
+        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
+    };
 
     #[test]
     fn from_id_test() {
@@ -14,7 +16,7 @@ mod tests {
     fn add_test() {
         let spatium_function = SpatiumFunction::new(0, -62.5, -56.25, 1.5, 1.5);
         let other_spatium_function = SpatiumFunction::new(0, -62.5, -56.25, 1.5, 1.5);
-        let new_spatium_function = spatium_function.add(&other_spatium_function);
+        let new_spatium_function = spatium_function.add(other_spatium_function);
         let test_spatium_function = SpatiumFunction::new(0, -62.5, -56.25, 3.0, 3.0);
         assert_eq!(test_spatium_function, new_spatium_function);
     }

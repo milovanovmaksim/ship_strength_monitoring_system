@@ -12,5 +12,4 @@ mod tests {
         assert_eq!(3.0, 2.5.my_round(0));
         assert_eq!(20.83, 20.8333.my_round(2))
     }
-
 }
