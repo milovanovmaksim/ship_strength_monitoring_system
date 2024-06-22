@@ -24,6 +24,9 @@ pub(crate) struct ShipTrimming<'a> {
 }
 
 impl<'a> ShipTrimming<'a> {
+
+    ///
+    /// Основной конструктор.
     pub fn new(
         lcb: LCB<'a>,
         displacement: Displacement<'a>,
@@ -44,6 +47,8 @@ impl<'a> ShipTrimming<'a> {
         }
     }
 
+    ///
+    /// Проверяет достигнута ли удифферентовка судна.
     fn trim_achieved(
         &self,
         displacement_tonnage: f64,
@@ -56,6 +61,9 @@ impl<'a> ShipTrimming<'a> {
             && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.lbp()
     }
 
+    ///
+    /// Валидация средней осадки судна.
+    /// Средняя осадка не должна превышать максимальную среднюю осадку судна.
     fn validate_mean_draft(&self, current_mean_draft: f64) -> Result<(), String> {
         let max_draft = self.hydrastatic_curves.max_draft();
         if current_mean_draft > max_draft {
@@ -65,6 +73,10 @@ impl<'a> ShipTrimming<'a> {
         };
         Ok(())
     }
+
+    ///
+    /// Удифферентовка судна методом последовательных прилижений.
+    /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn trim(&self) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
         let mean_draft = self
