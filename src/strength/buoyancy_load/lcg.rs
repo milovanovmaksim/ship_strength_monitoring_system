@@ -23,7 +23,6 @@ impl<'a> LCG<'a> {
             displacement_tonnage += integral;
             moment += integral * spatium.abscissa();
         }
-        println!("displacement456 = {}", displacement_tonnage);
         moment / displacement_tonnage
     }
 }
