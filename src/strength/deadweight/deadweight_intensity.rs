@@ -26,7 +26,7 @@ impl<'a> DeadweightIntensity<'a> {
 
     pub fn deadweight_intensity(&self) -> SpatiumFunctions {
         let number_spatiums = self.ship_dimensions.number_spatiums();
-        let length_between_perpendiculars = self.ship_dimensions.length_between_perpendiculars();
+        let length_between_perpendiculars = self.ship_dimensions.lbp();
         let mut spatium_functions =
             SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
         let shiploads = self.shiploads.shared_shiploads(&self.ship_dimensions);

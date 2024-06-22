@@ -44,27 +44,27 @@ impl LightweightIntensity {
             if current_coord > self.ship_dimensions.coordinate_aft()
                 && current_coord
                     < (self.ship_dimensions.coordinate_aft()
-                        + self.ship_dimensions.length_between_perpendiculars() / 3.0)
+                        + self.ship_dimensions.lbp() / 3.0)
             {
                 ratio = a
                     + ((b - a)
-                        * ((self.ship_dimensions.length_between_perpendiculars() / 2.0)
+                        * ((self.ship_dimensions.lbp() / 2.0)
                             - current_coord.abs()))
-                        / (self.ship_dimensions.length_between_perpendiculars() / 3.0);
+                        / (self.ship_dimensions.lbp() / 3.0);
             } else if current_coord
                 >= self.ship_dimensions.coordinate_aft()
-                    + self.ship_dimensions.length_between_perpendiculars() / 3.0
+                    + self.ship_dimensions.lbp() / 3.0
                 && current_coord
                     < (self.ship_dimensions.coordinate_bow()
-                        - self.ship_dimensions.length_between_perpendiculars() / 3.0)
+                        - self.ship_dimensions.lbp() / 3.0)
             {
                 ratio = b;
             } else {
                 ratio = c
                     + ((b - c)
-                        * (self.ship_dimensions.length_between_perpendiculars() / 2.0
+                        * (self.ship_dimensions.lbp() / 2.0
                             - current_coord))
-                        / (self.ship_dimensions.length_between_perpendiculars() / 3.0);
+                        / (self.ship_dimensions.lbp() / 3.0);
             }
             let f_x = intensity_load(ratio).my_round(2);
             let spatium_function =

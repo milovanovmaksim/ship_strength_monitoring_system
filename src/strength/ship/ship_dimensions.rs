@@ -94,14 +94,14 @@ impl ShipDimensions {
 
     ///
     /// Return length bettwen perpendiculars
-    pub fn length_between_perpendiculars(&self) -> f64 {
+    pub fn lbp(&self) -> f64 {
         self.length_between_perpendiculars
     }
 
     ///
     /// Return spatium start coordinate.
     pub fn spatium_start_coordinate(&self, id: u64) -> f64 {
-        id as f64 * self.length_spatium() - (self.length_between_perpendiculars() / 2.0)
+        id as f64 * self.length_spatium() - (self.lbp() / 2.0)
     }
 
     ///

@@ -18,7 +18,7 @@ use super::hydrostatic_typedata::HydrostaticTypeData;
 ///     x_c: абсцисса центра велечины,
 ///     waterline_area: площадь ватерлинии,
 ///     x_f: абсцисса центра тяжести ватерлиниии,
-///     r_l - продольный(большой) метацентрический радиус.
+///     lmr - продольный(большой) метацентрический радиус.
 #[derive(Deserialize, Debug)]
 pub(crate) struct HydrostaticCurves {
     drafts: Vec<f64>,
@@ -26,7 +26,7 @@ pub(crate) struct HydrostaticCurves {
     x_c: Vec<f64>,
     waterline_area: Vec<f64>,
     x_f: Vec<f64>,
-    r_l: Vec<f64>,
+    lmr: Vec<f64>,
 }
 
 impl HydrostaticCurves {
@@ -46,7 +46,7 @@ impl HydrostaticCurves {
             x_c,
             waterline_area,
             x_f,
-            r_l,
+            lmr: r_l,
         })
         .validate_data()
         {
@@ -106,7 +106,7 @@ impl HydrostaticCurves {
             || self.x_c.len() == 0
             || self.waterline_area.len() == 0
             || self.x_f.len() == 0
-            || self.r_l.len() == 0
+            || self.lmr.len() == 0
         {
             return Err("Гидростатические кривые не заданы".to_string());
         }
@@ -131,7 +131,7 @@ impl HydrostaticCurves {
             && drafts_len == self.x_c.len()
             && drafts_len == self.waterline_area.len()
             && drafts_len == self.x_f.len()
-            && drafts_len == self.r_l.len()
+            && drafts_len == self.lmr.len()
         {
             return Ok(());
         }
@@ -154,7 +154,7 @@ impl HydrostaticCurves {
         if more_than_zero(&self.drafts)
             && more_than_zero(&self.displacement_tonnage)
             && more_than_zero(&self.waterline_area)
-            && more_than_zero(&self.r_l)
+            && more_than_zero(&self.lmr)
         {
             return Ok(());
         }
@@ -190,7 +190,7 @@ impl HydrostaticCurves {
     /// Если весовое водоизмещение меньше чем весовое водоизмещение судна порожнем, возвращает 0.0.
     /// Parameters:
     ///     dispalcement_tonnage - весовое вододоизмещение.
-    pub fn mean_draft_by_displacement_tonnage(
+    pub fn mean_draft(
         &self,
         displacement_tonnage: f64,
     ) -> Result<f64, String> {
@@ -247,7 +247,7 @@ impl HydrostaticCurves {
                 HydrostaticTypeData::LCB => &self.x_c,
                 HydrostaticTypeData::LCF => &self.x_f,
                 HydrostaticTypeData::WaterlineArea => &self.waterline_area,
-                HydrostaticTypeData::LongitudinalMetacentricRadius => &self.r_l,
+                HydrostaticTypeData::LMR => &self.lmr,
             }
         };
         match self.validate_draft(draft) {

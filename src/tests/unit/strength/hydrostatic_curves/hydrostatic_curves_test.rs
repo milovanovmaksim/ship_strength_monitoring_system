@@ -43,7 +43,7 @@ mod tests {
         assert_eq!(
             1446.69,
             hidrostatic_curves
-                .get_data_by_draft(2.0, HydrostaticTypeData::LongitudinalMetacentricRadius)
+                .get_data_by_draft(2.0, HydrostaticTypeData::LMR)
                 .unwrap()
                 .my_round(2)
         );
@@ -60,26 +60,26 @@ mod tests {
     }
 
     #[test]
-    fn draft_by_displacement_tonnage_ok_test() {
+    fn mean_draft_ok_test() {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let value = hidrostatic_curves
-            .mean_draft_by_displacement_tonnage(5605.2)
+            .mean_draft(5605.2)
             .unwrap();
         assert_eq!(1.0, value);
         let value = hidrostatic_curves
-            .mean_draft_by_displacement_tonnage(1.0)
+            .mean_draft(1.0)
             .unwrap();
         assert_eq!(0.0, value);
     }
 
     #[test]
-    fn draft_by_displacement_tonnage_error_test() {
+    fn mean_draft_error_test() {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
-        let value = hidrostatic_curves.mean_draft_by_displacement_tonnage(85365.01);
+        let value = hidrostatic_curves.mean_draft(85365.01);
         assert!(value.is_err());
         assert_eq!(Err("Весовое водоизмещение превысило водоизмещение судна в полном грузу. Весовое водоизмещение судна в полном грузу составляет: 85365, передано значение: 85365.01".to_string()), value);
     }
