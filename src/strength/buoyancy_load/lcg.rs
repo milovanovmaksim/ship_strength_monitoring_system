@@ -17,11 +17,13 @@ impl<'a> LCG<'a> {
     pub fn lcg(&self) -> f64 {
         let displacement_intensity = self.displacement_intensity.spatium_functions();
         let mut moment = 0.0;
-        let mut displacement = 0.0;
+        let mut displacement_tonnage = 0.0;
         for spatium in displacement_intensity.as_ref() {
-            displacement += spatium.integral();
-            moment += spatium.integral() * spatium.abscissa();
+            let integral = spatium.integral();
+            displacement_tonnage += integral;
+            moment += integral * spatium.abscissa();
         }
-        moment / displacement
+        println!("displacement456 = {}", displacement_tonnage);
+        moment / displacement_tonnage
     }
 }

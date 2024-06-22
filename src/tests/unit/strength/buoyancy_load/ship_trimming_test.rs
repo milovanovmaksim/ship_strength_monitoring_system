@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::{point::Point, round::Round},
+        core::{point::Point, round::Round, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_load::{lcg::LCG, ship_trimming::ShipTrimming},
@@ -34,7 +34,7 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::new(vec![
             Shipload::new(0.0, Point::new(40.23, 0.0, 0.0), 15.21),
@@ -45,17 +45,22 @@ mod tests {
             Shipload::new(0.0, Point::new(10.0, 0.0, 0.0), 20.0),
         ]);
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let lightweight = Lightweight::new(17500.0);
         let ship_trimming = ShipTrimming::new(
             LCB::new(&bonjean_scale, ship_dimensions.clone()),
-            Displacement::new(&bonjean_scale, ship_dimensions.clone()),
+            Displacement::new(
+                &bonjean_scale,
+                ship_dimensions.clone(),
+                WaterDensity::new(1.025),
+            ),
             LCG::new(DisplacementIntensity::new(
                 DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
-                LightweightIntensity::new(ship_dimensions.clone(), Lightweight::new(13567.0)),
+                LightweightIntensity::new(ship_dimensions.clone(), lightweight.clone()),
             )),
-            DisplacementTonnage::new(Lightweight::new(13567.0), Deadweight::new(&shiploads)),
+            DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
             ship_dimensions.clone(),
-            &bonjean_scale,
+            WaterDensity::new(1.025),
         );
         let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
         assert_eq!(

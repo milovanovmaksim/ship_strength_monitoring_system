@@ -1,24 +1,33 @@
 use log::error;
 
 use crate::{
-    core::linear_interpolation::LinearInterpolation,
+    core::{
+        linear_interpolation::LinearInterpolation, physical_constants::EART_GRAVITY,
+        water_density::WaterDensity,
+    },
     strength::{bonjean_scale::bonjean_scale::BonjeanScale, ship::ship_dimensions::ShipDimensions},
 };
 
 ///
 /// Объемное водоизмещение судна.
-pub struct Displacement<'a> {
+pub(crate) struct Displacement<'a> {
     bonjean_scale: &'a BonjeanScale,
     ship_dimensions: ShipDimensions,
+    water_density: WaterDensity,
 }
 
 impl<'a> Displacement<'a> {
     ///
     /// Конструктор.
-    pub fn new(bonjean_scale: &'a BonjeanScale, ship_dimensions: ShipDimensions) -> Self {
+    pub fn new(
+        bonjean_scale: &'a BonjeanScale,
+        ship_dimensions: ShipDimensions,
+        water_density: WaterDensity,
+    ) -> Self {
         Displacement {
             bonjean_scale,
             ship_dimensions,
+            water_density,
         }
     }
 
@@ -56,6 +65,6 @@ impl<'a> Displacement<'a> {
     ///
     /// Возвращает объемное водоизмещение судна от массы. [м^3]
     pub fn displacement_by_mass(&self, massa: f64) -> f64 {
-        2.0
+        massa / self.water_density.water_density()
     }
 }

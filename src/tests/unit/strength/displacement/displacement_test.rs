@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::round::Round,
+        core::{round::Round, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames},
             displacement::displacement::Displacement,
@@ -28,7 +28,8 @@ mod tests {
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 2000000, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
+        let displacement =
+            Displacement::new(&bonjean_scale, ship_dimensions, WaterDensity::new(1.0));
         assert_eq!(
             14329.62,
             displacement
@@ -45,7 +46,8 @@ mod tests {
         let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let displacement = Displacement::new(&bonjean_scale, ship_dimensions);
+        let displacement =
+            Displacement::new(&bonjean_scale, ship_dimensions, WaterDensity::new(1.0));
         let ship_underwater_volume = displacement.displacement_by_drafts(2.61, 20.61);
         assert!(ship_underwater_volume.is_err());
         assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), ship_underwater_volume)

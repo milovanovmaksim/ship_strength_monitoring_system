@@ -106,7 +106,7 @@ impl Frame {
     /// ```
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
         let min_draft = *self.drafts.first().unwrap();
-        if draft < min_draft {
+        if draft < min_draft && draft > 0.0 {
             return Ok(0.0);
         }
         match self.validate_draft(draft) {
@@ -146,10 +146,14 @@ impl Frame {
 
     ///
     /// Валидация осадки.
-    /// Осадка не должна превышать максимально допустимого значения для шпангоута.
+    /// Осадка не должна превышать максимально допустимого значения для шпангоута и не может быть отрицательной.
     fn validate_draft(&self, draft: f64) -> Result<(), String> {
         if draft > self.max_draft() {
             return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} [м].", self.max_draft()));
+        } else if draft < 0.0 {
+            return Err(format!(
+                "Осадка отрицательной не может быть. Передано значение {draft}"
+            ));
         }
         Ok(())
     }
