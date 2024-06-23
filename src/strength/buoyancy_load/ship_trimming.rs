@@ -82,7 +82,7 @@ impl<'a> ShipTrimming<'a> {
     }
 
     ///
-    /// Удифферентовка судна методом последовательных прилижений.
+    /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn trim(&self) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
@@ -91,6 +91,7 @@ impl<'a> ShipTrimming<'a> {
             .hydrastatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::WaterlineArea)?;
         let lcg = self.lcg.lcg();
+        let lbp = self.ship_dimensions.lbp();
 
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let mut lcb = self
@@ -102,10 +103,8 @@ impl<'a> ShipTrimming<'a> {
         let lcf = self
             .hydrastatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?;
-        let nose_draft =
-            mean_draft + ((self.ship_dimensions.lbp() / 2.0) - lcf) * ((lcg - lcb) / lmr);
-        let aft_draft =
-            mean_draft - ((self.ship_dimensions.lbp() / 2.0) + lcf) * ((lcg - lcb) / lmr);
+        let nose_draft = mean_draft + ((lbp / 2.0) - lcf) * ((lcg - lcb) / lmr);
+        let aft_draft = mean_draft - ((lbp / 2.0) + lcf) * ((lcg - lcb) / lmr);
         let mut calculated_displacement = self
             .displacement
             .displacement_by_drafts(aft_draft, nose_draft)?;
@@ -119,11 +118,11 @@ impl<'a> ShipTrimming<'a> {
         for i in 2..102 {
             let nose_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
-                + (self.ship_dimensions.lbp() / 2.0 - lcf) * ((lcg - lcb) / lmr);
+                + (lbp / 2.0 - lcf) * ((lcg - lcb) / lmr);
 
             let aft_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
-                - (self.ship_dimensions.lbp() / 2.0 + lcf) * ((lcg - lcb) / lmr);
+                - (lbp / 2.0 + lcf) * ((lcg - lcb) / lmr);
             let current_mean_draft = (aft_draft + nose_draft) * 0.5;
             self.validate_mean_draft(current_mean_draft)?;
             calculated_displacement = self
