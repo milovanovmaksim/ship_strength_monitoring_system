@@ -13,6 +13,9 @@ use crate::{
     },
 };
 
+///
+/// Удифферентовка судна на тихой воде.
+/// Parameters:
 pub(crate) struct ShipTrimming<'a> {
     lcb: LCB<'a>,
     displacement: Displacement<'a>,
@@ -24,7 +27,6 @@ pub(crate) struct ShipTrimming<'a> {
 }
 
 impl<'a> ShipTrimming<'a> {
-
     ///
     /// Основной конструктор.
     pub fn new(
@@ -49,6 +51,9 @@ impl<'a> ShipTrimming<'a> {
 
     ///
     /// Проверяет достигнута ли удифферентовка судна.
+    /// Parameters:
+    ///     displacement_tonnage - весовое водоизмещение судна [т];
+    ///     current_displacement - текущее расчетное объемное водоизмещение судна [м^3].
     fn trim_achieved(
         &self,
         displacement_tonnage: f64,
@@ -64,6 +69,8 @@ impl<'a> ShipTrimming<'a> {
     ///
     /// Валидация средней осадки судна.
     /// Средняя осадка не должна превышать максимальную среднюю осадку судна.
+    /// Parameters:
+    ///     current_mean_draft - текущая расчетная средняя осадка судна.
     fn validate_mean_draft(&self, current_mean_draft: f64) -> Result<(), String> {
         let max_draft = self.hydrastatic_curves.max_draft();
         if current_mean_draft > max_draft {
@@ -79,9 +86,7 @@ impl<'a> ShipTrimming<'a> {
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn trim(&self) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
-        let mean_draft = self
-            .hydrastatic_curves
-            .mean_draft(displacement_tonnage)?;
+        let mean_draft = self.hydrastatic_curves.mean_draft(displacement_tonnage)?;
         let area_water_line = self
             .hydrastatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::WaterlineArea)?;
@@ -91,19 +96,16 @@ impl<'a> ShipTrimming<'a> {
         let mut lcb = self
             .hydrastatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCB)?;
-        let lmr = self.hydrastatic_curves.get_data_by_draft(
-            mean_draft,
-            HydrostaticTypeData::LMR,
-        )?;
+        let lmr = self
+            .hydrastatic_curves
+            .get_data_by_draft(mean_draft, HydrostaticTypeData::LMR)?;
         let lcf = self
             .hydrastatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?;
-        let nose_draft = mean_draft
-            + ((self.ship_dimensions.lbp() / 2.0) - lcf)
-                * ((lcg - lcb) / lmr);
-        let aft_draft = mean_draft
-            - ((self.ship_dimensions.lbp() / 2.0) + lcf)
-                * ((lcg - lcb) / lmr);
+        let nose_draft =
+            mean_draft + ((self.ship_dimensions.lbp() / 2.0) - lcf) * ((lcg - lcb) / lmr);
+        let aft_draft =
+            mean_draft - ((self.ship_dimensions.lbp() / 2.0) + lcf) * ((lcg - lcb) / lmr);
         let mut calculated_displacement = self
             .displacement
             .displacement_by_drafts(aft_draft, nose_draft)?;
@@ -117,12 +119,11 @@ impl<'a> ShipTrimming<'a> {
         for i in 2..102 {
             let nose_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
-                + (self.ship_dimensions.lbp() / 2.0 - lcf)
-                    * ((lcg - lcb) / lmr);
+                + (self.ship_dimensions.lbp() / 2.0 - lcf) * ((lcg - lcb) / lmr);
 
-            let aft_draft = mean_draft + ((displacement - calculated_displacement) / area_water_line)
-                - (self.ship_dimensions.lbp() / 2.0 + lcf)
-                    * ((lcg - lcb) / lmr);
+            let aft_draft = mean_draft
+                + ((displacement - calculated_displacement) / area_water_line)
+                - (self.ship_dimensions.lbp() / 2.0 + lcf) * ((lcg - lcb) / lmr);
             let current_mean_draft = (aft_draft + nose_draft) * 0.5;
             self.validate_mean_draft(current_mean_draft)?;
             calculated_displacement = self
@@ -139,8 +140,7 @@ impl<'a> ShipTrimming<'a> {
             info!("ship_mean_draft = {current_mean_draft}");
             info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
             if self.trim_achieved(displacement_tonnage, calculated_displacement, lcg, lcb) {
-                info!(
-                    "Удифферентовка судна на тихой воде достигнута за {i} итераций.");
+                info!("Удифферентовка судна на тихой воде достигнута за {i} итераций.");
                 return Ok((aft_draft, nose_draft));
             };
             lcb = self.lcb.lcb(aft_draft, nose_draft)?;
@@ -154,8 +154,13 @@ impl<'a> ShipTrimming<'a> {
         debug!("'lcg - lcb' = {}", err);
         debug!("lcg = {}, lcb = {}", lcg, lcb);
         debug!("ship_mean_draft = {current_mean_draft}");
-        debug!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
-        Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.
-            Максимальное количество итераций: 100".to_string())
+        debug!(
+            "displacement = {displacement}, calculated_displacement = {calculated_displacement}"
+        );
+        Err(
+            "Удифферентовка судна не достигнута из-за превышения максимального количества итераций.
+            Максимальное количество итераций: 100"
+                .to_string(),
+        )
     }
 }

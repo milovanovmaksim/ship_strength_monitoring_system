@@ -14,7 +14,7 @@ use super::hydrostatic_typedata::HydrostaticTypeData;
 /// и продольного метацентров над килем.
 /// Paramenters:
 ///     drafts: осадка, вектор должен быть отсортирован по возрастанию,
-///     displacement: Весовое водоизмещение,
+///     displacement: весовое водоизмещение,
 ///     x_c: абсцисса центра велечины,
 ///     waterline_area: площадь ватерлинии,
 ///     x_f: абсцисса центра тяжести ватерлиниии,
@@ -48,7 +48,7 @@ impl HydrostaticCurves {
             x_f,
             lmr: r_l,
         })
-        .validate_data()
+        .validate_input_data()
         {
             Ok(hydrostatic_curves) => Ok(hydrostatic_curves),
             Err(err) => {
@@ -82,7 +82,7 @@ impl HydrostaticCurves {
 
     ///
     /// Валидация входных данных.
-    fn validate_data(self) -> Result<HydrostaticCurves, String> {
+    fn validate_input_data(self) -> Result<HydrostaticCurves, String> {
         if let Err(err) = self.validate_empty_data() {
             return Err(err);
         }
@@ -190,10 +190,7 @@ impl HydrostaticCurves {
     /// Если весовое водоизмещение меньше чем весовое водоизмещение судна порожнем, возвращает 0.0.
     /// Parameters:
     ///     dispalcement_tonnage - весовое вододоизмещение.
-    pub fn mean_draft(
-        &self,
-        displacement_tonnage: f64,
-    ) -> Result<f64, String> {
+    pub fn mean_draft(&self, displacement_tonnage: f64) -> Result<f64, String> {
         match self.validate_dispalcement_tonnage(displacement_tonnage) {
             Ok(_) => {
                 match self

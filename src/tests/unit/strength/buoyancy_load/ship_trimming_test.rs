@@ -37,9 +37,9 @@ mod tests {
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::new(vec![
-            Shipload::new(0.0, Point::new(40.23, 0.0, 0.0), 15.21),
-            Shipload::new(0.0, Point::new(40.0, 0.0, 0.0), 25.0),
-            Shipload::new(0.0, Point::new(40.0, 0.0, 0.0), 20.0),
+            Shipload::new(150.0, Point::new(40.23, 0.0, 0.0), 15.21),
+            Shipload::new(200.0, Point::new(40.0, 0.0, 0.0), 25.0),
+            Shipload::new(500.0, Point::new(40.0, 0.0, 0.0), 20.0),
             Shipload::new(0.0, Point::new(30.23, 0.0, 0.0), 15.21),
             Shipload::new(0.0, Point::new(20.0, 0.0, 0.0), 25.0),
             Shipload::new(0.0, Point::new(10.0, 0.0, 0.0), 20.0),
