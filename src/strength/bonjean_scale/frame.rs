@@ -106,10 +106,12 @@ impl Frame {
     /// ```
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
         if draft < self.min_draft() {
-            return Ok(self.areas.first().unwrap());
+            return Ok(0.0);
         } else if draft > self.max_draft() {
-            return Ok(self.areas.last().unwrap());
-        
+            return Err(format!(
+                "Осадка превысила максимальную осадку судна в грузу."
+            ));
+        }
         match self.drafts.custom_binary_search(draft) {
             (Some(left_point), Some(right_point)) => {
                 let linear_interpolated = LinearInterpolation::new(
@@ -128,7 +130,7 @@ impl Frame {
             }
             (Some(middle), None) => Ok(*self.areas.get(middle).unwrap()),
             _ => {
-                unreachable!("Осадка находится в допустимом диапазоне.
+                unreachable!("Осадка находится в заданном диапазоне.
                     Пустые векторы, содержащие данные масштаба Бонжана для шпангоута, не допускаются.")
             }
         }
