@@ -105,56 +105,41 @@ impl Frame {
     /// assert_eq!(81.605, frame.data_by_draft(2.5, BonjeanScaleDataType::Area).unwrap());
     /// ```
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
-        let min_draft = *self.drafts.first().unwrap();
-        if draft < min_draft && draft > 0.0 {
-            return Ok(0.0);
-        }
-        match self.validate_draft(draft) {
-            Ok(_) => match self.drafts.custom_binary_search(draft) {
-                (Some(left_point), Some(right_point)) => {
-                    let linear_interpolated = LinearInterpolation::new(
-                        *self.areas.get(left_point).unwrap(),
-                        *self.areas.get(right_point).unwrap(),
-                        *self.drafts.get(left_point).unwrap(),
-                        *self.drafts.get(right_point).unwrap(),
-                    );
-                    match linear_interpolated.interpolated_value(draft) {
-                        Ok(value) => Ok(value),
-                        Err(error) => {
-                            error!("Frame::area_by_draft | error: {}", error);
-                            Err(error)
-                        }
+        if draft < self.min_draft() {
+            return Ok(self.areas.first().unwrap());
+        } else if draft > self.max_draft() {
+            return Ok(self.areas.last().unwrap());
+        
+        match self.drafts.custom_binary_search(draft) {
+            (Some(left_point), Some(right_point)) => {
+                let linear_interpolated = LinearInterpolation::new(
+                    *self.areas.get(left_point).unwrap(),
+                    *self.areas.get(right_point).unwrap(),
+                    *self.drafts.get(left_point).unwrap(),
+                    *self.drafts.get(right_point).unwrap(),
+                );
+                match linear_interpolated.interpolated_value(draft) {
+                    Ok(value) => Ok(value),
+                    Err(error) => {
+                        error!("Frame::area_by_draft | error: {}", error);
+                        Err(error)
                     }
                 }
-                (Some(middle), None) => Ok(*self.areas.get(middle).unwrap()),
-                _ => {
-                    unreachable!("Осадка находится в допустимом диапазоне.
-                        Пустые векторы, содержащие данные масштаба Бонжана для шпангоута, не допускаются.")
-                }
-            },
-            Err(error) => {
-                error!("Frame::area_by_draft | {}", error);
-                Err(error)
+            }
+            (Some(middle), None) => Ok(*self.areas.get(middle).unwrap()),
+            _ => {
+                unreachable!("Осадка находится в допустимом диапазоне.
+                    Пустые векторы, содержащие данные масштаба Бонжана для шпангоута, не допускаются.")
             }
         }
     }
 
-    ///Максимальная осадка.
+    /// Максимальная осадка для данного шпангоута.
     fn max_draft(&self) -> f64 {
         *self.drafts.last().unwrap()
     }
 
-    ///
-    /// Валидация осадки.
-    /// Осадка не должна превышать максимально допустимого значения для шпангоута и не может быть отрицательной.
-    fn validate_draft(&self, draft: f64) -> Result<(), String> {
-        if draft > self.max_draft() {
-            return Err(format!("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: {} [м].", self.max_draft()));
-        } else if draft < 0.0 {
-            return Err(format!(
-                "Осадка отрицательной не может быть. Передано значение {draft}"
-            ));
-        }
-        Ok(())
+    fn min_draft(&self) -> f64 {
+        *self.drafts.first().unwrap()
     }
 }

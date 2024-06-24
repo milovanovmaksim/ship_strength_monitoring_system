@@ -1,10 +1,7 @@
 use log::error;
 
 use crate::{
-    core::{
-        linear_interpolation::LinearInterpolation,
-        water_density::WaterDensity,
-    },
+    core::{linear_interpolation::LinearInterpolation, water_density::WaterDensity},
     strength::{bonjean_scale::bonjean_scale::BonjeanScale, ship::ship_dimensions::ShipDimensions},
 };
 
