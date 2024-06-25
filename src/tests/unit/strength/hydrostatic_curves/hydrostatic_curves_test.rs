@@ -23,19 +23,19 @@ mod tests {
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         assert_eq!(
-            -11.3,
+            Some(-11.3),
             hidrostatic_curves
                 .get_data_by_draft(2.0, HydrostaticTypeData::LCB)
                 .unwrap()
         );
         assert_eq!(
-            -12.04,
+            Some(-12.04),
             hidrostatic_curves
                 .get_data_by_draft(2.0, HydrostaticTypeData::LCF)
                 .unwrap()
         );
         assert_eq!(
-            5658.69,
+            Some(5658.69),
             hidrostatic_curves
                 .get_data_by_draft(2.0, HydrostaticTypeData::WaterlineArea)
                 .unwrap()
@@ -44,6 +44,7 @@ mod tests {
             1446.69,
             hidrostatic_curves
                 .get_data_by_draft(2.0, HydrostaticTypeData::LMR)
+                .unwrap()
                 .unwrap()
                 .my_round(2)
         );
@@ -64,18 +65,15 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
-        let value = hidrostatic_curves
-            .mean_draft(5605.2)
-            .unwrap();
-        assert_eq!(1.0, value);
-        let value = hidrostatic_curves
-            .mean_draft(1.0)
-            .unwrap();
-        assert_eq!(0.0, value);
+        let value = hidrostatic_curves.mean_draft(5605.2).unwrap();
+        assert_eq!(Some(1.0), value);
+
+        let value = hidrostatic_curves.mean_draft(1.0).unwrap();
+        assert_eq!(Some(0.0), value);
     }
 
     #[test]
-    fn mean_draft_error_test() {
+    fn mean_draft_none_test() {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();

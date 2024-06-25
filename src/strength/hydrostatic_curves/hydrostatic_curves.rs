@@ -162,15 +162,14 @@ impl HydrostaticCurves {
     }
 
     ///
-    /// Возвращает осадку судна по заданному весовому водоизмещению [м].
+    /// Возвращает среднюю осадку судна по заданному весовому водоизмещению [м].
     /// Parameters:
     ///     dispalcement_tonnage - весовое вододоизмещение.
-    pub fn mean_draft(&self, displacement_tonnage: f64) -> Result<f64, String> {
+    pub fn mean_draft(&self, displacement_tonnage: f64) -> Result<Option<f64>, String> {
         if displacement_tonnage > *self.displacement_tonnage.last().unwrap()
             || displacement_tonnage < *self.displacement_tonnage.first().unwrap()
         {
-            return Err(format!("В гидростатических кривых отсутсвует 'средняя осадка' для весового водоизмещения {} тонн.
-                 Весовое водоизмещение вышло за пределы заданного диапазона.", displacement_tonnage));
+            return Ok(None);
         }
         match self
             .displacement_tonnage
@@ -184,7 +183,7 @@ impl HydrostaticCurves {
                     *self.displacement_tonnage.get(right_id).unwrap(),
                 );
                 match linear_interpolation.interpolated_value(displacement_tonnage) {
-                    Ok(draft) => Ok(draft),
+                    Ok(draft) => Ok(Some(draft)),
                     Err(error) => {
                         error!(
                             "HydrostaticCurves::draft_by_displacement_tonnage | {}",
@@ -194,8 +193,8 @@ impl HydrostaticCurves {
                     }
                 }
             }
-            (Some(id), None) => Ok(*self.drafts.get(id).unwrap()),
-            _ => unreachable!("Весовое водоизмещение в заданном диапазоне."),
+            (Some(id), None) => Ok(self.drafts.get(id).copied()),
+            _ => Ok(None),
         }
     }
 
@@ -208,7 +207,7 @@ impl HydrostaticCurves {
         &self,
         draft: f64,
         type_data: HydrostaticTypeData,
-    ) -> Result<f64, String> {
+    ) -> Result<Option<f64>, String> {
         let data = {
             match type_data {
                 HydrostaticTypeData::LCB => &self.x_c,
@@ -218,13 +217,7 @@ impl HydrostaticCurves {
             }
         };
         if draft > *self.drafts.last().unwrap() || draft < *self.drafts.first().unwrap() {
-            return Err(format!(
-                "Средняя осадка вышла за пределы заданного диапазона средней осадки судна.
-                 Из гидростатических кривых диапазон средней осадки судна: [{} м, {} м], получено значение {} м.",
-                self.min_draft(),
-                self.max_draft(),
-                draft
-            ));
+            return Ok(None);
         }
         match self.drafts.custom_binary_search(draft) {
             (Some(left_index), Some(right_index)) => {
@@ -236,7 +229,7 @@ impl HydrostaticCurves {
                 );
                 match linear_interpolation.interpolated_value(draft) {
                     Ok(value) => {
-                        return Ok(value);
+                        return Ok(Some(value));
                     }
                     Err(error) => {
                         error!("HydrostaticCurves::get_data_by_draft | {}", error);
@@ -244,8 +237,8 @@ impl HydrostaticCurves {
                     }
                 }
             }
-            (Some(index), None) => Ok(*data.get(index).unwrap()),
-            _ => unreachable!("Осадка лежит в заданном диапазоне."),
+            (Some(index), None) => Ok(data.get(index).copied()),
+            _ => Ok(None),
         }
     }
 
