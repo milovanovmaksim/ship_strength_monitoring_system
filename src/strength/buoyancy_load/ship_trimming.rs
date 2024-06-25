@@ -86,30 +86,45 @@ impl<'a> ShipTrimming<'a> {
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn trim(&self) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
-        let mean_draft = self.hydrastatic_curves.mean_draft(displacement_tonnage)?;
+        // TODO: Здесь нужно проверить произошло ли привышение водоизмещения судна в грузу.
+        let mean_draft = self.hydrastatic_curves.mean_draft(displacement_tonnage)?
+            .ok_or(format!("Удифферентовка судна не возможна,
+            т.к в гидростатических кривых отсутствует средняя осадка для водоизмещения {displacement_tonnage} тонн."))?;
         let area_water_line = self
             .hydrastatic_curves
-            .get_data_by_draft(mean_draft, HydrostaticTypeData::WaterlineArea)?;
+            .get_data_by_draft(mean_draft, HydrostaticTypeData::WaterlineArea)?
+            .ok_or(format!("Удифферентовка судна не возможна,
+            т.к в гидростатических кривых отсутствует площадь ватер линии для осадки {mean_draft} м."))?;
         let lcg = self.lcg.lcg();
         let lbp = self.ship_dimensions.lbp();
 
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let mut lcb = self
             .hydrastatic_curves
-            .get_data_by_draft(mean_draft, HydrostaticTypeData::LCB)?;
+            .get_data_by_draft(mean_draft, HydrostaticTypeData::LCB)?
+            .ok_or(format!("Удифферентовка судна не возможна,
+             т.к в гидростатических кривых отсутствует абсцисса центра велечины 'xc' для осадки {mean_draft} м."))?;
         let lmr = self
             .hydrastatic_curves
-            .get_data_by_draft(mean_draft, HydrostaticTypeData::LMR)?;
+            .get_data_by_draft(mean_draft, HydrostaticTypeData::LMR)?
+            .ok_or(format!(
+                "Удифферентовка судна не возможна,
+            т.к в гидростатических кривых отсутствует продольный метацентрический
+            радиус 'R' для осадки {mean_draft} м."
+            ))?;
         let lcf = self
             .hydrastatic_curves
-            .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?;
+            .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?
+            .ok_or(format!(
+                "Удифферентовка судна не возможна, т.к в гидростатических кривых
+            отсутствует абсцисса центра тяжести ватерлиниии xf для осадки {mean_draft} м."
+            ))?;
         let nose_draft = mean_draft + ((lbp / 2.0) - lcf) * ((lcg - lcb) / lmr);
         let aft_draft = mean_draft - ((lbp / 2.0) + lcf) * ((lcg - lcb) / lmr);
+        // TODO: првоерить вышли ли осадки за пределы допустимого диапазона.
         let mut calculated_displacement = self
             .displacement
             .displacement_by_drafts(aft_draft, nose_draft)?;
-        let current_mean_draft = (aft_draft + nose_draft) * 0.5;
-        self.validate_mean_draft(current_mean_draft)?;
         lcb = self.lcb.lcb(aft_draft, nose_draft)?;
         if self.trim_achieved(displacement_tonnage, calculated_displacement, lcg, lcb) {
             info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
@@ -123,8 +138,8 @@ impl<'a> ShipTrimming<'a> {
             let aft_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
                 - (lbp / 2.0 + lcf) * ((lcg - lcb) / lmr);
+            // TODO: првоерить вышли ли осадки за пределы допустимого диапазона.
             let current_mean_draft = (aft_draft + nose_draft) * 0.5;
-            self.validate_mean_draft(current_mean_draft)?;
             calculated_displacement = self
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;
@@ -152,14 +167,9 @@ impl<'a> ShipTrimming<'a> {
         debug!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
         debug!("'lcg - lcb' = {}", err);
         debug!("lcg = {}, lcb = {}", lcg, lcb);
-        debug!("ship_mean_draft = {current_mean_draft}");
         debug!(
             "displacement = {displacement}, calculated_displacement = {calculated_displacement}"
         );
-        Err(
-            "Удифферентовка судна не достигнута из-за превышения максимального количества итераций.
-            Максимальное количество итераций: 100"
-                .to_string(),
-        )
+        Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.".to_string())
     }
 }
