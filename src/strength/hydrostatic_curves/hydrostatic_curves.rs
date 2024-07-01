@@ -246,7 +246,11 @@ impl HydrostaticCurves {
         *self.drafts.last().unwrap()
     }
 
-    fn min_draft(&self) -> f64 {
+    pub fn min_draft(&self) -> f64 {
         *self.drafts.first().unwrap()
+    }
+
+    pub fn max_displacement_tonnage(&self) -> f64 {
+        *self.displacement_tonnage.last().unwrap()
     }
 }
