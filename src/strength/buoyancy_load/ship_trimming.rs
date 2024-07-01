@@ -1,4 +1,4 @@
-use log::{debug, info};
+use log::info;
 
 use super::lcg::LCG;
 use crate::{
@@ -52,8 +52,8 @@ impl<'a> ShipTrimming<'a> {
     ///
     /// Проверяет достигнута ли удифферентовка судна.
     /// Parameters:
-    ///     displacement_tonnage - весовое водоизмещение судна [т];
-    ///     current_displacement - текущее расчетное объемное водоизмещение судна [м^3].
+    ///     displacement_tonnage - весовое водоизмещение судна при текущей схеме загрузки[т];
+    ///     current_displacement - расчетное объемное водоизмещение судна [м^3].
     fn trim_achieved(
         &self,
         displacement_tonnage: f64,
