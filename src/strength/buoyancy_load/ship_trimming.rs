@@ -21,7 +21,7 @@ pub(crate) struct ShipTrimming<'a> {
     displacement: Displacement<'a>,
     lcg: LCG<'a>,
     displacement_tonnage: DisplacementTonnage<'a>,
-    hydrastatic_curves: HydrostaticCurves,
+    hydrostatic_curves: HydrostaticCurves,
     ship_dimensions: ShipDimensions,
     water_density: WaterDensity,
 }
@@ -43,7 +43,7 @@ impl<'a> ShipTrimming<'a> {
             displacement,
             lcg,
             displacement_tonnage,
-            hydrastatic_curves: hydrostatic_curves,
+            hydrostatic_curves,
             ship_dimensions,
             water_density,
         }
@@ -66,16 +66,19 @@ impl<'a> ShipTrimming<'a> {
             && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.lbp()
     }
 
+    ///
+    /// Возвращает валидные осадки кормы и носа судна.
+    /// Осадки не должны выходить за диапазон осадки судна указанный в гидростатических кривых.
     fn drafts(&self, mut aft_draft: f64, mut nose_draft: f64) -> (f64, f64) {
-        if aft_draft > self.hydrastatic_curves.max_draft() {
-            aft_draft = self.hydrastatic_curves.max_draft();
-        } else if aft_draft < self.hydrastatic_curves.min_draft() {
-            aft_draft = self.hydrastatic_curves.min_draft();
+        if aft_draft > self.hydrostatic_curves.max_draft() {
+            aft_draft = self.hydrostatic_curves.max_draft();
+        } else if aft_draft < self.hydrostatic_curves.min_draft() {
+            aft_draft = self.hydrostatic_curves.min_draft();
         }
-        if nose_draft > self.hydrastatic_curves.max_draft() {
-            nose_draft = self.hydrastatic_curves.max_draft();
-        } else if nose_draft < self.hydrastatic_curves.min_draft() {
-            nose_draft = self.hydrastatic_curves.min_draft();
+        if nose_draft > self.hydrostatic_curves.max_draft() {
+            nose_draft = self.hydrostatic_curves.max_draft();
+        } else if nose_draft < self.hydrostatic_curves.min_draft() {
+            nose_draft = self.hydrostatic_curves.min_draft();
         }
 
         (aft_draft, nose_draft)
@@ -86,30 +89,30 @@ impl<'a> ShipTrimming<'a> {
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn trim(&self) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
-        if displacement_tonnage > self.hydrastatic_curves.max_displacement_tonnage() {
+        if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
             return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
         }
         let mean_draft = self
-            .hydrastatic_curves
+            .hydrostatic_curves
             .mean_draft(displacement_tonnage)?
             .unwrap();
         let area_water_line = self
-            .hydrastatic_curves
+            .hydrostatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::WaterlineArea)?
             .unwrap();
         let lcg = self.lcg.lcg();
         let lbp = self.ship_dimensions.lbp();
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let mut lcb = self
-            .hydrastatic_curves
+            .hydrostatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCB)?
             .unwrap();
         let lmr = self
-            .hydrastatic_curves
+            .hydrostatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LMR)?
             .unwrap();
         let lcf = self
-            .hydrastatic_curves
+            .hydrostatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?
             .unwrap();
         let mut nose_draft = mean_draft + ((lbp / 2.0) - lcf) * ((lcg - lcb) / lmr);
@@ -150,17 +153,6 @@ impl<'a> ShipTrimming<'a> {
             };
             lcb = self.lcb.lcb(aft_draft, nose_draft)?;
         }
-        let err = (lcg - lcb).abs();
-        let displacement_error = (displacement_tonnage
-            - self.water_density.water_density() * calculated_displacement)
-            .abs();
-        debug!("displ_error = {displacement_error}");
-        debug!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
-        debug!("'lcg - lcb' = {}", err);
-        debug!("lcg = {}, lcb = {}", lcg, lcb);
-        debug!(
-            "displacement = {displacement}, calculated_displacement = {calculated_displacement}"
-        );
         Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.".to_string())
     }
 }
