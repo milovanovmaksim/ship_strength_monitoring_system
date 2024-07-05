@@ -25,10 +25,10 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(125.2, 20, 0.5);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let lcb = LCB::new(&bonjean_scale, ship_dimensions);
-        assert_eq!(-11.29, lcb.lcb(2.61, 2.61).unwrap().my_round(2));
+        assert_eq!(-2.04, lcb.lcb(3.2, 3.24).unwrap().my_round(2));
     }
 
     #[test]

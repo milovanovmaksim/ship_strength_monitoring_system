@@ -28,30 +28,6 @@ impl ShipDimensions {
         }
     }
 
-    fn validate_number_spatiums(self) -> Result<ShipDimensions, String> {
-        if self.number_spatiums > 200 {
-            return Err("Количество шпаций превысило максимально допустимое значение. Максимальное количество шпаций: 200".to_string());
-        }
-        Ok(self)
-    }
-
-    ///
-    /// Return length spatium
-    pub fn length_spatium(&self) -> f64 {
-        self.length_between_perpendiculars / self.number_spatiums as f64
-    }
-
-    ///
-    /// Return parameters of the ship hull weight distribution function.
-    /// TODO: добавить ссылку на литература, откуда эти формулы были взяты.
-    pub fn lightweight_intensity_parameters(&self) -> (f64, f64, f64) {
-        if self.completeness_coefficient <= 0.7 {
-            (0.64, 1.20, 0.56)
-        } else {
-            (0.72, 1.17, 0.6)
-        }
-    }
-
     ///
     /// Create the object from json file.
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
@@ -72,6 +48,24 @@ impl ShipDimensions {
                 return Err(err);
             }
         }
+    }
+
+    fn validate_number_spatiums(self) -> Result<ShipDimensions, String> {
+        if self.number_spatiums > 200 {
+            return Err("Количество шпаций превысило максимально допустимое значение. Максимальное количество шпаций: 200".to_string());
+        }
+        Ok(self)
+    }
+
+    ///
+    /// Return length spatium
+    pub fn length_spatium(&self) -> f64 {
+        self.length_between_perpendiculars / self.number_spatiums as f64
+    }
+
+    ///
+    pub fn completeness_coefficient(&self) -> f64 {
+        self.completeness_coefficient
     }
 
     ///

@@ -1,4 +1,4 @@
-use log::error;
+use log::{error, info};
 
 use super::frames::Frames;
 use crate::{
@@ -125,32 +125,5 @@ impl BonjeanScale {
         let area_left_frame = self.frame_underwater_area(abscissa, draft)?;
         let area_right_frame = self.frame_underwater_area(abscissa + length_spatium, draft)?;
         Ok(((area_left_frame + area_right_frame) / 2.0) * length_spatium)
-    }
-
-    pub fn area_water_line(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
-        let mut area_water_line = 0.0;
-        let linear_interpolation = LinearInterpolation::new(
-            aft_draft,
-            nose_draft,
-            self.ship_dimensions.coordinate_aft(),
-            self.ship_dimensions.coordinate_bow(),
-        );
-        let mut abscisa = self.ship_dimensions.coordinate_aft();
-        for _ in 0..self.ship_dimensions.number_spatiums() as u64 {
-            match linear_interpolation.interpolated_value(abscisa) {
-                Ok(draft) => match self.frame_underwater_area(abscisa, draft) {
-                    Ok(area) => area_water_line += area,
-                    Err(err) => {
-                        error!("BonjeanScale::area_water_line | error: {}", err);
-                    }
-                },
-                Err(err) => {
-                    error!("BonjeanScale::area_water_line | error: {}", err);
-                    return Err(err);
-                }
-            }
-            abscisa += self.ship_dimensions.length_spatium();
-        }
-        Ok(area_water_line)
     }
 }

@@ -1,10 +1,12 @@
+use serde::Deserialize;
+
 use crate::core::round::Round;
 
 use super::ship_dimensions::ShipDimensions;
 
 ///
 /// Contains the results of any calculations for the spatium.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone, Deserialize)]
 pub struct SpatiumFunction {
     id: u64,
     x1: f64,
@@ -28,9 +30,9 @@ impl SpatiumFunction {
 
     ///
     /// Create new object by id.
-    pub fn from_id(id: u64, ship_demensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Self {
-        let spatium_start_coordinate = ship_demensions.spatium_start_coordinate(id).my_round(2);
-        let spatium_end_coordinate = ship_demensions.spatium_end_coordinate(id).my_round(2);
+    pub fn from_id(id: u64, ship_dimensions: &ShipDimensions, f_x1: f64, f_x2: f64) -> Self {
+        let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(id).my_round(2);
+        let spatium_end_coordinate = ship_dimensions.spatium_end_coordinate(id).my_round(2);
         SpatiumFunction::new(
             id,
             spatium_start_coordinate,
@@ -46,7 +48,7 @@ impl SpatiumFunction {
     }
 
     pub fn abscissa(&self) -> f64 {
-        let delta = (self.x2 - self.x1).abs();
+        let delta = self.x2 - self.x1;
         self.x1 + delta / 2.0
     }
 

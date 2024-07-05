@@ -1,4 +1,4 @@
-use log::info;
+use log::{debug, info};
 
 use super::lcg::LCG;
 use crate::{
@@ -52,17 +52,16 @@ impl<'a> ShipTrimming<'a> {
     ///
     /// Проверяет достигнута ли удифферентовка судна.
     /// Parameters:
-    ///     displacement_tonnage - весовое водоизмещение судна при текущей схеме загрузки[т];
+    ///     displacement - водоизмещение судна при текущей схеме загрузки[м^3];
     ///     current_displacement - расчетное объемное водоизмещение судна [м^3].
     fn trim_achieved(
         &self,
-        displacement_tonnage: f64,
-        current_displacement: f64,
+        displacement: f64,
+        calculated_displacement: f64,
         lcg: f64,
         lcb: f64,
     ) -> bool {
-        (displacement_tonnage - self.water_density.water_density() * current_displacement).abs()
-            <= 0.004 * displacement_tonnage
+        (displacement - calculated_displacement).abs() <= 0.004 * displacement
             && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.lbp()
     }
 
@@ -117,42 +116,50 @@ impl<'a> ShipTrimming<'a> {
             .unwrap();
         let mut nose_draft = mean_draft + ((lbp / 2.0) - lcf) * ((lcg - lcb) / lmr);
         let mut aft_draft = mean_draft - ((lbp / 2.0) + lcf) * ((lcg - lcb) / lmr);
-        (nose_draft, aft_draft) = self.drafts(aft_draft, nose_draft);
+        (aft_draft, nose_draft) = self.drafts(aft_draft, nose_draft);
         let mut calculated_displacement = self
             .displacement
             .displacement_by_drafts(aft_draft, nose_draft)?;
         lcb = self.lcb.lcb(aft_draft, nose_draft)?;
-        if self.trim_achieved(displacement_tonnage, calculated_displacement, lcg, lcb) {
+        if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
             info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
             return Ok((aft_draft, nose_draft));
         };
-        for i in 2..102 {
-            let mut nose_draft = mean_draft
+        for i in 2..100 {
+            let nose_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
                 + (lbp / 2.0 - lcf) * ((lcg - lcb) / lmr);
 
-            let mut aft_draft = mean_draft
+            let aft_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
                 - (lbp / 2.0 + lcf) * ((lcg - lcb) / lmr);
-            (nose_draft, aft_draft) = self.drafts(aft_draft, nose_draft);
+            let (nose_draft_v, aft_draft_v) = self.drafts(aft_draft, nose_draft);
             calculated_displacement = self
                 .displacement
-                .displacement_by_drafts(aft_draft, nose_draft)?;
-            let err = (lcg - lcb).abs();
-            let displacement_error = (displacement_tonnage
-                - self.water_density.water_density() * calculated_displacement)
-                .abs();
-            info!("displ_error = {displacement_error}");
-            info!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
-            info!("'lcg - lcb' = {}", err);
-            info!("lcg = {}, lcb = {}", lcg, lcb);
-            info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
-            if self.trim_achieved(displacement_tonnage, calculated_displacement, lcg, lcb) {
+                .displacement_by_drafts(aft_draft_v, nose_draft_v)?;
+            if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
                 info!("Удифферентовка судна на тихой воде достигнута за {i} итераций.");
+                info!("0.004 * displacement = {}", 0.004 * displacement);
+                info!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
+                info!("'lcg - lcb' = {}", (lcg - lcb).abs());
+                info!("0.001 * lbp = {}", lbp * 0.001);
+                info!("lcg = {}, lcb = {}", lcg, lcb);
+                info!("area_waterline = {}", area_water_line);
+                info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
+                info!("-------------------------------");
                 return Ok((aft_draft, nose_draft));
             };
-            lcb = self.lcb.lcb(aft_draft, nose_draft)?;
+            lcb = self.lcb.lcb(aft_draft_v, nose_draft_v)?;
         }
+        debug!("0.004 * displacement = {}", 0.004 * displacement);
+        debug!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
+        debug!("'lcg - lcb' = {}", (lcg - lcb).abs());
+        debug!("0.001 * lbp = {}", lbp * 0.001);
+        debug!("lcg = {}, lcb = {}", lcg, lcb);
+        debug!("area_waterline = {}", area_water_line);
+        debug!(
+            "displacement = {displacement}, calculated_displacement = {calculated_displacement}"
+        );
         Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.".to_string())
     }
 }

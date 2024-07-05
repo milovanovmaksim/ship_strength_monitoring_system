@@ -1,4 +1,4 @@
-use log::error;
+use log::{error, info};
 
 use crate::{
     core::linear_interpolation::LinearInterpolation,
@@ -36,14 +36,14 @@ impl<'a> LCB<'a> {
         let coordinate_bow = self.ship_dimensions.coordinate_bow();
         let linear_interpolation =
             LinearInterpolation::new(aft_draft, nose_draft, coordinate_aft, coordinate_bow);
-        let mut ship_underwater_volume = 0.0;
+        let mut ship_underwater_area = 0.0;
         let mut moment = 0.0;
         for _ in 0..self.ship_dimensions.number_spatiums() {
             match linear_interpolation.interpolated_value(abscissa) {
-                Ok(draft) => match self.bonjean_scale.frame_underwater_volume(abscissa, draft) {
-                    Ok(frame_underwater_volume) => {
-                        moment += frame_underwater_volume * abscissa;
-                        ship_underwater_volume += frame_underwater_volume;
+                Ok(draft) => match self.bonjean_scale.frame_underwater_area(abscissa, draft) {
+                    Ok(frame_underwater_area) => {
+                        moment += frame_underwater_area * abscissa;
+                        ship_underwater_area += frame_underwater_area;
                     }
                     Err(err) => {
                         error!("LCB::lcb | error: {}", err);
@@ -57,6 +57,6 @@ impl<'a> LCB<'a> {
             }
             abscissa += length_spatium
         }
-        Ok(moment / ship_underwater_volume)
+        Ok(moment / ship_underwater_area)
     }
 }

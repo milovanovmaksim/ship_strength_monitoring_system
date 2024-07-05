@@ -25,8 +25,8 @@ impl<'a> DisplacementIntensity<'a> {
         let lightweight_intnesity = self.lightweight_intnesity.lightweight_intensity();
         let spatium_functions = deadweight_intensity
             .into_iter()
-            .zip(lightweight_intnesity)
-            .map(|spatium_functions| spatium_functions.0.add(spatium_functions.1))
+            .zip(lightweight_intnesity.as_ref())
+            .map(|spatium_functions| spatium_functions.0.add(spatium_functions.1.clone()))
             .collect();
         SpatiumFunctions::new(spatium_functions)
     }

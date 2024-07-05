@@ -1,8 +1,10 @@
+use serde::Deserialize;
+
 use crate::core::round::Round;
 
 use super::spatium_function::SpatiumFunction;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Deserialize)]
 pub struct SpatiumFunctions {
     spatium_functions: Vec<SpatiumFunction>,
 }
@@ -40,6 +42,8 @@ impl SpatiumFunctions {
             *spatium_function = new_spatium_function;
         }
     }
+
+
 }
 
 impl IntoIterator for SpatiumFunctions {

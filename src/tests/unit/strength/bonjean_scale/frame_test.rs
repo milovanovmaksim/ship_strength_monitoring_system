@@ -35,7 +35,7 @@ mod tests {
         ];
         let abscissa = -25.0;
         let frame = Frame::new(id, drafts, areas, abscissa).unwrap();
-        assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame.area_by_draft(15.0));
+        assert_eq!(Err("Осадка превысила максимальную осадку судна в грузу.".to_string()), frame.area_by_draft(15.0));
     }
 
     #[test]

@@ -5,7 +5,7 @@ mod tests {
 
     use crate::strength::{
         lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-        ship::ship_dimensions::ShipDimensions,
+        ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions},
     };
 
     static INIT: Once = Once::new();
@@ -22,10 +22,13 @@ mod tests {
     #[test]
     fn test_lightweight_intensity() {
         call_once();
-        let test_weight = 1357.73;
+        let test_weight = 1546.02;
         let lightweight = Lightweight::new(test_weight);
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.5);
-        let test_lightweight_intensity = LightweightIntensity::new(ship_dimensions, lightweight);
+        let test_lightweight_intensity = LightweightIntensity::from_ship_input_data(
+            ship_dimensions,
+            lightweight,
+        );
         let lightweight_intensity = test_lightweight_intensity.lightweight_intensity();
         let mut computed_weight = 0.0;
         for spatium in lightweight_intensity.as_ref() {
