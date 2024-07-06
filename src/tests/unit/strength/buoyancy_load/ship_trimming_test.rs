@@ -41,9 +41,6 @@ mod tests {
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
-        // let mut buffer = File::create("foo.json").unwrap();
-        // let res = serde_json::to_writer(buffer, &shiploads).unwrap();
-
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let lightweight = Lightweight::new(13550.0);
         let ship_trimming = ShipTrimming::new(
@@ -72,7 +69,7 @@ mod tests {
     #[test]
     fn trim_full_ship_ok_test() {
         call_once();
-        // Удифферентовка судна в порожнем состоянии.
+        // Удифферентовка судна в полном грузу.
 
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
