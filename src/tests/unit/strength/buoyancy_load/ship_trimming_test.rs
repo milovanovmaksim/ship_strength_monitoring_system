@@ -74,14 +74,14 @@ mod tests {
         call_once();
         // Удифферентовка судна в порожнем состоянии.
 
-        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
+        let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/full_ship.json".to_string();
-        let frames = Frames::from_json_file(file_path).unwrap();
+        let frames = Frames::from_json_file(frames_file).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
-        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let hsc_file = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let lightweight = Lightweight::new(13550.0);
         let ship_trimming = ShipTrimming::new(
             LCB::new(&bonjean_scale, ship_dimensions.clone()),
@@ -95,7 +95,7 @@ mod tests {
                 LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
             )),
             DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
-            HydrostaticCurves::from_json_file(file_path).unwrap(),
+            HydrostaticCurves::from_json_file(hsc_file).unwrap(),
             ship_dimensions.clone(),
             WaterDensity::new(1.025),
         );
