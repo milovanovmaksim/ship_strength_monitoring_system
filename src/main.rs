@@ -2,16 +2,15 @@ mod core;
 mod cross_section_properties;
 mod strength;
 mod tests;
-use core::{point::Point, visualisation::Visualisation};
+use core::visualisation::Visualisation;
 use std::env;
 
-use log::debug;
 use strength::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     displacement::displacement_intensity::DisplacementIntensity,
     lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-    load::{shipload::Shipload, shiploads::Shiploads},
-    ship::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions}
+    load::shiploads::Shiploads,
+    ship::ship_dimensions::ShipDimensions
 };
 
 fn main() {
