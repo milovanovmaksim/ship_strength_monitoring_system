@@ -1,0 +1,25 @@
+{
+  "shiploads":
+    [
+      {"value":164.8,"center_gravity":{"x":-111.625,"y":0.0,"z":0.0},"length":11.75},
+      {"value":615.2,"center_gravity":{"x":-99.875,"y":0.0,"z":0.0},"length":11.75},
+      {"value":670.1,"center_gravity":{"x":-88.125,"y":0.0,"z":0.0},"length":11.75},
+      {"value":75.0,"center_gravity":{"x":-76.375,"y":0.0,"z":0.0},"length":11.75},
+      {"value":75.0,"center_gravity":{"x":-64.625,"y":0.0,"z":0.0},"length":11.75},
+      {"value":175.0,"center_gravity":{"x":-52.875,"y":0.0,"z":0.0},"length":11.75},
+      {"value":125.0,"center_gravity":{"x":-41.125,"y":0.0,"z":0.0},"length":11.75},
+      {"value":125.0,"center_gravity":{"x":-29.375,"y":0.0,"z":0.0},"length":11.75},
+      {"value":135.0,"center_gravity":{"x":-17.625,"y":0.0,"z":0.0},"length":11.75},
+      {"value":135.0,"center_gravity":{"x":-5.875,"y":0.0,"z":0.0},"length":11.75},
+      {"value":135.0,"center_gravity":{"x":5.875,"y":0.0,"z":0.0},"length":11.75},
+      {"value":135.0,"center_gravity":{"x":17.625,"y":0.0,"z":0.0},"length":11.75},
+      {"value":135.0,"center_gravity":{"x":29.375,"y":0.0,"z":0.0},"length":11.75},
+      {"value":135.0,"center_gravity":{"x":41.125,"y":0.0,"z":0.0},"length":11.75},
+      {"value":175.0,"center_gravity":{"x":52.875,"y":0.0,"z":0.0},"length":11.75},
+      {"value":175.0,"center_gravity":{"x":64.625,"y":0.0,"z":0.0},"length":11.75},
+      {"value":295.0,"center_gravity":{"x":76.375,"y":0.0,"z":0.0},"length":11.75},
+      {"value":270.0,"center_gravity":{"x":88.125,"y":0.0,"z":0.0},"length":11.75},
+      {"value":300.0,"center_gravity":{"x":99.875,"y":0.0,"z":0.0},"length":11.75},
+      {"value":382.0,"center_gravity":{"x":111.625,"y":0.0,"z":0.0},"length":11.75}
+    ]
+}

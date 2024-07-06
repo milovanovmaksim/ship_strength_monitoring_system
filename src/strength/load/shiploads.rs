@@ -1,5 +1,5 @@
 use log::{debug, warn};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::core::json_file::JsonFile;
 use crate::strength::load::shipload::Shipload;
@@ -7,7 +7,7 @@ use crate::strength::ship::ship_dimensions::ShipDimensions;
 
 ///
 /// Сontains all the loads acting on the ship
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 pub struct Shiploads {
     shiploads: Vec<Shipload>,
 }

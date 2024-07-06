@@ -1,6 +1,6 @@
 use crate::core::round::Round;
 use crate::{core::point::Point, strength::ship::ship_dimensions::ShipDimensions};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
 ///
@@ -8,7 +8,7 @@ use std::fmt::Debug;
 /// value - load value in tons.
 /// center_gravity -  the center gravity of the load relative to the amidships(the middle of a ship).
 /// length - load length.
-#[derive(Deserialize, Debug, Clone, Copy)]
+#[derive(Deserialize, Debug, Clone, Copy, Serialize)]
 pub struct Shipload {
     value: f64,
     center_gravity: Point,
