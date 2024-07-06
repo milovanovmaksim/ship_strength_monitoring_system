@@ -32,11 +32,6 @@ impl<'a> LCG<'a> {
                 right_moment += integral * spatium.abscissa();
             }
         }
-        info!("left_moment = {left_moment}, right_moment = {right_moment}");
-        info!(
-            "left_moment - right_moment = {}",
-            left_moment.abs() - right_moment.abs()
-        );
         moment / displacement_tonnage
     }
 }

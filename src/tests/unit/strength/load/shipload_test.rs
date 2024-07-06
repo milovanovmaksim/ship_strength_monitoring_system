@@ -148,4 +148,27 @@ mod tests {
         let shared_loads = shipload.shared_shiploads(&ship_dimensions);
         assert_eq!(test_shared_loads, shared_loads);
     }
+    #[test]
+    fn shared_shiploads_test_6() {
+        call_once();
+        let center_gravity = Point::new(3.125, 0.0, 0.0);
+        let shipload = Shipload::new(10.0, center_gravity, 6.25);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
+        let test_shared_loads = vec![Shipload::new(10.0, center_gravity, 6.25)];
+        let shared_loads = shipload.shared_shiploads(&ship_dimensions);
+        assert_eq!(test_shared_loads, shared_loads);
+    }
+
+    #[test]
+    fn from_id_test() {
+        call_once();
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let shiplod = Shipload::from_id(0, &ship_dimensions, 653.2);
+        let tested_shipload = Shipload::new(
+            653.2,
+            Point::new(-111.625, 0.0, 0.0),
+            ship_dimensions.length_spatium(),
+        );
+        assert_eq!(tested_shipload, shiplod);
+    }
 }

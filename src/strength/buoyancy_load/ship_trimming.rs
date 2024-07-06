@@ -61,8 +61,12 @@ impl<'a> ShipTrimming<'a> {
         lcg: f64,
         lcb: f64,
     ) -> bool {
-        (displacement - calculated_displacement).abs() <= 0.004 * displacement
+        self.trim_error(displacement, calculated_displacement) <= 1.0
             && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.lbp()
+    }
+
+    fn trim_error(&self, x_1: f64, x_2: f64) -> f64 {
+        ((x_1 - x_2).abs() / x_1.abs().min(x_2.abs())) * 100.0
     }
 
     ///
@@ -121,44 +125,58 @@ impl<'a> ShipTrimming<'a> {
             .displacement
             .displacement_by_drafts(aft_draft, nose_draft)?;
         lcb = self.lcb.lcb(aft_draft, nose_draft)?;
+        info!("aft_draft = {} м, nose_draft = {} м", aft_draft, nose_draft);
+        info!("lcg = {}, lcb = {}", lcg, lcb);
+        info!("0.001 * lbp = {}", lbp * 0.001);
+        info!("'lcg - lcb' = {}", (lcg.abs() - lcb.abs()).abs());
+        info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
+        info!(
+            "error_displacement = {} %",
+            self.trim_error(displacement, calculated_displacement)
+        );
+        info!("---------------------------------------");
         if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
             info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
             return Ok((aft_draft, nose_draft));
         };
-        for i in 2..100 {
-            let nose_draft = mean_draft
+        for i in 2..20 {
+            let mut nose_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
                 + (lbp / 2.0 - lcf) * ((lcg - lcb) / lmr);
 
-            let aft_draft = mean_draft
+            let mut aft_draft = mean_draft
                 + ((displacement - calculated_displacement) / area_water_line)
                 - (lbp / 2.0 + lcf) * ((lcg - lcb) / lmr);
-            let (nose_draft_v, aft_draft_v) = self.drafts(aft_draft, nose_draft);
+            (nose_draft, aft_draft) = self.drafts(aft_draft, nose_draft);
             calculated_displacement = self
                 .displacement
-                .displacement_by_drafts(aft_draft_v, nose_draft_v)?;
+                .displacement_by_drafts(aft_draft, nose_draft)?;
+            info!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
+            info!("lcg = {}, lcb = {}", lcg, lcb);
+            info!("0.001 * lbp = {}", lbp * 0.001);
+            info!("'lcg - lcb' = {}", (lcg.abs() - lcb.abs()).abs());
+            info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
+            info!(
+                "error_displacement = {} %",
+                self.trim_error(displacement, calculated_displacement)
+            );
+            info!("---------------------------------------");
             if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
                 info!("Удифферентовка судна на тихой воде достигнута за {i} итераций.");
-                info!("0.004 * displacement = {}", 0.004 * displacement);
-                info!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
-                info!("'lcg - lcb' = {}", (lcg - lcb).abs());
-                info!("0.001 * lbp = {}", lbp * 0.001);
-                info!("lcg = {}, lcb = {}", lcg, lcb);
-                info!("area_waterline = {}", area_water_line);
-                info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
-                info!("-------------------------------");
                 return Ok((aft_draft, nose_draft));
             };
-            lcb = self.lcb.lcb(aft_draft_v, nose_draft_v)?;
+            lcb = self.lcb.lcb(aft_draft, nose_draft)?;
         }
-        debug!("0.004 * displacement = {}", 0.004 * displacement);
         debug!("aft_draft = {}, nose_draft = {}", aft_draft, nose_draft);
-        debug!("'lcg - lcb' = {}", (lcg - lcb).abs());
-        debug!("0.001 * lbp = {}", lbp * 0.001);
         debug!("lcg = {}, lcb = {}", lcg, lcb);
-        debug!("area_waterline = {}", area_water_line);
+        debug!("0.001 * lbp = {}", lbp * 0.001);
+        debug!("'lcg - lcb' = {}", (lcg.abs() - lcb.abs()).abs());
         debug!(
             "displacement = {displacement}, calculated_displacement = {calculated_displacement}"
+        );
+        debug!(
+            "error_displacement = {} %",
+            self.trim_error(displacement, calculated_displacement)
         );
         Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.".to_string())
     }
