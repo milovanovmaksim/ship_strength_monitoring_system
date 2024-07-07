@@ -2,7 +2,7 @@ use log::{debug, info};
 
 use super::lcg::LCG;
 use crate::{
-    core::water_density::WaterDensity,
+    core::{round::Round, water_density::WaterDensity},
     strength::{
         bonjean_scale::lcb::LCB,
         displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
@@ -62,11 +62,11 @@ impl<'a> ShipTrimming<'a> {
         lcb: f64,
     ) -> bool {
         self.trim_error(displacement, calculated_displacement) <= 5.0
-            && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.lbp()
+            && (lcg - lcb).abs().my_round(2) <= (0.001 * self.ship_dimensions.lbp()).my_round(2)
     }
 
     fn trim_error(&self, x_1: f64, x_2: f64) -> f64 {
-        ((x_1 - x_2).abs() / x_1.abs().min(x_2.abs())) * 100.0
+        (((x_1 - x_2).abs() / x_1.abs().min(x_2.abs())) * 100.0).my_round(2)
     }
 
     ///
@@ -157,16 +157,17 @@ impl<'a> ShipTrimming<'a> {
             calculated_displacement,
         );
         if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
-            info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
+            info!("Удифферентовка судна на тихой воде достигнута.");
             return Ok((aft_draft, nose_draft));
         }
 
-        for _ in 0..50 {
+        for _ in 0..20 {
             if lcg.abs() > lcb.abs() {
                 info!("ВЛ поворачиваем по часовой. LCB сместится влево.");
                 if aft_draft > nose_draft {
                     nose_draft = (nose_draft + min_draft) / 2.0;
                     aft_draft = ((mean_draft - nose_draft) / similarity_coefficient) + mean_draft;
+                    lcb = self.lcb.lcb(aft_draft, nose_draft)?;
                 } else if aft_draft < nose_draft {
                     todo!()
                 } else {
@@ -236,7 +237,7 @@ impl<'a> ShipTrimming<'a> {
         );
         if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
             info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
-            return Ok((aft_draft, nose_draft));
+            return Ok((aft_draft.my_round(2), nose_draft.my_round(2)));
         };
         for i in 2..20 {
             let mut nose_draft = mean_draft
@@ -261,17 +262,9 @@ impl<'a> ShipTrimming<'a> {
             );
             if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
                 info!("Удифферентовка судна на тихой воде достигнута за {i} итераций.");
-                return Ok((aft_draft, nose_draft));
+                return Ok((aft_draft.my_round(2), nose_draft.my_round(2)));
             };
         }
-        self.solution_information(
-            aft_draft,
-            nose_draft,
-            lcg,
-            lcb,
-            displacement,
-            calculated_displacement,
-        );
         Err("Удифферентовка судна не достигнута из-за превышения максимального количества итераций.".to_string())
     }
 }

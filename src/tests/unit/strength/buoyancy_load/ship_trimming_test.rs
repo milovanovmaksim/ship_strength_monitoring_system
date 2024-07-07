@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::{round::Round, water_density::WaterDensity},
+        core::{point::Point, round::Round, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_load::{lcg::LCG, ship_trimming::ShipTrimming},
@@ -12,7 +12,7 @@ mod tests {
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-            load::shiploads::Shiploads,
+            load::{shipload::Shipload, shiploads::Shiploads},
             ship::ship_dimensions::ShipDimensions,
         },
     };
@@ -60,11 +60,9 @@ mod tests {
             WaterDensity::new(1.025),
         );
         let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
-        assert_eq!(
-            (2.08, 4.27),
-            (aft_draft.my_round(2), nose_draft.my_round(2))
-        );
+        assert_eq!((2.08, 4.27), (aft_draft, nose_draft));
     }
+
     #[test]
     fn trim_empty_ship_ok_test_2() {
         call_once();
