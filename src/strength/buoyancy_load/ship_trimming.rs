@@ -61,7 +61,7 @@ impl<'a> ShipTrimming<'a> {
         lcg: f64,
         lcb: f64,
     ) -> bool {
-        self.trim_error(displacement, calculated_displacement) <= 1.0
+        self.trim_error(displacement, calculated_displacement) <= 5.0
             && (lcg - lcb).abs() <= 0.001 * self.ship_dimensions.lbp()
     }
 
@@ -97,11 +97,9 @@ impl<'a> ShipTrimming<'a> {
         calculated_displacement: f64,
     ) {
         info!("aft_draft = {} м, nose_draft = {} м", aft_draft, nose_draft);
+        info!("mean_draft = {}", 0.5 * (aft_draft + nose_draft));
         info!("lcg = {}, lcb = {}", lcg, lcb);
-        info!(
-            "0.001 * lbp = {}",
-            self.ship_dimensions.length_spatium() * 0.001
-        );
+        info!("0.001 * lbp = {}", self.ship_dimensions.lbp() * 0.001);
         info!("'lcg - lcb' = {}", (lcg.abs() - lcb.abs()).abs());
         info!("displacement = {displacement}, calculated_displacement = {calculated_displacement}");
         info!(
@@ -109,6 +107,84 @@ impl<'a> ShipTrimming<'a> {
             self.trim_error(displacement, calculated_displacement)
         );
         info!("---------------------------------------");
+    }
+
+    pub fn trim_2(&self) -> Result<(f64, f64), String> {
+        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
+        if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
+            return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
+        }
+        let mut mean_draft = self
+            .hydrostatic_curves
+            .mean_draft(displacement_tonnage)?
+            .unwrap();
+        info!("mean_draft = {mean_draft}");
+        let lcg = self.lcg.lcg();
+        let lbp = self.ship_dimensions.lbp();
+        let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
+        let lcf = self
+            .hydrostatic_curves
+            .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?
+            .unwrap();
+        info!("lcf = {lcf}");
+        let max_draft = self.hydrostatic_curves.max_draft();
+        let min_draft = self.hydrostatic_curves.min_draft();
+        let (a, b) = {
+            if lcf < 0.0 {
+                let a = lbp / 2.0 - lcf.abs();
+                let b = lbp / 2.0 + lcf.abs();
+                (a, b)
+            } else {
+                let a = lbp / 2.0 + lcf.abs();
+                let b = lbp / 2.0 - lcf.abs();
+                (a, b)
+            }
+        };
+        info!("a = {}, b = {}", a, b);
+        let similarity_coefficient = a / b;
+        let mut nose_draft = mean_draft;
+        let mut aft_draft = mean_draft;
+        let calculated_displacement = self
+            .displacement
+            .displacement_by_drafts(aft_draft, nose_draft)?;
+        let mut lcb = self.lcb.lcb(aft_draft, nose_draft)?;
+        self.solution_information(
+            aft_draft,
+            nose_draft,
+            lcg,
+            lcb,
+            displacement,
+            calculated_displacement,
+        );
+        if self.trim_achieved(displacement, calculated_displacement, lcg, lcb) {
+            info!("Удифферентовка судна на тихой воде достигнута за 1 итерацию.");
+            return Ok((aft_draft, nose_draft));
+        }
+
+        for _ in 0..50 {
+            if lcg.abs() > lcb.abs() {
+                info!("ВЛ поворачиваем по часовой. LCB сместится влево.");
+                if aft_draft > nose_draft {
+                    nose_draft = (nose_draft + min_draft) / 2.0;
+                    aft_draft = ((mean_draft - nose_draft) / similarity_coefficient) + mean_draft;
+                } else if aft_draft < nose_draft {
+                    todo!()
+                } else {
+                    todo!()
+                }
+            } else if lcb.abs() > lcg.abs() {
+                info!("ВЛ поворачиваем против часовой. LCB сместится вправо.");
+                if aft_draft > nose_draft {
+                    nose_draft = (nose_draft + mean_draft) / 2.0;
+                    aft_draft = ((mean_draft - nose_draft) / similarity_coefficient) + mean_draft;
+                } else if aft_draft < nose_draft {
+                    todo!()
+                } else {
+                    todo!()
+                }
+            }
+        }
+        todo!()
     }
 
     ///
@@ -123,6 +199,7 @@ impl<'a> ShipTrimming<'a> {
             .hydrostatic_curves
             .mean_draft(displacement_tonnage)?
             .unwrap();
+        info!("mean_draft = {mean_draft}");
         let area_water_line = self
             .hydrostatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::WaterlineArea)?
@@ -173,6 +250,7 @@ impl<'a> ShipTrimming<'a> {
             calculated_displacement = self
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;
+            lcb = self.lcb.lcb(aft_draft, nose_draft)?;
             self.solution_information(
                 aft_draft,
                 nose_draft,
@@ -185,7 +263,6 @@ impl<'a> ShipTrimming<'a> {
                 info!("Удифферентовка судна на тихой воде достигнута за {i} итераций.");
                 return Ok((aft_draft, nose_draft));
             };
-            lcb = self.lcb.lcb(aft_draft, nose_draft)?;
         }
         self.solution_information(
             aft_draft,
