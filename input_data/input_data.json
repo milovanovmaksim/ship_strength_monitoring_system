@@ -1,19 +1,31 @@
 {
-   "shiploads": [
-        {"value": 60, "center_gravity": {"x": 25, "y": 5.6, "z": 5.6}, "length": 25},
-        {"value": 16, "center_gravity": {"x": 5, "y": 5.6, "z": 5.6}, "length": 15},
-        {"value": 160, "center_gravity": {"x": -25, "y": 5.6, "z": 5.6}, "length": 25},
-        {"value": 90, "center_gravity": {"x": -50, "y": 5.6, "z": 5.6}, "length": 29},
-        {"value": 100, "center_gravity": {"x": 50, "y": 5.6, "z": 5.6}, "length": 15},
-        {"value": 180, "center_gravity": {"x": -12, "y": 5.6, "z": 5.6}, "length": 29},
-        {"value": 60, "center_gravity": {"x": 12, "y": 5.6, "z": 5.6}, "length": 29},
-        {"value": 20, "center_gravity": {"x": 0, "y": 5.6, "z": 5.6}, "length": 19}
-
-    ],
-    "lightweight": 1750.56,
-    "length_between_perpendiculars": 125,
+   "shiploads":
+      [
+        {"value":2364.8,"center_gravity":{"x":-111.625,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3015.2,"center_gravity":{"x":-99.875,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3070.1,"center_gravity":{"x":-88.125,"y":0.0,"z":0.0},"length":11.75},
+        {"value":4725.0,"center_gravity":{"x":-76.375,"y":0.0,"z":0.0},"length":11.75},
+        {"value":4775,"center_gravity":{"x":-64.625,"y":0.0,"z":0.0},"length":11.75},
+        {"value":4675,"center_gravity":{"x":-52.875,"y":0.0,"z":0.0},"length":11.75},
+        {"value":4525,"center_gravity":{"x":-41.125,"y":0.0,"z":0.0},"length":11.75},
+        {"value":4475,"center_gravity":{"x":-29.375,"y":0.0,"z":0.0},"length":11.75},
+        {"value":4225,"center_gravity":{"x":-17.625,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":-5.875,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":5.875,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":17.625,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":29.375,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":41.125,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":52.875,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3725,"center_gravity":{"x":64.625,"y":0.0,"z":0.0},"length":11.75},
+        {"value":3825,"center_gravity":{"x":76.375,"y":0.0,"z":0.0},"length":11.75},
+        {"value":2150,"center_gravity":{"x":88.125,"y":0.0,"z":0.0},"length":11.75},
+        {"value":2050,"center_gravity":{"x":99.875,"y":0.0,"z":0.0},"length":11.75},
+        {"value":506,"center_gravity":{"x":111.625,"y":0.0,"z":0.0},"length":11.75}
+      ],
+    "lightweight": 13550,
+    "length_between_perpendiculars": 235,
     "number_spatiums": 20,
-    "completeness_coefficient": 0.6,
+    "completeness_coefficient": 0.74,
     "ship_name": "Сухогруз ТКЗ",
     "cross_sections_properties": [
         {"id": 0, "I_z": 1.2, "I_y": 1.2, "z_up": 13.6, "z_down": 5.6},
