@@ -56,10 +56,9 @@ mod tests {
             )),
             DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
-            ship_dimensions.clone(),
             WaterDensity::new(1.025),
         );
-        let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
+        let (aft_draft, nose_draft) = ship_trimming.trim(&ship_dimensions).unwrap();
         assert_eq!((2.32, 4.06), (aft_draft, nose_draft));
     }
 
@@ -90,10 +89,9 @@ mod tests {
             )),
             DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
             HydrostaticCurves::from_json_file(hsc_file).unwrap(),
-            ship_dimensions.clone(),
             WaterDensity::new(1.025),
         );
-        let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
+        let (aft_draft, nose_draft) = ship_trimming.trim(&ship_dimensions).unwrap();
         assert_eq!(
             (13.19, 12.97),
             (aft_draft.my_round(2), nose_draft.my_round(2))
