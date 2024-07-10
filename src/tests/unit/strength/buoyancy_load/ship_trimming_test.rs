@@ -60,44 +60,7 @@ mod tests {
             WaterDensity::new(1.025),
         );
         let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
-        assert_eq!((2.08, 4.27), (aft_draft, nose_draft));
-    }
-
-    #[test]
-    fn trim_empty_ship_ok_test_2() {
-        call_once();
-        // Удифферентовка судна в порожнем состоянии.
-
-        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
-        let shiploads_file =
-            "src/tests/unit/strength/buoyancy_load/test_data/empty_ship.json".to_string();
-        let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
-        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
-        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
-        let lightweight = Lightweight::new(13550.0);
-        let ship_trimming = ShipTrimming::new(
-            LCB::new(&bonjean_scale, ship_dimensions.clone()),
-            Displacement::new(
-                &bonjean_scale,
-                ship_dimensions.clone(),
-                WaterDensity::new(1.025),
-            ),
-            LCG::new(DisplacementIntensity::new(
-                DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
-                LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
-            )),
-            DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
-            HydrostaticCurves::from_json_file(file_path).unwrap(),
-            ship_dimensions.clone(),
-            WaterDensity::new(1.025),
-        );
-        let (aft_draft, nose_draft) = ship_trimming.trim_2().unwrap();
-        assert_eq!(
-            (12.89, 12.84),
-            (aft_draft.my_round(2), nose_draft.my_round(2))
-        );
+        assert_eq!((2.32, 4.06), (aft_draft, nose_draft));
     }
 
     #[test]
@@ -132,7 +95,7 @@ mod tests {
         );
         let (aft_draft, nose_draft) = ship_trimming.trim().unwrap();
         assert_eq!(
-            (12.89, 12.84),
+            (13.19, 12.97),
             (aft_draft.my_round(2), nose_draft.my_round(2))
         );
     }
