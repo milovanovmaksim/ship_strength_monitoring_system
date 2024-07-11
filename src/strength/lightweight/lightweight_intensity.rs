@@ -54,7 +54,7 @@ impl LightweightIntensity {
                         / (ship_dimensions.lbp() / 3.0);
             } else if current_coord
                 >= ship_dimensions.coordinate_aft() + ship_dimensions.lbp() / 3.0
-                && current_coord < (ship_dimensions.coordinate_bow() - ship_dimensions.lbp() / 3.0)
+                && current_coord < (ship_dimensions.coordinate_nose() - ship_dimensions.lbp() / 3.0)
             {
                 ratio = b;
             } else {

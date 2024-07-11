@@ -42,7 +42,7 @@ impl<'a> DeadweightIntensity<'a> {
     /// Compute intensity of shared shipload.
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
-            && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_bow()
+            && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_nose()
         {
             let max_intensity = |c_min: f64| {
                 shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium()))
@@ -80,7 +80,7 @@ impl<'a> DeadweightIntensity<'a> {
                 shipload.distances_to_frames(&self.ship_dimensions);
             if (distance_left > distance_right)
                 && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium()
-                    < self.ship_dimensions.coordinate_bow())
+                    < self.ship_dimensions.coordinate_nose())
             {
                 debug!("Shipload.shipload_intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                 let spatium_functions = shipload_intensity_closure(
@@ -122,7 +122,7 @@ impl<'a> DeadweightIntensity<'a> {
                     (0, 1, distance)
                 } else {
                     let rightmost_spatium_id = self.ship_dimensions.number_spatiums() - 1;
-                    let distance = (self.ship_dimensions.coordinate_bow().abs()
+                    let distance = (self.ship_dimensions.coordinate_nose().abs()
                         - shipload.longitudinal_center_gravity().abs())
                     .abs();
                     (rightmost_spatium_id, rightmost_spatium_id - 1, distance)

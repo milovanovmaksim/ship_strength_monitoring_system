@@ -70,7 +70,7 @@ impl ShipDimensions {
 
     ///
     /// Returns the bow (nose) cordinate of the ship
-    pub fn coordinate_bow(&self) -> f64 {
+    pub fn coordinate_nose(&self) -> f64 {
         self.length_between_perpendiculars / 2.0
     }
 

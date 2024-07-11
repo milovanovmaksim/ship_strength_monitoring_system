@@ -5,7 +5,7 @@ mod tests {
     use crate::{
         core::{point::Point, round::Round},
         strength::{
-            buoyancy_load::lcg::LCG,
+            buoyancy_intensity::lcg::LCG,
             deadweight::deadweight_intensity::DeadweightIntensity,
             displacement::displacement_intensity::DisplacementIntensity,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},

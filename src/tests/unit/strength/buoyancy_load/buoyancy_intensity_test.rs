@@ -1,10 +1,14 @@
 #[cfg(test)]
 mod tests {
+    use log::info;
+
     use crate::{
-        core::{point::Point, round::Round, water_density::WaterDensity},
+        core::{round::Round, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
-            buoyancy_intensity::{lcg::LCG, ship_trimming::ShipTrimming},
+            buoyancy_intensity::{
+                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, ship_trimming::ShipTrimming,
+            },
             deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
             displacement::{
                 displacement::Displacement, displacement_intensity::DisplacementIntensity,
@@ -12,7 +16,7 @@ mod tests {
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-            load::{shipload::Shipload, shiploads::Shiploads},
+            load::shiploads::Shiploads,
             ship::ship_dimensions::ShipDimensions,
         },
     };
@@ -30,9 +34,9 @@ mod tests {
     }
 
     #[test]
-    fn trim_empty_ship_ok_test() {
+    fn empty_ship_buoyancy_intensity_ok_test() {
         call_once();
-        // Удифферентовка судна в порожнем состоянии.
+        // Силы поддержания судна в порожнем состоянии.
 
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
@@ -43,56 +47,79 @@ mod tests {
         let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let lightweight = Lightweight::new(13550.0);
+        let water_density = WaterDensity::new(1.025);
+        let dt = DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads));
+        let dt_v = dt.displacement_tonnage();
         let ship_trimming = ShipTrimming::new(
             LCB::new(&bonjean_scale, ship_dimensions.clone()),
-            Displacement::new(
-                &bonjean_scale,
-                ship_dimensions.clone(),
-                WaterDensity::new(1.025),
-            ),
+            Displacement::new(&bonjean_scale, ship_dimensions.clone(), water_density),
             LCG::new(DisplacementIntensity::new(
                 DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
                 LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
             )),
-            DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
+            dt,
             HydrostaticCurves::from_json_file(file_path).unwrap(),
         );
-        let (aft_draft, nose_draft) = ship_trimming.trim(&ship_dimensions).unwrap();
-        assert_eq!((2.32, 4.06), (aft_draft, nose_draft));
+        let buoyancy_intensity =
+            BuoyancyIntensity::new(ship_trimming, &bonjean_scale, water_density);
+        let buoyancy_intensity_v = buoyancy_intensity
+            .buoyancy_intensity(&ship_dimensions)
+            .unwrap();
+        let mut total_buoyancy = 0.0;
+        for value in buoyancy_intensity_v.as_ref() {
+            total_buoyancy += value.integral();
+        }
+        let error = (((total_buoyancy.abs() - dt_v).abs() / dt_v.min(total_buoyancy.abs()))
+            * 100.0)
+            .my_round(2);
+        info!("total_buoyancy = {total_buoyancy} т");
+        info!("displacement_tonnage = {dt_v} т");
+        info!("error = {error} %");
+        assert!(error <= 5.0);
     }
 
     #[test]
-    fn trim_full_ship_ok_test() {
+    fn full_ship_buoyancy_intensity_ok_test() {
         call_once();
-        // Удифферентовка судна в полном грузу.
+        // Силы поддержания судна в полном грузу.
 
-        let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
+        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/full_ship.json".to_string();
-        let frames = Frames::from_json_file(frames_file).unwrap();
+        let frames = Frames::from_json_file(file_path).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
-        let hsc_file = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let lightweight = Lightweight::new(13550.0);
+        let water_density = WaterDensity::new(1.025);
+        let dt = DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads));
+        let dt_v = dt.displacement_tonnage();
         let ship_trimming = ShipTrimming::new(
             LCB::new(&bonjean_scale, ship_dimensions.clone()),
-            Displacement::new(
-                &bonjean_scale,
-                ship_dimensions.clone(),
-                WaterDensity::new(1.025),
-            ),
+            Displacement::new(&bonjean_scale, ship_dimensions.clone(), water_density),
             LCG::new(DisplacementIntensity::new(
                 DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
                 LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
             )),
-            DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
-            HydrostaticCurves::from_json_file(hsc_file).unwrap(),
+            dt,
+            HydrostaticCurves::from_json_file(file_path).unwrap(),
         );
-        let (aft_draft, nose_draft) = ship_trimming.trim(&ship_dimensions).unwrap();
-        assert_eq!(
-            (13.19, 12.97),
-            (aft_draft.my_round(2), nose_draft.my_round(2))
-        );
+        let buoyancy_intensity =
+            BuoyancyIntensity::new(ship_trimming, &bonjean_scale, water_density);
+        let buoyancy_intensity_v = buoyancy_intensity
+            .buoyancy_intensity(&ship_dimensions)
+            .unwrap();
+        let mut total_buoyancy = 0.0;
+        for value in buoyancy_intensity_v.as_ref() {
+            total_buoyancy += value.integral();
+        }
+        let error = (((total_buoyancy.abs() - dt_v).abs() / dt_v.min(total_buoyancy.abs()))
+            * 100.0)
+            .my_round(2);
+        info!("total_buoyancy = {total_buoyancy} т");
+        info!("displacement_tonnage = {dt_v} т");
+        info!("error = {error} %");
+        assert!(error <= 5.0);
     }
 }

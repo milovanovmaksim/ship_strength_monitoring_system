@@ -28,7 +28,6 @@ pub(crate) struct ShipTrimming<'a> {
     lcg: LCG<'a>,
     displacement_tonnage: DisplacementTonnage<'a>,
     hydrostatic_curves: HydrostaticCurves,
-    water_density: WaterDensity,
 }
 
 impl<'a> ShipTrimming<'a> {
@@ -40,7 +39,6 @@ impl<'a> ShipTrimming<'a> {
         lcg: LCG<'a>,
         displacement_tonnage: DisplacementTonnage<'a>,
         hydrostatic_curves: HydrostaticCurves,
-        water_density: WaterDensity,
     ) -> Self {
         ShipTrimming {
             lcb,
@@ -48,7 +46,6 @@ impl<'a> ShipTrimming<'a> {
             lcg,
             displacement_tonnage,
             hydrostatic_curves,
-            water_density,
         }
     }
 

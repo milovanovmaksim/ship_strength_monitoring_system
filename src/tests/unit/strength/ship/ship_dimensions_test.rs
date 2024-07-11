@@ -14,7 +14,7 @@ mod tests {
         let length_between_perpendiculars = 125.0;
         let ship_dimensions = ShipDimensions::new(length_between_perpendiculars, 20, 0.6);
         let test_coordinate_bow = 62.5;
-        assert_eq!(test_coordinate_bow, ship_dimensions.coordinate_bow());
+        assert_eq!(test_coordinate_bow, ship_dimensions.coordinate_nose());
     }
 
     #[test]

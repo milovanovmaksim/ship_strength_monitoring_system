@@ -34,7 +34,7 @@ impl<'a> Displacement<'a> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let coordinate_aft = self.ship_dimensions.coordinate_aft();
         let mut abscissa = coordinate_aft + length_spatium / 2.0;
-        let coordinate_bow = self.ship_dimensions.coordinate_bow();
+        let coordinate_bow = self.ship_dimensions.coordinate_nose();
         let linear_interpolation =
             LinearInterpolation::new(aft_draft, nose_draft, coordinate_aft, coordinate_bow);
         let mut ship_underwater_volume = 0.0;

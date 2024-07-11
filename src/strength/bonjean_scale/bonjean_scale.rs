@@ -1,4 +1,4 @@
-use log::{error, info};
+use log::error;
 
 use super::frames::Frames;
 use crate::{
