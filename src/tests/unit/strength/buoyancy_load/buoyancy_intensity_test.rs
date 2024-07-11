@@ -3,7 +3,7 @@ mod tests {
     use log::info;
 
     use crate::{
-        core::{round::Round, water_density::WaterDensity},
+        core::{point::Point, round::Round, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_intensity::{
@@ -16,7 +16,7 @@ mod tests {
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-            load::shiploads::Shiploads,
+            load::{shipload::Shipload, shiploads::Shiploads},
             ship::ship_dimensions::ShipDimensions,
         },
     };
@@ -75,7 +75,7 @@ mod tests {
         info!("total_buoyancy = {total_buoyancy} т");
         info!("displacement_tonnage = {dt_v} т");
         info!("error = {error} %");
-        assert!(error <= 5.0);
+        assert!(error <= 5.0); // Весовое водоизмещение судна и силы поддержания не должны отличаться более чем на 5 %.
     }
 
     #[test]
@@ -120,6 +120,46 @@ mod tests {
         info!("total_buoyancy = {total_buoyancy} т");
         info!("displacement_tonnage = {dt_v} т");
         info!("error = {error} %");
-        assert!(error <= 5.0);
+        assert!(error <= 5.0); // Весовое водоизмещение судна и силы поддержания не должны отличаться более чем на 5 %.
+    }
+
+    #[test]
+    fn buoyancy_intensity_error_test() {
+        // Судно перегружено.
+        call_once();
+        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
+        let frames = Frames::from_json_file(file_path).unwrap();
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
+        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
+        let shiploads = Shiploads::new(vec![Shipload::new(
+            80000.0,
+            Point::new(0.0, 0.0, 0.0),
+            11.75,
+        )]);
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let lightweight = Lightweight::new(13550.0);
+        let water_density = WaterDensity::new(1.025);
+        let dt = DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads));
+        let ship_trimming = ShipTrimming::new(
+            LCB::new(&bonjean_scale, ship_dimensions.clone()),
+            Displacement::new(&bonjean_scale, ship_dimensions.clone(), water_density),
+            LCG::new(DisplacementIntensity::new(
+                DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
+                LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
+            )),
+            dt,
+            HydrostaticCurves::from_json_file(file_path).unwrap(),
+        );
+        let buoyancy_intensity =
+            BuoyancyIntensity::new(ship_trimming, &bonjean_scale, water_density);
+        let buoyancy_intensity_v = buoyancy_intensity.buoyancy_intensity(&ship_dimensions);
+        assert!(buoyancy_intensity_v.is_err());
+        assert_eq!(
+            Err(
+                "Весовое водоизмещение 93550 тонн превысило весовое водоизмещение судна в грузу."
+                    .to_string()
+            ),
+            buoyancy_intensity_v
+        );
     }
 }
