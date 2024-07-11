@@ -1,1 +1,0 @@
-mod deadweight_intensity_test;
