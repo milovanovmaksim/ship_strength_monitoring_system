@@ -35,9 +35,9 @@ mod tests {
 
     #[test]
     fn empty_ship_buoyancy_intensity_ok_test() {
-        call_once();
         // Силы поддержания судна в порожнем состоянии.
 
+        call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/empty_ship.json".to_string();
@@ -80,9 +80,9 @@ mod tests {
 
     #[test]
     fn full_ship_buoyancy_intensity_ok_test() {
-        call_once();
         // Силы поддержания судна в полном грузу.
 
+        call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/full_ship.json".to_string();
@@ -126,6 +126,7 @@ mod tests {
     #[test]
     fn buoyancy_intensity_error_test() {
         // Судно перегружено.
+
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
