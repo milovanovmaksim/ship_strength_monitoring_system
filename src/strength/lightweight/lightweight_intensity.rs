@@ -12,22 +12,21 @@ use crate::{
 use super::lightweight::Lightweight;
 
 ///
-/// Lightweight - weight of the empty as-built ship without cargo, fuel, lubricating oil, ballast water,
-/// fresh water and feed water in tanks, consumable stores, passengers and crew and their belongings. Measured in tons.
+///
 #[derive(Debug, Deserialize)]
 pub struct LightweightIntensity {
     lightweight_intensity: SpatiumFunctions,
 }
 
 impl LightweightIntensity {
+    ///
+    /// Основной контсруктор.
     pub fn new(lightweight_intensity: SpatiumFunctions) -> Self {
         LightweightIntensity {
             lightweight_intensity,
         }
     }
 
-    ///
-    /// Computes the lightweight intensity for spatiums from ship input data.
     pub fn from_ship_input_data(
         ship_dimensions: ShipDimensions,
         lightweight: Lightweight,

@@ -10,6 +10,8 @@ use crate::{
 
 use crate::strength::load::{shipload::Shipload, shiploads::Shiploads};
 
+///
+/// Интенсивность дедвейта по длине судна.
 #[derive(Debug)]
 pub struct DeadweightIntensity<'a> {
     shiploads: &'a Shiploads,
@@ -17,6 +19,8 @@ pub struct DeadweightIntensity<'a> {
 }
 
 impl<'a> DeadweightIntensity<'a> {
+    ///
+    /// Основной конструктор.
     pub fn new(shiploads: &'a Shiploads, ship_dimensions: ShipDimensions) -> Self {
         DeadweightIntensity {
             shiploads,
@@ -24,6 +28,8 @@ impl<'a> DeadweightIntensity<'a> {
         }
     }
 
+    ///
+    /// Возвращает интенсивность дедвейта по длине судна т/м.
     pub fn deadweight_intensity(&self) -> SpatiumFunctions {
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_between_perpendiculars = self.ship_dimensions.lbp();
@@ -39,7 +45,7 @@ impl<'a> DeadweightIntensity<'a> {
     }
 
     ///
-    /// Compute intensity of shared shipload.
+    /// Интенсивность силы, действующей на корпус судна т/м.
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
             && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_nose()

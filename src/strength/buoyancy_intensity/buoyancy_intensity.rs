@@ -11,6 +11,8 @@ use crate::{
 
 use super::ship_trimming::ShipTrimming;
 
+///
+/// Интенсивность сил поддержания по длине судна, действующие на погруженную часть корпуса судна.
 pub(crate) struct BuoyancyIntensity<'a> {
     ship_trimming: ShipTrimming<'a>,
     bonjean_scale: &'a BonjeanScale,
@@ -18,6 +20,8 @@ pub(crate) struct BuoyancyIntensity<'a> {
 }
 
 impl<'a> BuoyancyIntensity<'a> {
+    ///
+    /// Основной конструктор.
     pub fn new(
         ship_trimming: ShipTrimming<'a>,
         bonjean_scale: &'a BonjeanScale,
@@ -30,6 +34,8 @@ impl<'a> BuoyancyIntensity<'a> {
         }
     }
 
+    ///
+    /// Возвращает интенсивность сил поддержания судна [т/м].
     pub fn buoyancy_intensity(
         &self,
         ship_dimensions: &ShipDimensions,

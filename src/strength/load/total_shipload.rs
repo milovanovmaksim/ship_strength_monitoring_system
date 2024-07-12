@@ -4,16 +4,24 @@ use crate::strength::{
     ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},
 };
 
+///
+/// Интенсивность суммарной нагрузки по длине судна, действующей на корпус судна.
 pub(crate) struct TotalShipload<'a> {
     d_i: DisplacementIntensity<'a>,
     b_i: BuoyancyIntensity<'a>,
 }
 
 impl<'a> TotalShipload<'a> {
+    ///
+    /// основной конструктор.
     pub fn new(d_i: DisplacementIntensity<'a>, b_i: BuoyancyIntensity<'a>) -> Self {
         TotalShipload { d_i, b_i }
     }
 
+    ///
+    /// Возвращает интенсивность суммарной нагрузки на корпус судна т/м.
+    /// Интенсивность суммарной нагрузки определяется как алгебраическая сумма
+    /// интенсивностей водоизмещения и сил поддержания по длине судна.
     pub fn total_shipload(
         &self,
         ship_dimensions: &ShipDimensions,
