@@ -13,7 +13,7 @@ pub(crate) struct TotalShipload<'a> {
 
 impl<'a> TotalShipload<'a> {
     ///
-    /// основной конструктор.
+    /// Основной конструктор.
     pub fn new(d_i: DisplacementIntensity<'a>, b_i: BuoyancyIntensity<'a>) -> Self {
         TotalShipload { d_i, b_i }
     }
