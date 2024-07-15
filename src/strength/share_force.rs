@@ -25,10 +25,7 @@ impl<'a> ShareForce<'a> {
         ship_dimensions: &ShipDimensions,
     ) -> Result<SpatiumFunctions, String> {
         let mut share_force = 0.0;
-        let mut spatium_functions = SpatiumFunctions::filled_zeros(
-            ship_dimensions.number_spatiums(),
-            ship_dimensions.lbp(),
-        );
+        let mut spatium_functions = vec![];
         let total_shipload = self.total_shipload.total_shipload(ship_dimensions)?;
         for s_f in total_shipload {
             let integral = s_f.integral();
@@ -40,8 +37,8 @@ impl<'a> ShareForce<'a> {
                 share_force + integral,
             );
             share_force += integral;
-            spatium_functions.add(share_force_s_f);
+            spatium_functions.push(share_force_s_f);
         }
-        Ok(spatium_functions)
+        Ok(SpatiumFunctions::new(spatium_functions))
     }
 }
