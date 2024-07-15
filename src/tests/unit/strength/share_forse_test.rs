@@ -71,7 +71,7 @@ mod tests {
             .unwrap();
         let mut max_share_force = 0.0;
         for s_f in share_force.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs()).abs();
+            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
             if max_value > max_share_force {
                 max_share_force = max_value;
             }
@@ -88,7 +88,7 @@ mod tests {
     }
     #[test]
     fn full_share_force_intensity_ok_test() {
-        // Судно порожнем.
+        // Судно в грузу.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
@@ -123,7 +123,7 @@ mod tests {
             .unwrap();
         let mut max_share_force = 0.0;
         for s_f in share_force.as_ref() {
-            let max_value = s_f.f_x1().max(s_f.f_x2());
+            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
             if max_value > max_share_force {
                 max_share_force = max_value;
             }
@@ -135,7 +135,7 @@ mod tests {
         //     11.75,
         // );
         // visualization.visualize();
-        let last_share_force = share_force.last().unwrap().f_x2();
+        let last_share_force = share_force.last().unwrap().f_x2().abs();
         assert!(last_share_force / max_share_force <= 0.05);
     }
 }
