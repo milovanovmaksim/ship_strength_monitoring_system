@@ -15,7 +15,7 @@ pub(crate) struct Displacement<'a> {
 
 impl<'a> Displacement<'a> {
     ///
-    /// Конструктор.
+    /// Основной конструктор.
     pub fn new(
         bonjean_scale: &'a BonjeanScale,
         ship_dimensions: ShipDimensions,

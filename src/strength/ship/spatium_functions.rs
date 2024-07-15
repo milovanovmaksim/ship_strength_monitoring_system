@@ -42,6 +42,10 @@ impl SpatiumFunctions {
             *spatium_function = new_spatium_function;
         }
     }
+
+    pub fn get(&self, id: u64) -> Option<&SpatiumFunction> {
+        self.spatium_functions.get(id as usize)
+    }
 }
 
 impl IntoIterator for SpatiumFunctions {

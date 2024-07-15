@@ -1,4 +1,4 @@
-use log::debug;
+use log::info;
 
 use crate::{
     core::round::Round,
@@ -10,6 +10,8 @@ use crate::{
 
 use crate::strength::load::{shipload::Shipload, shiploads::Shiploads};
 
+///
+/// Интенсивность дедвейта по длине судна.
 #[derive(Debug)]
 pub struct DeadweightIntensity<'a> {
     shiploads: &'a Shiploads,
@@ -17,6 +19,8 @@ pub struct DeadweightIntensity<'a> {
 }
 
 impl<'a> DeadweightIntensity<'a> {
+    ///
+    /// Основной конструктор.
     pub fn new(shiploads: &'a Shiploads, ship_dimensions: ShipDimensions) -> Self {
         DeadweightIntensity {
             shiploads,
@@ -24,6 +28,8 @@ impl<'a> DeadweightIntensity<'a> {
         }
     }
 
+    ///
+    /// Возвращает интенсивность дедвейта по длине судна т/м.
     pub fn deadweight_intensity(&self) -> SpatiumFunctions {
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_between_perpendiculars = self.ship_dimensions.lbp();
@@ -39,7 +45,7 @@ impl<'a> DeadweightIntensity<'a> {
     }
 
     ///
-    /// Compute intensity of shared shipload.
+    /// Интенсивность силы, действующей на корпус судна т/м.
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
             && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_nose()
@@ -82,33 +88,33 @@ impl<'a> DeadweightIntensity<'a> {
                 && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium()
                     < self.ship_dimensions.coordinate_nose())
             {
-                debug!("Shipload.shipload_intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
+                info!("Shipload.shipload_intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
                 let spatium_functions = shipload_intensity_closure(
                     distance_right,
                     spatium_start_index,
                     spatium_start_index + 1,
                 );
-                debug!("Saptiums are under the load {:#?}", spatium_functions);
+                info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
             } else if (distance_right > distance_left)
                 && (shipload.longitudinal_center_gravity() - self.ship_dimensions.length_spatium())
                     > self.ship_dimensions.coordinate_aft()
             {
-                debug!("Load.shipload_intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
+                info!("Load.shipload_intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
                 let spatium_functions = shipload_intensity_closure(
                     distance_left,
                     spatium_start_index,
                     spatium_start_index - 1,
                 );
-                debug!("Saptiums are under the load {:#?}", spatium_functions);
+                info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
             } else {
-                debug!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
+                info!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                 let f_x = shipload.value() / self.ship_dimensions.length_spatium();
                 let spatium_function =
                     SpatiumFunction::from_id(spatium_start_index, &self.ship_dimensions, f_x, f_x);
                 let spatium_functions = vec![spatium_function];
-                debug!("Saptiums are under the load {:#?}", spatium_functions);
+                info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
             }
         } else {
@@ -142,7 +148,7 @@ impl<'a> DeadweightIntensity<'a> {
             let spatium_function =
                 SpatiumFunction::from_id(next_spatium_id, &self.ship_dimensions, f_x, f_x);
             spatium_functions.push(spatium_function);
-            debug!("Saptiums are under the load {:#?}", spatium_functions);
+            info!("Saptiums are under the load {:#?}", spatium_functions);
             spatium_functions
         }
     }
