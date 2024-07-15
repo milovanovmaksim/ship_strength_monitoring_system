@@ -1,9 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use log::info;
 
     use crate::{
-        core::{visualisation::Visualisation, water_density::WaterDensity},
+        core::water_density::WaterDensity,
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_intensity::{
@@ -77,14 +76,7 @@ mod tests {
             }
         }
         let last_share_force = share_force.last().unwrap().f_x2().abs();
-        // let visualization = Visualisation::new(
-        //     &share_force,
-        //     "Share force".to_string(),
-        //     "Share force".to_string(),
-        //     11.75,
-        // );
-        // visualization.visualize();
-        assert!(last_share_force / max_share_force <= 0.05);
+        assert!(last_share_force / max_share_force <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
     #[test]
     fn full_share_force_intensity_ok_test() {
@@ -128,14 +120,7 @@ mod tests {
                 max_share_force = max_value;
             }
         }
-        // let visualization = Visualisation::new(
-        //     &share_force,
-        //     "Share force".to_string(),
-        //     "Share force".to_string(),
-        //     11.75,
-        // );
-        // visualization.visualize();
         let last_share_force = share_force.last().unwrap().f_x2().abs();
-        assert!(last_share_force / max_share_force <= 0.05);
+        assert!(last_share_force / max_share_force <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
 }
