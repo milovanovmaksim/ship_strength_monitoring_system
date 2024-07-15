@@ -35,6 +35,10 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
+    pub fn last(&self) -> Option<&SpatiumFunction> {
+        self.spatium_functions.last()
+    }
+
     pub fn add(&mut self, term: SpatiumFunction) {
         let id = term.id() as usize;
         if let Some(spatium_function) = self.spatium_functions.get_mut(id) {

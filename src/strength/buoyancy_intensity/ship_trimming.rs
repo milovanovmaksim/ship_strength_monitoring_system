@@ -2,7 +2,7 @@ use log::info;
 
 use super::lcg::LCG;
 use crate::{
-    core::{round::Round, water_density::WaterDensity},
+    core::round::Round,
     strength::{
         bonjean_scale::lcb::LCB,
         displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
@@ -62,7 +62,8 @@ impl<'a> ShipTrimming<'a> {
         lcb: f64,
         lbp: f64,
     ) -> bool {
-        self.error(calc_disp, displacement) <= 2.0 && (lcg.abs() - lcb.abs()).abs() <= (0.001 * lbp)
+        self.error(calc_disp, displacement) <= 0.01
+            && (lcg.abs() - lcb.abs()).abs() <= (0.002 * lbp)
     }
     ///
     /// Расчет процентного различия между двумя числами.

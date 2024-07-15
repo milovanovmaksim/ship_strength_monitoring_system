@@ -35,7 +35,7 @@ impl<'a> Visualisation<'a> {
             x.push(spatium.x1());
             x.push(spatium.x2());
             y.push(spatium.f_x1());
-            y.push(spatium.f_x1());
+            y.push(spatium.f_x2());
         }
 
         let trace1 = Scatter::new(x, y)
