@@ -63,7 +63,7 @@ impl<'a> ShipTrimming<'a> {
         lbp: f64,
     ) -> bool {
         self.error(calc_disp, displacement) <= 0.01
-            && (lcg.abs() - lcb.abs()).abs() <= (0.002 * lbp)
+            && (lcg.abs() - lcb.abs()).abs() <= (0.004 * lbp)
     }
     ///
     /// Расчет процентного различия между двумя числами.

@@ -1,3 +1,4 @@
+mod bending_moment_test;
 mod bonjean_scale;
 mod buoyancy_load;
 mod deadweight;

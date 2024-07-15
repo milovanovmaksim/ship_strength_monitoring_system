@@ -16,6 +16,8 @@ impl<'a> BendingMoment<'a> {
         BendingMoment { share_force }
     }
 
+    ///
+    /// Изгибающий момент [т*м].
     pub fn bending_moment(
         &self,
         ship_dimensions: &ShipDimensions,
