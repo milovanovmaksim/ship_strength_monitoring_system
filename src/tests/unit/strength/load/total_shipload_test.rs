@@ -3,7 +3,7 @@ mod tests {
     use log::info;
 
     use crate::{
-        core::{round::Round, visualisation::Visualisation, water_density::WaterDensity},
+        core::water_density::WaterDensity,
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_intensity::{
@@ -11,9 +11,8 @@ mod tests {
             },
             deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
             displacement::{
-                displacement::Displacement,
-                displacement_intensity::DisplacementIntensity,
-                displacement_tonnage::{self, DisplacementTonnage},
+                displacement::Displacement, displacement_intensity::DisplacementIntensity,
+                displacement_tonnage::DisplacementTonnage,
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},

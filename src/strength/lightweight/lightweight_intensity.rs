@@ -12,7 +12,7 @@ use crate::{
 use super::lightweight::Lightweight;
 
 ///
-///
+/// Интенсивность массы корпуса судна по длине.
 #[derive(Debug, Deserialize)]
 pub struct LightweightIntensity {
     lightweight_intensity: SpatiumFunctions,
@@ -27,6 +27,8 @@ impl LightweightIntensity {
         }
     }
 
+    ///
+    /// Вспомогательный конструктор.
     pub fn from_ship_input_data(
         ship_dimensions: ShipDimensions,
         lightweight: Lightweight,
@@ -72,7 +74,7 @@ impl LightweightIntensity {
     }
 
     ///
-    /// Create the object from json file.
+    /// Вспомогательный конструктор.
     pub fn from_json_file(file_path: String) -> Result<LightweightIntensity, String> {
         let json = JsonFile::new(file_path);
         match json.content() {
@@ -93,12 +95,14 @@ impl LightweightIntensity {
         }
     }
 
+    ///
+    /// Интенсивность массы корпуса судна по длине т/м.
     pub fn lightweight_intensity(&self) -> &SpatiumFunctions {
         &self.lightweight_intensity
     }
 
     ///
-    /// Return parameters of the ship hull weight distribution function.
+    /// Параметры распределения массы корпуса судна по его длине [Прочность корабля Курдюмов А.А.].
     fn lightweight_intensity_parameters(completeness_coefficient: f64) -> (f64, f64, f64) {
         if completeness_coefficient <= 0.7 {
             (0.64, 1.20, 0.56)
