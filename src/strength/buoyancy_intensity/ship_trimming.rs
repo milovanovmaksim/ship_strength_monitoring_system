@@ -2,7 +2,7 @@ use log::info;
 
 use super::lcg::LCG;
 use crate::{
-    core::{round::Round, water_density::WaterDensity},
+    core::round::Round,
     strength::{
         bonjean_scale::lcb::LCB,
         displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
@@ -62,7 +62,8 @@ impl<'a> ShipTrimming<'a> {
         lcb: f64,
         lbp: f64,
     ) -> bool {
-        self.error(calc_disp, displacement) <= 2.0 && (lcg.abs() - lcb.abs()).abs() <= (0.001 * lbp)
+        self.error(calc_disp, displacement) <= 0.01
+            && (lcg.abs() - lcb.abs()).abs() <= (0.002 * lbp)
     }
     ///
     /// Расчет процентного различия между двумя числами.
@@ -85,18 +86,18 @@ impl<'a> ShipTrimming<'a> {
         info!("aft_draft = {} м, nose_draft = {} м", aft_draft, nose_draft);
         info!("mean_draft = {} м", 0.5 * (aft_draft + nose_draft));
         info!("lcg = {} м, lcb = {} м", lcg, lcb);
-        info!("0.001 * lbp = {}", lbp * 0.001);
+        info!("0.002 * lbp = {}", lbp * 0.002);
         info!("lcg - lcb = {}", (lcg.abs() - lcb.abs()).abs());
-        if (lcg.abs() - lcb.abs()).abs() <= 0.001 * lbp {
-            info!("|lcg - lcb| < lbp * 0.001 - условие удифферентовки судна для абсциссы центра велечины (lcb) выполняется.")
+        if (lcg.abs() - lcb.abs()).abs() <= 0.002 * lbp {
+            info!("|lcg - lcb| < lbp * 0.002 - условие удифферентовки судна для абсциссы центра велечины (lcb) выполняется.")
         } else {
             info!(
-                "|lcg - lcb| > lbp * 0.001 - условие удифферентовки судна для абсциссы центра велечины (lcb) не выполняется."
+                "|lcg - lcb| > lbp * 0.002 - условие удифферентовки судна для абсциссы центра велечины (lcb) не выполняется."
             )
         }
         info!("Заданное водоизмещение: {displacement} м^3.");
         info!("Расчетное водоизмещение: {calc_disp} м^3.");
-        if self.error(displacement, calc_disp) <= 2.0 {
+        if self.error(displacement, calc_disp) <= 0.01 {
             info!(
                 "Процентная разница между расчетным и заданным водоизмещением судна = {} % - Условие удифферентовки судна для водоизмещения выполняется.",
                 self.error(displacement, calc_disp)
