@@ -6,3 +6,4 @@ pub(crate) mod hydrostatic_curves;
 pub(crate) mod lightweight;
 pub(crate) mod load;
 pub(crate) mod ship;
+pub(crate) mod share_force;
