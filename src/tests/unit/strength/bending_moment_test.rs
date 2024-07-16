@@ -2,7 +2,7 @@
 mod tests {
 
     use crate::{
-        core::{visualisation::Visualisation, water_density::WaterDensity},
+        core::water_density::WaterDensity,
         strength::{
             bending_moment::BendingMoment,
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
@@ -67,7 +67,6 @@ mod tests {
         );
         let total_shipload = TotalShipload::new(d_i, b_i);
         let share_force = ShareForce::new(total_shipload);
-        let share_force_sf = share_force.share_force(&ship_dimensions).unwrap();
         let bending_moment = BendingMoment::new(share_force)
             .bending_moment(&ship_dimensions)
             .unwrap();
@@ -79,20 +78,6 @@ mod tests {
             }
         }
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
-        let visualization = Visualisation::new(
-            &bending_moment,
-            "Bending moment".to_string(),
-            "Bending moment".to_string(),
-            11.75,
-        );
-        visualization.visualize();
-        let visualization = Visualisation::new(
-            &share_force_sf,
-            "Share force".to_string(),
-            "Share force".to_string(),
-            11.75,
-        );
-        visualization.visualize();
 
         assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
@@ -130,7 +115,6 @@ mod tests {
         );
         let total_shipload = TotalShipload::new(d_i, b_i);
         let share_force = ShareForce::new(total_shipload);
-        let share_force_sf = share_force.share_force(&ship_dimensions).unwrap();
         let bending_moment = BendingMoment::new(share_force)
             .bending_moment(&ship_dimensions)
             .unwrap();
@@ -142,20 +126,6 @@ mod tests {
             }
         }
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
-        let visualization = Visualisation::new(
-            &bending_moment,
-            "Bending moment".to_string(),
-            "Bending moment".to_string(),
-            11.75,
-        );
-        visualization.visualize();
-        let visualization = Visualisation::new(
-            &share_force_sf,
-            "Share force".to_string(),
-            "Share force".to_string(),
-            11.75,
-        );
-        visualization.visualize();
         assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
 }
