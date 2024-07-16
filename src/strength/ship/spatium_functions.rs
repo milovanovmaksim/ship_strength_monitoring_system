@@ -47,8 +47,7 @@ impl SpatiumFunctions {
     }
 
     ///
-    /// Вычесляет интеграл с переменным верхним пределом;
-    /// Граничные условия новой функции: f(x0) = 0
+    /// Вычисляет интеграл с переменным верхним пределом;
     pub fn integral_vul(&self) -> SpatiumFunctions {
         let mut spatium_functions = vec![];
         let mut f_x1 = 0.0;
