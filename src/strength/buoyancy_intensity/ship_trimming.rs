@@ -63,7 +63,7 @@ impl<'a> ShipTrimming<'a> {
         lbp: f64,
     ) -> bool {
         self.error(calc_disp, displacement) <= 0.01
-            && (lcg.abs() - lcb.abs()).abs() <= (0.004 * lbp)
+            && (lcg.abs() - lcb.abs()).abs() <= (0.001 * lbp)
     }
     ///
     /// Расчет процентного различия между двумя числами.
@@ -86,13 +86,13 @@ impl<'a> ShipTrimming<'a> {
         info!("aft_draft = {} м, nose_draft = {} м", aft_draft, nose_draft);
         info!("mean_draft = {} м", 0.5 * (aft_draft + nose_draft));
         info!("lcg = {} м, lcb = {} м", lcg, lcb);
-        info!("0.002 * lbp = {}", lbp * 0.002);
+        info!("0.001 * lbp = {}", lbp * 0.001);
         info!("lcg - lcb = {}", (lcg.abs() - lcb.abs()).abs());
-        if (lcg.abs() - lcb.abs()).abs() <= 0.002 * lbp {
-            info!("|lcg - lcb| < lbp * 0.002 - условие удифферентовки судна для абсциссы центра велечины (lcb) выполняется.")
+        if (lcg.abs() - lcb.abs()).abs() <= 0.001 * lbp {
+            info!("|lcg - lcb| < lbp * 0.001 - условие удифферентовки судна для абсциссы центра велечины (lcb) выполняется.")
         } else {
             info!(
-                "|lcg - lcb| > lbp * 0.002 - условие удифферентовки судна для абсциссы центра велечины (lcb) не выполняется."
+                "|lcg - lcb| > lbp * 0.001 - условие удифферентовки судна для абсциссы центра велечины (lcb) не выполняется."
             )
         }
         info!("Заданное водоизмещение: {displacement} м^3.");
@@ -164,6 +164,7 @@ impl<'a> ShipTrimming<'a> {
             }
             while (lcg.abs() - lcb.abs()).abs() > 0.001 * lbp && i <= 51 {
                 if lcg < lcb {
+                    // Поворот ВЛ по часовой стрелки.
                     if aft_draft > nose_draft {
                         max_draft = nose_draft;
                         nose_draft = (max_draft + min_draft) / 2.0;
@@ -179,6 +180,7 @@ impl<'a> ShipTrimming<'a> {
                         nose_draft = mean_draft - (aft_draft - mean_draft) * similarity_coefficient;
                     }
                 } else if lcg > lcb {
+                    // Поворот ВЛ против часовой.
                     if aft_draft > nose_draft {
                         min_draft = nose_draft;
                         nose_draft = (max_draft + min_draft) / 2.0;

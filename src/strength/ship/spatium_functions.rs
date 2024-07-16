@@ -35,6 +35,33 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
+    pub fn max(&self) -> f64 {
+        let mut max_value = 0.0;
+        for s_f in &self.spatium_functions {
+            let current_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
+            if current_value > max_value {
+                max_value = current_value;
+            }
+        }
+        max_value
+    }
+
+    ///
+    /// Вычесляет интеграл с переменным верхним пределом;
+    /// Граничные условия новой функции: f(x0) = 0
+    pub fn integral_vul(&self) -> SpatiumFunctions {
+        let mut spatium_functions = vec![];
+        let mut f_x1 = 0.0;
+        for s_f in &self.spatium_functions {
+            let integral = s_f.integral();
+            let spatium_function =
+                SpatiumFunction::new(s_f.id(), s_f.x1(), s_f.x2(), f_x1, f_x1 + integral);
+            f_x1 += integral;
+            spatium_functions.push(spatium_function);
+        }
+        SpatiumFunctions { spatium_functions }
+    }
+
     pub fn last(&self) -> Option<&SpatiumFunction> {
         self.spatium_functions.last()
     }

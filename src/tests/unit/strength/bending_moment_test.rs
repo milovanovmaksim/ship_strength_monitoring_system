@@ -4,7 +4,7 @@ mod tests {
     use log::info;
 
     use crate::{
-        core::{visualisation::Visualisation, water_density::WaterDensity},
+        core::{point::Point, visualisation::Visualisation, water_density::WaterDensity},
         strength::{
             bending_moment::BendingMoment,
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
@@ -18,7 +18,7 @@ mod tests {
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-            load::{shiploads::Shiploads, total_shipload::TotalShipload},
+            load::{shipload::Shipload, shiploads::Shiploads, total_shipload::TotalShipload},
             share_force::ShareForce,
             ship::ship_dimensions::ShipDimensions,
         },
@@ -44,7 +44,7 @@ mod tests {
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/empty_ship.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
+        let ship_dimensions = ShipDimensions::new(235.0, 200, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
@@ -81,8 +81,6 @@ mod tests {
             }
         }
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
-        info!("last_moment = {last_bending_moment}");
-        info!("max_moment = {max_bending_moment}");
         let visualization = Visualisation::new(
             &bending_moment,
             "Bending moment".to_string(),
@@ -146,8 +144,6 @@ mod tests {
             }
         }
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
-        info!("last_moment = {last_bending_moment}");
-        info!("max_moment = {max_bending_moment}");
         let visualization = Visualisation::new(
             &bending_moment,
             "Bending moment".to_string(),
