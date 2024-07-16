@@ -1,5 +1,3 @@
-use log::info;
-
 use crate::strength::displacement::displacement_intensity::DisplacementIntensity;
 
 ///

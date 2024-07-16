@@ -1,5 +1,3 @@
-use crate::strength::ship::spatium_function::SpatiumFunction;
-
 use super::{
     share_force::ShareForce,
     ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},

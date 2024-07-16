@@ -2,8 +2,6 @@
 mod tests {
     use std::{env, sync::Once};
 
-    use log::debug;
-
     static INIT: Once = Once::new();
 
     fn call_once() {
