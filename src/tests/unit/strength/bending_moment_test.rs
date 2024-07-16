@@ -1,10 +1,8 @@
 #[cfg(test)]
 mod tests {
 
-    use log::info;
-
     use crate::{
-        core::{point::Point, visualisation::Visualisation, water_density::WaterDensity},
+        core::{visualisation::Visualisation, water_density::WaterDensity},
         strength::{
             bending_moment::BendingMoment,
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
@@ -18,7 +16,7 @@ mod tests {
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-            load::{shipload::Shipload, shiploads::Shiploads, total_shipload::TotalShipload},
+            load::{shiploads::Shiploads, total_shipload::TotalShipload},
             share_force::ShareForce,
             ship::ship_dimensions::ShipDimensions,
         },
