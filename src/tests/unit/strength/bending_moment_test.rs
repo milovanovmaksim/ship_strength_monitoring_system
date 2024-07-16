@@ -118,13 +118,7 @@ mod tests {
         let bending_moment = BendingMoment::new(share_force)
             .bending_moment(&ship_dimensions)
             .unwrap();
-        let mut max_bending_moment = 0.0;
-        for s_f in bending_moment.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if max_value > max_bending_moment {
-                max_bending_moment = max_value;
-            }
-        }
+        let max_bending_moment = bending_moment.max();
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
         assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
