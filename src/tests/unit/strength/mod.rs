@@ -1,10 +1,9 @@
-mod bending_moment_test;
 mod bonjean_scale;
 mod buoyancy_load;
 mod deadweight;
 mod displacement;
 mod hydrostatic_curves;
+mod internal_forces;
 mod lightweight;
 mod load;
-mod share_forse_test;
 mod ship;

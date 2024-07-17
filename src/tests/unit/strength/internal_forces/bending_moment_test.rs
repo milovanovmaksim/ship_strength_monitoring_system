@@ -2,7 +2,7 @@
 mod tests {
 
     use crate::{
-        core::water_density::WaterDensity,
+        core::{visualisation::Visualisation, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_intensity::{
@@ -14,9 +14,9 @@ mod tests {
                 displacement_tonnage::DisplacementTonnage,
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
+            internal_forces::{bending_moment::BendingMoment, share_force::ShareForce},
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
             load::{shiploads::Shiploads, total_shipload::TotalShipload},
-            share_force::ShareForce,
             ship::ship_dimensions::ShipDimensions,
         },
     };
@@ -34,7 +34,7 @@ mod tests {
     }
 
     #[test]
-    fn empty_share_force_intensity_ok_test() {
+    fn empty_bending_moment_ok_test() {
         // Судно порожнем.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
@@ -65,22 +65,25 @@ mod tests {
             LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
         );
         let total_shipload = TotalShipload::new(d_i, b_i);
-        let share_force = ShareForce::new(total_shipload)
-            .share_force(&ship_dimensions)
+        let share_force = ShareForce::new(total_shipload);
+        let bending_moment = BendingMoment::new(share_force)
+            .bending_moment(&ship_dimensions)
             .unwrap();
-        let mut max_share_force = 0.0;
-        for s_f in share_force.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if max_value > max_share_force {
-                max_share_force = max_value;
-            }
-        }
-        let last_share_force = share_force.last().unwrap().f_x2().abs();
-        assert!(last_share_force / max_share_force <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
+        let max_bending_moment = bending_moment.max().unwrap();
+        let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
+        let visualization = Visualisation::new(
+            &bending_moment,
+            "Bending Moment".to_string(),
+            "Bending moment".to_string(),
+            11.75,
+        );
+        visualization.visualize();
+
+        assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
 
     #[test]
-    fn full_share_force_intensity_ok_test() {
+    fn full_bending_moment_ok_test() {
         // Судно в грузу.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
@@ -111,17 +114,13 @@ mod tests {
             LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
         );
         let total_shipload = TotalShipload::new(d_i, b_i);
-        let share_force = ShareForce::new(total_shipload)
-            .share_force(&ship_dimensions)
+        let share_force = ShareForce::new(total_shipload);
+        let bending_moment = BendingMoment::new(share_force)
+            .bending_moment(&ship_dimensions)
             .unwrap();
-        let mut max_share_force = 0.0;
-        for s_f in share_force.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if max_value > max_share_force {
-                max_share_force = max_value;
-            }
-        }
-        let last_share_force = share_force.last().unwrap().f_x2().abs();
-        assert!(last_share_force / max_share_force <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
+        let max_bending_moment = bending_moment.max().unwrap();
+        let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
+
+        assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
 }
