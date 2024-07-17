@@ -2,7 +2,7 @@
 mod tests {
 
     use crate::{
-        core::water_density::WaterDensity,
+        core::{visualisation::Visualisation, water_density::WaterDensity},
         strength::{
             bending_moment::BendingMoment,
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
@@ -42,7 +42,7 @@ mod tests {
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/empty_ship.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 200, 0.8);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
@@ -70,14 +70,15 @@ mod tests {
         let bending_moment = BendingMoment::new(share_force)
             .bending_moment(&ship_dimensions)
             .unwrap();
-        let mut max_bending_moment = 0.0;
-        for s_f in bending_moment.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if max_value > max_bending_moment {
-                max_bending_moment = max_value;
-            }
-        }
+        let max_bending_moment = bending_moment.max().unwrap();
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
+        let visualization = Visualisation::new(
+            &bending_moment,
+            "Bending Moment".to_string(),
+            "Bending moment".to_string(),
+            11.75,
+        );
+        visualization.visualize();
 
         assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
@@ -118,8 +119,9 @@ mod tests {
         let bending_moment = BendingMoment::new(share_force)
             .bending_moment(&ship_dimensions)
             .unwrap();
-        let max_bending_moment = bending_moment.max();
+        let max_bending_moment = bending_moment.max().unwrap();
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
+
         assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
 }

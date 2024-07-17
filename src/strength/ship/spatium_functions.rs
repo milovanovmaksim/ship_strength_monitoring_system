@@ -1,3 +1,4 @@
+use log::info;
 use serde::Deserialize;
 
 use crate::core::round::Round;
@@ -35,12 +36,15 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
-    pub fn max(&self) -> f64 {
-        let mut max_value = 0.0;
+    pub fn max(&self) -> Option<f64> {
+        if self.spatium_functions.len() == 0 {
+            return None;
+        }
+        let mut max_value = Some(self.spatium_functions.first().unwrap().f_x1());
         for s_f in &self.spatium_functions {
             let current_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if current_value > max_value {
-                max_value = current_value;
+            if current_value > max_value.unwrap() {
+                max_value = Some(current_value);
             }
         }
         max_value
