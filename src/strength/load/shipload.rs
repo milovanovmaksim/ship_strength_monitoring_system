@@ -84,7 +84,7 @@ impl Shipload {
     fn shared_shipload(&self, load_start_coordinate: f64, load_end_coordinate: f64) -> Shipload {
         let load_length = (load_end_coordinate - load_start_coordinate).abs();
         let load_value = (load_length / self.length) * self.value;
-        let x = (load_start_coordinate + (load_length / 2.0));
+        let x = load_start_coordinate + (load_length / 2.0);
         let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);
         Shipload::new(load_value, center_gravity, load_length)
     }

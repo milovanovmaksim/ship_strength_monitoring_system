@@ -1,7 +1,7 @@
 use crate::strength::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     lightweight::lightweight_intensity::LightweightIntensity,
-    ship::spatium_functions::SpatiumFunctions,
+    ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},
 };
 
 ///
@@ -28,14 +28,14 @@ impl<'a> DisplacementIntensity<'a> {
     /// Возвращает интенсивность водоизмещения судна по его длине т/м.
     /// Интенсивность водоизмещения определяется как алгебраическая сумма
     /// интенсивностей дедвейта и массы корпуса судна по его длине.
-    pub fn spatium_functions(&self) -> SpatiumFunctions {
-        let deadweight_intensity = self.deadweight_intensity.deadweight_intensity();
-        let lightweight_intnesity = self.lightweight_intnesity.lightweight_intensity();
-        let spatium_functions = deadweight_intensity
-            .into_iter()
-            .zip(lightweight_intnesity.as_ref())
-            .map(|spatium_functions| spatium_functions.0.add(spatium_functions.1.clone()))
-            .collect();
-        SpatiumFunctions::new(spatium_functions)
+    pub fn displacement_intensity(&self) -> Result<SpatiumFunctions, String> {
+        let mut s_fs = vec![];
+        let dw_i = self.deadweight_intensity.deadweight_intensity();
+        let l_i = self.lightweight_intnesity.lightweight_intensity();
+        for dwi_v in dw_i.as_ref() {
+            let li_v = l_i.get(dwi_v.id()).unwrap();
+            s_fs.push(li_v.add(dwi_v.clone())?);
+        }
+        Ok(SpatiumFunctions::new(s_fs))
     }
 }

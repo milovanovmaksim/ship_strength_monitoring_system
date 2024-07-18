@@ -68,13 +68,7 @@ mod tests {
         let share_force = ShareForce::new(total_shipload)
             .share_force(&ship_dimensions)
             .unwrap();
-        let mut max_share_force = 0.0;
-        for s_f in share_force.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if max_value > max_share_force {
-                max_share_force = max_value;
-            }
-        }
+        let max_share_force = share_force.max().unwrap();
         let last_share_force = share_force.last().unwrap().f_x2().abs();
         assert!(last_share_force / max_share_force <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
@@ -114,13 +108,7 @@ mod tests {
         let share_force = ShareForce::new(total_shipload)
             .share_force(&ship_dimensions)
             .unwrap();
-        let mut max_share_force = 0.0;
-        for s_f in share_force.as_ref() {
-            let max_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
-            if max_value > max_share_force {
-                max_share_force = max_value;
-            }
-        }
+        let max_share_force = share_force.max().unwrap();
         let last_share_force = share_force.last().unwrap().f_x2().abs();
         assert!(last_share_force / max_share_force <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }

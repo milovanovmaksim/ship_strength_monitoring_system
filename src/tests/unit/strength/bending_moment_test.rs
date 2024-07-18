@@ -2,7 +2,7 @@
 mod tests {
 
     use crate::{
-        core::{visualisation::Visualisation, water_density::WaterDensity},
+        core::water_density::WaterDensity,
         strength::{
             bending_moment::BendingMoment,
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
@@ -72,14 +72,6 @@ mod tests {
             .unwrap();
         let max_bending_moment = bending_moment.max().unwrap();
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
-        let visualization = Visualisation::new(
-            &bending_moment,
-            "Bending Moment".to_string(),
-            "Bending moment".to_string(),
-            11.75,
-        );
-        visualization.visualize();
-
         assert!(last_bending_moment / max_bending_moment <= 0.05); // Отношение взято из [Я.И Короткин Прочность корабля].
     }
 

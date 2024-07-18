@@ -43,6 +43,6 @@ mod tests {
         let displacement_intensity =
             DisplacementIntensity::new(deadweight_intensity, lightweight_intensity);
         let lcb = LCG::new(displacement_intensity);
-        assert_eq!(0.69, lcb.lcg().my_round(2));
+        assert_eq!(0.69, lcb.lcg().unwrap().my_round(2));
     }
 }

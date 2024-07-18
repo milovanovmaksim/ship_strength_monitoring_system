@@ -14,8 +14,8 @@ impl<'a> LCG<'a> {
         }
     }
 
-    pub fn lcg(&self) -> f64 {
-        let displacement_intensity = self.displacement_intensity.spatium_functions();
+    pub fn lcg(&self) -> Result<f64, String> {
+        let displacement_intensity = self.displacement_intensity.displacement_intensity()?;
         let mut moment = 0.0;
         let mut left_moment = 0.0;
         let mut right_moment = 0.0;
@@ -30,6 +30,6 @@ impl<'a> LCG<'a> {
                 right_moment += integral * spatium.abscissa();
             }
         }
-        moment / displacement_tonnage
+        Ok(moment / displacement_tonnage)
     }
 }

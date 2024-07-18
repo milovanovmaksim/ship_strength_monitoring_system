@@ -138,7 +138,7 @@ impl<'a> ShipTrimming<'a> {
             .hydrostatic_curves
             .mean_draft(displacement_tonnage)?
             .unwrap();
-        let lcg = self.lcg.lcg();
+        let lcg = self.lcg.lcg()?;
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let lcf = self
             .hydrostatic_curves

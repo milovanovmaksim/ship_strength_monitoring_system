@@ -10,7 +10,7 @@ use strength::{
     displacement::displacement_intensity::DisplacementIntensity,
     lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
     load::shiploads::Shiploads,
-    ship::ship_dimensions::ShipDimensions
+    ship::ship_dimensions::ShipDimensions,
 };
 
 fn main() {
@@ -30,7 +30,8 @@ fn main() {
         11.75,
     );
     visualization.visualize();
-    let lightweight_intensity = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight);
+    let lightweight_intensity =
+        LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight);
     let lightweight_intensity_spatium_functions = lightweight_intensity.lightweight_intensity();
     let visualization = Visualisation::new(
         &lightweight_intensity_spatium_functions,
@@ -41,7 +42,7 @@ fn main() {
     visualization.visualize();
 
     let displacement = DisplacementIntensity::new(deadweight_intnesity, lightweight_intensity);
-    let spatium_functions = displacement.spatium_functions();
+    let spatium_functions = displacement.displacement_intensity().unwrap();
     let visualization = Visualisation::new(
         &spatium_functions,
         "Displacement intnesity".to_string(),

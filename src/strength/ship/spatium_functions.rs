@@ -1,22 +1,29 @@
-use log::info;
 use serde::Deserialize;
 
 use crate::core::round::Round;
 
 use super::spatium_function::SpatiumFunction;
 
+///
+/// Содержит результаты вычислений
+/// (изгибающий момент, перерезывающая сила, интенсивности водоизмещения, дедвейта, сил поддержания и.т.д)
+/// для всех шпаций судна.
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct SpatiumFunctions {
     spatium_functions: Vec<SpatiumFunction>,
 }
 
 impl SpatiumFunctions {
+    ///
+    ///Основной конструктор.
     pub fn new(functions: Vec<SpatiumFunction>) -> Self {
         SpatiumFunctions {
             spatium_functions: functions,
         }
     }
-
+    ///
+    /// Вспомогательный конструктор.
+    /// Заполняет шпации нулями.
     pub fn filled_zeros(number_spatiums: u64, lbp: f64) -> Self {
         let mut functions = vec![];
         let length_spatium = lbp / number_spatiums as f64;
@@ -36,11 +43,13 @@ impl SpatiumFunctions {
         SpatiumFunctions::new(functions)
     }
 
+    ///
+    /// Возвращает максимальное значение по модулю.
     pub fn max(&self) -> Option<f64> {
         if self.spatium_functions.len() == 0 {
             return None;
         }
-        let mut max_value = Some(self.spatium_functions.first().unwrap().f_x1());
+        let mut max_value = Some(self.spatium_functions.first().unwrap().f_x1().abs());
         for s_f in &self.spatium_functions {
             let current_value = s_f.f_x1().abs().max(s_f.f_x2().abs());
             if current_value > max_value.unwrap() {
@@ -64,19 +73,25 @@ impl SpatiumFunctions {
         }
         SpatiumFunctions { spatium_functions }
     }
-
+    ///
+    /// Возвращает значение для носа судна.
     pub fn last(&self) -> Option<&SpatiumFunction> {
         self.spatium_functions.last()
     }
 
+    ///
+    /// Добавление шпации путем сложения двух шпаций с одинаковыми id.
+    /// Возвращает ссылку на измененную шпацию.
     pub fn add(&mut self, term: SpatiumFunction) {
         let id = term.id() as usize;
         if let Some(spatium_function) = self.spatium_functions.get_mut(id) {
-            let new_spatium_function = spatium_function.add(term);
+            let new_spatium_function = spatium_function.add(term).unwrap();
             *spatium_function = new_spatium_function;
         }
     }
 
+    ///
+    /// Возвращает ссылку на шпацию по ее id.
     pub fn get(&self, id: u64) -> Option<&SpatiumFunction> {
         self.spatium_functions.get(id as usize)
     }
