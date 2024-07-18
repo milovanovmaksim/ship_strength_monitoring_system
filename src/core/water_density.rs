@@ -1,5 +1,7 @@
 use std::ops::Div;
 
+///
+/// Плотность воды.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct WaterDensity {
     water_density: f64,
@@ -10,13 +12,14 @@ impl WaterDensity {
         WaterDensity { water_density }
     }
 
+    ///
+    /// Возвращает плотность воды.
     pub fn water_density(&self) -> f64 {
         self.water_density
     }
 }
 
 impl Div<WaterDensity> for f64 {
-    // The division of rational numbers is a closed operation.
     type Output = f64;
 
     fn div(self, rhs: WaterDensity) -> Self::Output {
