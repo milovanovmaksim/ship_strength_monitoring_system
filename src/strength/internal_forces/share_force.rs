@@ -1,10 +1,10 @@
-use log::{info, warn};
+use crate::strength::{
 
-use crate::strength::ship::spatium_function::SpatiumFunction;
-
-use super::{
     load::total_shipload::TotalShipload,
-    ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},
+    ship::{
+        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
+        spatium_functions::SpatiumFunctions,
+    },
 };
 
 ///
