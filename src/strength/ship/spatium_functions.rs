@@ -31,13 +31,8 @@ impl SpatiumFunctions {
         let mut start_coordinate = -lbp / 2.0;
         for id in 0..number_spatiums {
             let end_coordinate = start_coordinate + length_spatium;
-            let spatium_function = SpatiumFunction::new(
-                id,
-                start_coordinate.my_round(2),
-                end_coordinate.my_round(2),
-                0.0,
-                0.0,
-            );
+            let spatium_function =
+                SpatiumFunction::new(id, start_coordinate, end_coordinate, 0.0, 0.0);
             functions.push(spatium_function);
             start_coordinate += length_spatium;
         }
