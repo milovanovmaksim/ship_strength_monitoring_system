@@ -122,18 +122,4 @@ mod tests {
         let s_fs = SpatiumFunctions::new(vec![]);
         assert_eq!(None, s_fs.max());
     }
-    #[test]
-    fn with_correction_test() {
-        // Все шпации заполнены нулями.
-
-        let ship_dimesions = ShipDimensions::new(235.0, 20, 0.8);
-        let s_fs = SpatiumFunctions::with_correction(
-            SpatiumFunctions::filled_zeros(20, 235.0),
-            &ship_dimesions,
-        );
-        assert_eq!(SpatiumFunctions::filled_zeros(20, 235.0), s_fs);
-    }
-
-    #[test]
-    fn with_correction_2_test() {}
 }

@@ -36,9 +36,6 @@ impl<'a> ShareForce<'a> {
                 nose_share_force / max_share_force
             );
         }
-        return Ok(SpatiumFunctions::with_correction(
-            share_force,
-            ship_dimensions,
-        ));
+        Ok(share_force)
     }
 }

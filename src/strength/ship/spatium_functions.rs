@@ -1,9 +1,5 @@
-use log::warn;
+use super::spatium_function::SpatiumFunction;
 use serde::Deserialize;
-
-use crate::core::round::Round;
-
-use super::{ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction};
 
 ///
 /// Содержит результаты вычислений
