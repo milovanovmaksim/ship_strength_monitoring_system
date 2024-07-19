@@ -34,7 +34,7 @@ mod tests {
     }
 
     #[test]
-    fn add_spatium_function_test() {
+    fn add_test() {
         let test_spatium_functions = SpatiumFunctions::new(vec![
             SpatiumFunction::new(0, -62.5, -56.25, 1.66, 1.66),
             SpatiumFunction::new(1, -56.25, -50.0, 0.0, 0.0),
