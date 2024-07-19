@@ -5,7 +5,7 @@ use crate::strength::ship::{
     spatium_functions::SpatiumFunctions,
 };
 
-use super::share_force::ShareForce;
+use super::{closed_diagram::IClosedDiagram, share_force::ShareForce};
 
 ///
 /// Изгибающий момент.
@@ -22,6 +22,8 @@ impl<'a> BendingMoment<'a> {
 
     ///
     /// Изгибающий момент [т*м].
+    /// Возвращает эпюру изгибающего момента без поправок, т.е не гарантируется,
+    /// что в носовом шпангоуте изгибающий момент равен нулю.
     /// Изгибающий момент определяется путем интегрирования эпюры поперечных сил.
     pub fn bending_moment(
         &self,
@@ -37,9 +39,12 @@ impl<'a> BendingMoment<'a> {
                 nose_moment / max_moment
             );
         }
-        Ok(SpatiumFunctions::with_correction(
-            bending_moment,
-            ship_dimensions,
-        ))
+        Ok(bending_moment)
+    }
+}
+
+impl<'a> IClosedDiagram for BendingMoment<'a> {
+    fn integrand(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String> {
+        self.share_force.share_force(ship_dimensions)
     }
 }

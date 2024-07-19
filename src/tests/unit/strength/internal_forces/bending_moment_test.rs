@@ -14,7 +14,10 @@ mod tests {
                 displacement_tonnage::DisplacementTonnage,
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
-            internal_forces::{bending_moment::BendingMoment, share_force::ShareForce},
+            internal_forces::{
+                bending_moment::BendingMoment, closed_diagram::IClosedDiagram,
+                share_force::ShareForce,
+            },
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
             load::{shiploads::Shiploads, total_shipload::TotalShipload},
             ship::ship_dimensions::ShipDimensions,
@@ -34,7 +37,7 @@ mod tests {
     }
 
     #[test]
-    fn empty_bending_moment_ok_test() {
+    fn empty_with_correction_ok_test() {
         // Судно порожнем.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
@@ -67,7 +70,7 @@ mod tests {
         let total_shipload = TotalShipload::new(d_i, b_i);
         let share_force = ShareForce::new(total_shipload);
         let bending_moment = BendingMoment::new(share_force)
-            .bending_moment(&ship_dimensions)
+            .with_correction(&ship_dimensions)
             .unwrap();
         let max_bending_moment = bending_moment.max().unwrap();
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();
@@ -75,7 +78,7 @@ mod tests {
     }
 
     #[test]
-    fn full_bending_moment_ok_test() {
+    fn full_with_correction_ok_test() {
         // Судно в грузу.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
@@ -108,7 +111,7 @@ mod tests {
         let total_shipload = TotalShipload::new(d_i, b_i);
         let share_force = ShareForce::new(total_shipload);
         let bending_moment = BendingMoment::new(share_force)
-            .bending_moment(&ship_dimensions)
+            .with_correction(&ship_dimensions)
             .unwrap();
         let max_bending_moment = bending_moment.max().unwrap();
         let last_bending_moment = bending_moment.last().unwrap().f_x2().abs();

@@ -96,7 +96,7 @@ impl LightweightIntensity {
     }
 
     ///
-    /// Интенсивность массы корпуса судна по длине т/м.
+    /// Интенсивность массы корпуса судна по длине [т/м].
     pub fn lightweight_intensity(&self) -> &SpatiumFunctions {
         &self.lightweight_intensity
     }
