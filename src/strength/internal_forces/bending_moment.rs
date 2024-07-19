@@ -27,7 +27,6 @@ impl<'a> BendingMoment<'a> {
         &self,
         ship_dimensions: &ShipDimensions,
     ) -> Result<SpatiumFunctions, String> {
-        let lbp = ship_dimensions.lbp();
         let share_force = self.share_force.share_force(ship_dimensions)?;
         let bending_moment = share_force.integral_vul();
         let nose_moment = bending_moment.last().unwrap().f_x2();

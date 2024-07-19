@@ -62,31 +62,30 @@ impl SpatiumFunctions {
         spatium_functions: SpatiumFunctions,
         ship_dimensions: &ShipDimensions,
     ) -> SpatiumFunctions {
-        let nose_value = spatium_functions.last().unwrap().f_x2();
-        let max_value = spatium_functions.max().unwrap();
-        if nose_value.abs() / max_value > 0.05 {
-            warn!(
-                "Эпюра не замкнута. Незамыкание эпюры: Value(nose) / Value(max) = {}",
-                nose_value / max_value
-            );
+        if spatium_functions.spatium_functions.len() > 0 {
+            let nose_value = spatium_functions.last().unwrap().f_x2();
+            let max_value = spatium_functions.max().unwrap();
+            if max_value > 0.0 {
+                let mut f_x1 = 0.0;
+                let mut s_fs = vec![];
+                let mut x = ship_dimensions.length_spatium();
+                let lbp = ship_dimensions.lbp();
+                for s_f in spatium_functions.into_iter() {
+                    let f_x2 = s_f.f_x2() - nose_value * x / lbp;
+                    s_fs.push(SpatiumFunction::new(
+                        s_f.id(),
+                        s_f.x1(),
+                        s_f.x2(),
+                        f_x1,
+                        f_x2,
+                    ));
+                    f_x1 = f_x2;
+                    x += ship_dimensions.length_spatium();
+                }
+                return SpatiumFunctions::new(s_fs);
+            }
         }
-        let mut f_x1 = 0.0;
-        let mut s_fs = vec![];
-        let mut x = ship_dimensions.length_spatium();
-        let lbp = ship_dimensions.lbp();
-        for s_f in spatium_functions.into_iter() {
-            let f_x2 = s_f.f_x2() - nose_value * x / lbp;
-            s_fs.push(SpatiumFunction::new(
-                s_f.id(),
-                s_f.x1(),
-                s_f.x2(),
-                f_x1,
-                f_x2,
-            ));
-            f_x1 = f_x2;
-            x += ship_dimensions.length_spatium();
-        }
-        SpatiumFunctions::new(s_fs)
+        spatium_functions
     }
 
     ///
