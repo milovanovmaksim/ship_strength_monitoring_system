@@ -29,7 +29,7 @@ impl<'a> BendingMoment<'a> {
     ) -> Result<SpatiumFunctions, String> {
         let lbp = ship_dimensions.lbp();
         let share_force = self.share_force.share_force(ship_dimensions)?;
-        let mut bending_moment = share_force.integral_vul();
+        let bending_moment = share_force.integral_vul();
         let nose_moment = bending_moment.last().unwrap().f_x2();
         let max_moment = bending_moment.max().unwrap();
         if nose_moment.abs() / max_moment > 0.05 {
@@ -38,22 +38,9 @@ impl<'a> BendingMoment<'a> {
                 nose_moment / max_moment
             );
         }
-        let mut f_x1 = 0.0;
-        let mut s_fs = vec![];
-        let mut x = ship_dimensions.length_spatium();
-        for s_f in bending_moment.into_iter() {
-            let f_x2 = s_f.f_x2() - nose_moment * x / lbp;
-            s_fs.push(SpatiumFunction::new(
-                s_f.id(),
-                s_f.x1(),
-                s_f.x2(),
-                f_x1,
-                f_x2,
-            ));
-            f_x1 = f_x2;
-            x += ship_dimensions.length_spatium();
-        }
-        bending_moment = SpatiumFunctions::new(s_fs);
-        Ok(bending_moment)
+        Ok(SpatiumFunctions::with_correction(
+            bending_moment,
+            ship_dimensions,
+        ))
     }
 }
