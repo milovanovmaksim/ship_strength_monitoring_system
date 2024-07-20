@@ -1,6 +1,4 @@
-use log::{error, info};
-use serde::Deserialize;
-
+use super::lightweight::Lightweight;
 use crate::{
     core::{json_file::JsonFile, round::Round},
     strength::ship::{
@@ -8,8 +6,8 @@ use crate::{
         spatium_functions::SpatiumFunctions,
     },
 };
-
-use super::lightweight::Lightweight;
+use log::{error, info};
+use serde::Deserialize;
 
 ///
 /// Интенсивность массы корпуса судна по длине.
