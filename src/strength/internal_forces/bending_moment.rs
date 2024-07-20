@@ -17,7 +17,8 @@ impl<'a> BendingMoment<'a> {
 
 impl<'a> InternalForce for BendingMoment<'a> {
     ///
-    /// Возвращает подинтегральную функцию изгибающего момента, т.е перерезывающую силу.
+    /// Возвращает подинтегральную функцию изгибающего момента,
+    /// т.е распределение перерезывающей силы по длине корпуса судна.
     fn integrand(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String> {
         self.share_force.internal_force(ship_dimensions)
     }

@@ -21,7 +21,7 @@ impl<'a> ShareForce<'a> {
 impl<'a> InternalForce for ShareForce<'a> {
     ///
     /// Возвращает подинтегральную функцию перерезывающей силы,
-    /// т.е интенсивность суммарной нагрузки, действующей на корпус судна.
+    /// т.е распределение интенсивности суммарной нагрузки, действующей на корпус судна.
     fn integrand(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String> {
         self.total_shipload.total_shipload(ship_dimensions)
     }
