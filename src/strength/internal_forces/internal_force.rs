@@ -43,6 +43,6 @@ pub trait InternalForce {
     }
 
     ///
-    /// Возвращает подинтегральную функцию.
+    /// Возвращает подинтегральную функцию внутренней силы.
     fn integrand(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String>;
 }
