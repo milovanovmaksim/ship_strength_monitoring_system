@@ -6,7 +6,7 @@ use crate::strength::ship::{
 ///
 /// Замкнутая эпюра внутренних сил, т.е значения внутренних
 /// сил в носовом и кормовом шпангоутах равны нулю.
-pub trait IClosedDiagram {
+pub trait InternalForce {
     ///
     /// Так как удифферентовка судна осуществляется приближенно,
     /// то после интегрирования суммарной нагрузки в носовом шпангоуте появляются
@@ -18,12 +18,9 @@ pub trait IClosedDiagram {
     /// N(x) - перерезывающая сила в точке с координатой x,
     /// M(x) - изгибающий момент с координатой x,
     /// N_nose - перерезывающая сила в носовом шпангоуте,
-    /// M_nose - изгибающий момент в носовм шпангоуте,
+    /// M_nose - изгибающий момент в носовом шпангоуте,
     /// L - длина между перпендикулярами.
-    fn with_correction(
-        &self,
-        ship_dimensions: &ShipDimensions,
-    ) -> Result<SpatiumFunctions, String> {
+    fn internal_force(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String> {
         let s_fs = self.integrand(ship_dimensions)?.integral_vul();
         let nose_value = s_fs.last().unwrap().f_x2();
         let mut f_x1 = 0.0;

@@ -5,7 +5,8 @@ use crate::strength::{
         spatium_functions::SpatiumFunctions,
     },
 };
-use log::warn;
+
+use super::closed_diagram::InternalForce;
 
 ///
 /// Перерезывающая (касательная) сила.
@@ -19,23 +20,10 @@ impl<'a> ShareForce<'a> {
     pub fn new(total_shipload: TotalShipload<'a>) -> Self {
         ShareForce { total_shipload }
     }
+}
 
-    ///
-    /// Перерезывающая сила [т].
-    pub fn share_force(
-        &self,
-        ship_dimensions: &ShipDimensions,
-    ) -> Result<SpatiumFunctions, String> {
-        let total_shipload = self.total_shipload.total_shipload(ship_dimensions)?;
-        let share_force = total_shipload.integral_vul();
-        let nose_share_force = share_force.last().unwrap().f_x2();
-        let max_share_force = share_force.max().unwrap();
-        if nose_share_force.abs() / max_share_force > 0.05 {
-            warn!(
-                "Эпюра перерезывающих сил не замкнута. Незамыкание эпюры: N(nose) / Nmax = {}",
-                nose_share_force / max_share_force
-            );
-        }
-        Ok(share_force)
+impl<'a> InternalForce for ShareForce<'a> {
+    fn integrand(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String> {
+        self.total_shipload.total_shipload(ship_dimensions)
     }
 }

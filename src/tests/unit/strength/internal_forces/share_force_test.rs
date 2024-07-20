@@ -14,7 +14,7 @@ mod tests {
                 displacement_tonnage::DisplacementTonnage,
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
-            internal_forces::share_force::ShareForce,
+            internal_forces::{closed_diagram::InternalForce, share_force::ShareForce},
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
             load::{shiploads::Shiploads, total_shipload::TotalShipload},
             ship::ship_dimensions::ShipDimensions,
@@ -34,7 +34,7 @@ mod tests {
     }
 
     #[test]
-    fn empty_share_force_intensity_ok_test() {
+    fn empty_share_force_ok_test() {
         // Судно порожнем.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
@@ -66,7 +66,7 @@ mod tests {
         );
         let total_shipload = TotalShipload::new(d_i, b_i);
         let share_force = ShareForce::new(total_shipload)
-            .share_force(&ship_dimensions)
+            .internal_force(&ship_dimensions)
             .unwrap();
         let max_share_force = share_force.max().unwrap();
         let last_share_force = share_force.last().unwrap().f_x2().abs();
@@ -74,7 +74,7 @@ mod tests {
     }
 
     #[test]
-    fn full_share_force_intensity_ok_test() {
+    fn full_share_force_ok_test() {
         // Судно в грузу.
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
@@ -106,7 +106,7 @@ mod tests {
         );
         let total_shipload = TotalShipload::new(d_i, b_i);
         let share_force = ShareForce::new(total_shipload)
-            .share_force(&ship_dimensions)
+            .internal_force(&ship_dimensions)
             .unwrap();
         let max_share_force = share_force.max().unwrap();
         let last_share_force = share_force.last().unwrap().f_x2().abs();
