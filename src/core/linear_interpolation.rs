@@ -26,10 +26,13 @@ impl LinearInterpolation {
     /// Returns:
     ///     Возвращает значение функции f(x) в точке x.
     /// Примечание:
-    ///    x_0 < x < x_1
+    ///    x_0 <= x <= x_1
     pub fn interpolated_value(&self, x: f64) -> Result<f64, String> {
         if self.x_0 == self.x_1 {
             return Err("x_0 и x_1 не должны быть равны между собой".to_string());
+        }
+        if self.x_0 > self.x_1 {
+            return Err("Значение аргумента x_0 должно быть меньше x_1.".to_string());
         }
         let min_x = self.x_0.min(self.x_1);
         let max_x = self.x_0.max(self.x_1);
@@ -38,6 +41,6 @@ impl LinearInterpolation {
                 self.f_x_0 + ((self.f_x_1 - self.f_x_0) / (self.x_1 - self.x_0)) * (x - self.x_0);
             return Ok(f_x);
         }
-        Err("Function argument 'x' should be x_0 < x < x_1.".to_owned())
+        Err("Значение аргумента 'x' функции 'interpolated_value' должно лежать в диапазоне 'x_0 <= x <= x_1'.".to_owned())
     }
 }

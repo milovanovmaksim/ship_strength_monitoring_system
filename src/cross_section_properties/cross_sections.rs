@@ -1,8 +1,5 @@
-use log::{debug, warn};
-use std::collections::HashMap;
-use std::fs::File;
-
 use super::cross_section::CrossSection;
+use std::collections::HashMap;
 
 pub struct CrossSections {
     cross_sections: HashMap<i32, CrossSection>,

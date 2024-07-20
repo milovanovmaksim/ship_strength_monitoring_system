@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests {
     use crate::strength::ship::ship_dimensions::ShipDimensions;
-    use crate::strength::ship::spatium_functions::SpatiumFunctions;
     use crate::{
         core::{point::Point, round::Round},
         strength::{
@@ -38,11 +37,12 @@ mod tests {
             Shipload::new(150.0, Point::new(10.0, 0.0, 0.0), 20.0),
         ]);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let lightweight_intensity = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight);
+        let lightweight_intensity =
+            LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight);
         let deadweight_intensity = DeadweightIntensity::new(&shiploads, ship_dimensions);
         let displacement_intensity =
             DisplacementIntensity::new(deadweight_intensity, lightweight_intensity);
         let lcb = LCG::new(displacement_intensity);
-        assert_eq!(0.69, lcb.lcg().my_round(2));
+        assert_eq!(0.69, lcb.lcg().unwrap().my_round(2));
     }
 }

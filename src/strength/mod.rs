@@ -3,7 +3,7 @@ pub(crate) mod buoyancy_intensity;
 pub(crate) mod deadweight;
 pub(crate) mod displacement;
 pub(crate) mod hydrostatic_curves;
+pub(crate) mod internal_forces;
 pub(crate) mod lightweight;
 pub(crate) mod load;
 pub(crate) mod ship;
-pub(crate) mod share_force;

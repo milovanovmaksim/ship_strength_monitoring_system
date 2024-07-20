@@ -38,7 +38,7 @@ impl<'a> DeadweightIntensity<'a> {
         let shiploads = self.shiploads.shared_shiploads(&self.ship_dimensions);
         for shipload in shiploads.into_iter() {
             for spatium_function in self.shipload_intensity(shipload).into_iter() {
-                spatium_functions.add(spatium_function)
+                spatium_functions.add(spatium_function);
             }
         }
         spatium_functions

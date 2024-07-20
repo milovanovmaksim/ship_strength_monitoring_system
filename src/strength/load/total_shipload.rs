@@ -7,7 +7,7 @@ use crate::strength::{
 ///
 /// Интенсивность суммарной нагрузки по длине судна, действующей на корпус судна.
 pub(crate) struct TotalShipload<'a> {
-    d_i: DisplacementIntensity<'a>,
+    disp_i: DisplacementIntensity<'a>,
     b_i: BuoyancyIntensity<'a>,
 }
 
@@ -15,7 +15,7 @@ impl<'a> TotalShipload<'a> {
     ///
     /// Основной конструктор.
     pub fn new(d_i: DisplacementIntensity<'a>, b_i: BuoyancyIntensity<'a>) -> Self {
-        TotalShipload { d_i, b_i }
+        TotalShipload { disp_i: d_i, b_i }
     }
 
     ///
@@ -27,12 +27,11 @@ impl<'a> TotalShipload<'a> {
         ship_dimensions: &ShipDimensions,
     ) -> Result<SpatiumFunctions, String> {
         let mut total_shipload = vec![];
-        let di_value = self.d_i.spatium_functions();
-        let bi_value = self.b_i.buoyancy_intensity(ship_dimensions)?;
-        for i in 0..ship_dimensions.number_spatiums() {
-            let sf_1 = di_value.get(i).unwrap();
-            let sf_2 = bi_value.get(i).unwrap();
-            total_shipload.push(sf_1.add(sf_2.clone()));
+        let disp_i_sfs = self.disp_i.displacement_intensity()?;
+        let bi_sfs = self.b_i.buoyancy_intensity(ship_dimensions)?;
+        for disp_i_sf in disp_i_sfs.as_ref() {
+            let bi_sf = bi_sfs.get(disp_i_sf.id()).unwrap();
+            total_shipload.push(bi_sf.add(disp_i_sf.clone())?);
         }
         Ok(SpatiumFunctions::new(total_shipload))
     }

@@ -62,6 +62,6 @@ impl<'a> Displacement<'a> {
     ///
     /// Возвращает объемное водоизмещение судна от массы. [м^3]
     pub fn displacement_by_mass(&self, massa: f64) -> f64 {
-        massa / self.water_density.water_density()
+        massa / self.water_density
     }
 }

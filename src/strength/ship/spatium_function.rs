@@ -5,7 +5,8 @@ use crate::core::round::Round;
 use super::ship_dimensions::ShipDimensions;
 
 ///
-/// Contains the results of any calculations for the spatium.
+/// Содержит результаты расчета
+/// (интенсивность водоизмещение, перерезывающая сила, изгибающий момент и.т.д) для одной теоретической шпации судна.
 #[derive(Debug, PartialEq, Copy, Clone, Deserialize)]
 pub struct SpatiumFunction {
     id: u64,
@@ -17,7 +18,7 @@ pub struct SpatiumFunction {
 
 impl SpatiumFunction {
     ///
-    /// Create new object.
+    /// Основной конструктор.
     pub fn new(id: u64, x1: f64, x2: f64, f_x1: f64, f_x2: f64) -> Self {
         SpatiumFunction {
             id,
@@ -37,8 +38,8 @@ impl SpatiumFunction {
             id,
             spatium_start_coordinate,
             spatium_end_coordinate,
-            f_x1.my_round(2),
-            f_x2.my_round(2),
+            f_x1,
+            f_x2,
         )
     }
 
@@ -82,10 +83,14 @@ impl SpatiumFunction {
         self.f_x2
     }
 
-    /// Add curretn object with another.
-    pub fn add(&self, term: SpatiumFunction) -> SpatiumFunction {
-        let f_x1 = self.f_x1 + term.f_x1().my_round(2);
-        let f_x2 = self.f_x2 + term.f_x2().my_round(2);
-        SpatiumFunction::new(self.id, self.x1, self.x2, f_x1, f_x2)
+    /// Сложение шпаций с одинаковыми id.
+    /// Возвращает новый объект.
+    pub fn add(&self, term: SpatiumFunction) -> Result<SpatiumFunction, String> {
+        if term.id == self.id {
+            let f_x1 = self.f_x1 + term.f_x1();
+            let f_x2 = self.f_x2 + term.f_x2();
+            return Ok(SpatiumFunction::new(self.id, self.x1, self.x2, f_x1, f_x2));
+        }
+        Err("Сложение шпаций с разными id".to_string())
     }
 }
