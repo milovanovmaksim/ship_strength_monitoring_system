@@ -1,12 +1,8 @@
+use super::internal_force::InternalForce;
 use crate::strength::{
     load::total_shipload::TotalShipload,
-    ship::{
-        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
-        spatium_functions::SpatiumFunctions,
-    },
+    ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},
 };
-
-use super::closed_diagram::InternalForce;
 
 ///
 /// Перерезывающая (касательная) сила.
@@ -23,6 +19,9 @@ impl<'a> ShareForce<'a> {
 }
 
 impl<'a> InternalForce for ShareForce<'a> {
+    ///
+    /// Возвращает подинтегральную функцию перерезывающей силы,
+    /// т.е интенсивность суммарной нагрузки, действующей на корпус судна.
     fn integrand(&self, ship_dimensions: &ShipDimensions) -> Result<SpatiumFunctions, String> {
         self.total_shipload.total_shipload(ship_dimensions)
     }

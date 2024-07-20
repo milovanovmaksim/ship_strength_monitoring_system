@@ -15,7 +15,7 @@ mod tests {
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
             internal_forces::{
-                bending_moment::BendingMoment, closed_diagram::InternalForce,
+                bending_moment::BendingMoment, internal_force::InternalForce,
                 share_force::ShareForce,
             },
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},

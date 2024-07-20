@@ -14,7 +14,7 @@ mod tests {
                 displacement_tonnage::DisplacementTonnage,
             },
             hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
-            internal_forces::{closed_diagram::InternalForce, share_force::ShareForce},
+            internal_forces::{internal_force::InternalForce, share_force::ShareForce},
             lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
             load::{shiploads::Shiploads, total_shipload::TotalShipload},
             ship::ship_dimensions::ShipDimensions,
