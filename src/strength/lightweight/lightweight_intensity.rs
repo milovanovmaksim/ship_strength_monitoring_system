@@ -1,4 +1,4 @@
-use log::{debug, error};
+use log::{error, info};
 use serde::Deserialize;
 
 use crate::{
@@ -29,6 +29,7 @@ impl LightweightIntensity {
 
     ///
     /// Вспомогательный конструктор.
+    /// Создает объект из данных о судне [Прочность корабля Курдюмов А.А.].
     pub fn from_ship_input_data(
         ship_dimensions: ShipDimensions,
         lightweight: Lightweight,
@@ -80,7 +81,7 @@ impl LightweightIntensity {
         match json.content() {
             Ok(content) => match serde_json::from_reader(content) {
                 Ok(lightweight_intensity) => {
-                    debug!("LightweightIntensity::from_json_file | LightweightIntensity has been created sucessfuly.");
+                    info!("LightweightIntensity::from_json_file | LightweightIntensity has been created sucessfuly.");
                     return lightweight_intensity;
                 }
                 Err(err) => {
@@ -97,8 +98,8 @@ impl LightweightIntensity {
 
     ///
     /// Интенсивность массы корпуса судна по длине [т/м].
-    pub fn lightweight_intensity(&self) -> &SpatiumFunctions {
-        &self.lightweight_intensity
+    pub fn lightweight_intensity(&self) -> SpatiumFunctions {
+        self.lightweight_intensity.clone()
     }
 
     ///

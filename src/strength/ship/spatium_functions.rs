@@ -5,7 +5,7 @@ use serde::Deserialize;
 /// Содержит результаты вычислений
 /// (изгибающий момент, перерезывающая сила, интенсивности водоизмещения, дедвейта, сил поддержания и.т.д)
 /// для всех шпаций судна.
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct SpatiumFunctions {
     spatium_functions: Vec<SpatiumFunction>,
 }
