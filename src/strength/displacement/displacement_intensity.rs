@@ -1,7 +1,7 @@
 use crate::strength::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     lightweight::lightweight_intensity::LightweightIntensity,
-    ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},
+    ship::spatium_functions::SpatiumFunctions,
 };
 
 ///
