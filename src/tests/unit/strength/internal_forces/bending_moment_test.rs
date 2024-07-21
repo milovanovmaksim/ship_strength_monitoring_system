@@ -99,16 +99,14 @@ mod tests {
         let hydrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let lightweight = Lightweight::new(13550.0);
         let water_density = WaterDensity::new(1.025);
-        let lcb = LCB::new(&bonjean_scale, ship_dimensions.clone());
-        let lcg = LCG::new(DisplacementIntensity::new(
+        let d_i = DisplacementIntensity::new(
             DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
             LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
-        ));
+        );
+        let lcb = LCB::new(&bonjean_scale, ship_dimensions.clone());
+        let lcg = LCG::new(&d_i);
         let total_shipload = TotalShipload::new(
-            DisplacementIntensity::new(
-                DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
-                LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
-            ),
+            &d_i,
             BuoyancyIntensity::new(
                 Draft::new(
                     Displacement::new(&bonjean_scale, ship_dimensions.clone(), water_density),

@@ -60,15 +60,20 @@ impl<'a> ShipTrimming<'a> {
         mean_draft: f64,
         ship_dimensions: &ShipDimensions,
     ) -> Result<Option<(f64, f64)>, String> {
+        let mut max_draft = self.hydrostatic_curves.max_draft();
+        let mut min_draft = self.hydrostatic_curves.min_draft();
+        if mean_draft < min_draft || mean_draft > max_draft {
+            return Err(format!(
+                "mean_draft должен принадлежать диапазону осадки судна [{min_draft} м, {max_draft} м]"
+            ));
+        }
         let lcg = self.lcg.lcg()?;
         let lcf = self
             .hydrostatic_curves
             .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?
-            .unwrap(); // TODO: проверить на None
+            .unwrap();
         let lbp = ship_dimensions.lbp();
         let similarity_coefficient = self.similarity_coefficient(lcf, lbp);
-        let mut max_draft = self.hydrostatic_curves.max_draft();
-        let mut min_draft = self.hydrostatic_curves.min_draft();
         let mut nose_draft = mean_draft;
         let mut aft_draft = mean_draft;
         let mut lcb = self.lcb.lcb(aft_draft, nose_draft)?;

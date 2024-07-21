@@ -1,16 +1,19 @@
 #[cfg(test)]
 mod tests {
-    use crate::{core::round::Round, strength::{
-        bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
-        buoyancy_intensity::lcg::LCG,
-        deadweight::deadweight_intensity::DeadweightIntensity,
-        displacement::displacement_intensity::DisplacementIntensity,
-        draft::ship_trimming::ShipTrimming,
-        hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
-        lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
-        load::shiploads::Shiploads,
-        ship::ship_dimensions::ShipDimensions,
-    }};
+    use crate::{
+        core::round::Round,
+        strength::{
+            bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
+            buoyancy_intensity::lcg::LCG,
+            deadweight::deadweight_intensity::DeadweightIntensity,
+            displacement::displacement_intensity::DisplacementIntensity,
+            draft::ship_trimming::ShipTrimming,
+            hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
+            lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
+            load::shiploads::Shiploads,
+            ship::ship_dimensions::ShipDimensions,
+        },
+    };
     use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
@@ -45,8 +48,14 @@ mod tests {
         ));
         let hydrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let ship_trimming = ShipTrimming::new(&lcb, &lcg, &hydrostatic_curves);
-        let (aft_draft, nose_draft) = ship_trimming.trimming(2.08, &ship_dimensions).unwrap().unwrap();
-        assert_eq!((1.54, 2.74), (aft_draft.my_round(2), nose_draft.my_round(2)));
+        let (aft_draft, nose_draft) = ship_trimming
+            .trimming(2.08, &ship_dimensions)
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            (1.54, 2.74),
+            (aft_draft.my_round(2), nose_draft.my_round(2))
+        );
     }
 
     #[test]
@@ -69,7 +78,13 @@ mod tests {
         ));
         let hydrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
         let ship_trimming = ShipTrimming::new(&lcb, &lcg, &hydrostatic_curves);
-        let (aft_draft, nose_draft) = ship_trimming.trimming(13.08, &ship_dimensions).unwrap().unwrap();
-        assert_eq!((12.97, 13.19), (aft_draft.my_round(2), nose_draft.my_round(2)));
+        let (aft_draft, nose_draft) = ship_trimming
+            .trimming(13.08, &ship_dimensions)
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            (12.97, 13.19),
+            (aft_draft.my_round(2), nose_draft.my_round(2))
+        );
     }
 }
