@@ -7,3 +7,4 @@ pub(crate) mod internal_forces;
 pub(crate) mod lightweight;
 pub(crate) mod load;
 pub(crate) mod ship;
+pub(crate) mod draft;
