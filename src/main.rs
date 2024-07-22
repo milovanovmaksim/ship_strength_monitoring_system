@@ -9,5 +9,5 @@ fn main() {
     env::set_var("RUST_LOG", "debug");
     env::set_var("RUST_BACKTRACE", "full");
     env_logger::init();
-    let strength = Strength::new_project("./input_data/input_data.json".to_string());
+    let strength = Strength::new_project();
 }
