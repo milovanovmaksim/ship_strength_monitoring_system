@@ -1,19 +1,19 @@
 use crate::strength::{deadweight::deadweight::Deadweight, lightweight::lightweight::Lightweight};
 
 pub(crate) struct DisplacementTonnage<'a> {
-    lightweight: Lightweight,
-    deadweight: Deadweight<'a>,
+    lw: Lightweight,
+    dw: &'a Deadweight<'a>,
 }
 
 impl<'a> DisplacementTonnage<'a> {
-    pub fn new(lightweight: Lightweight, deadweight: Deadweight<'a>) -> Self {
+    pub fn new(lw: Lightweight, dw: &'a Deadweight<'a>) -> Self {
         DisplacementTonnage {
-            lightweight,
-            deadweight,
+            lw: lw,
+            dw: dw,
         }
     }
 
     pub fn displacement_tonnage(&self) -> f64 {
-        self.lightweight.lightweight() + self.deadweight.deadweight()
+        self.lw.lightweight() + self.dw.deadweight()
     }
 }
