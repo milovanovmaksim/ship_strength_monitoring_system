@@ -11,25 +11,31 @@ use crate::strength::{
 pub struct DisplacementIntensity {
     dw_i: Rc<DeadweightIntensity>,
     lw_i: Rc<LightweightIntensity>,
+    ship_dimensions: ShipDimensions,
 }
 
 impl DisplacementIntensity {
     ///
     /// Основной конструктор.
-    pub fn new(dw_i: Rc<DeadweightIntensity>, lw_i: Rc<LightweightIntensity>) -> Self {
-        DisplacementIntensity { dw_i, lw_i }
+    pub fn new(
+        dw_i: Rc<DeadweightIntensity>,
+        lw_i: Rc<LightweightIntensity>,
+        ship_dimensions: ShipDimensions,
+    ) -> Self {
+        DisplacementIntensity {
+            dw_i,
+            lw_i,
+            ship_dimensions,
+        }
     }
 
     ///
     /// Возвращает интенсивность водоизмещения судна по его длине т/м.
     /// Интенсивность водоизмещения определяется как алгебраическая сумма
     /// интенсивностей дедвейта и массы корпуса судна по его длине.
-    pub fn displacement_intensity(
-        &self,
-        ship_dimensions: &ShipDimensions,
-    ) -> Result<SpatiumFunctions, String> {
+    pub fn displacement_intensity(&self) -> Result<SpatiumFunctions, String> {
         let mut s_fs = vec![];
-        let dw_i = self.dw_i.deadweight_intensity(ship_dimensions);
+        let dw_i = self.dw_i.deadweight_intensity();
         let l_i = self.lw_i.lightweight_intensity();
         for dwi_v in dw_i.as_ref() {
             let li_v = l_i.get(dwi_v.id()).unwrap();

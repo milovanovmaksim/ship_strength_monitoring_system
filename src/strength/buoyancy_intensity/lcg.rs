@@ -1,16 +1,26 @@
-use crate::strength::displacement::displacement_intensity::DisplacementIntensity;
+use std::rc::Rc;
+
+use crate::strength::{
+    displacement::displacement_intensity::DisplacementIntensity,
+    ship::ship_dimensions::ShipDimensions,
+};
 
 ///
 /// Абcцисса центр тяжести судна. Англ.: Longitudinal Center of Gravity (LCG).
 /// Отсчитывается от мидель шпангоута. Имеет положительный знак от мидель шпангоута в нос судна.
-pub struct LCG<'a> {
-    displacement_intensity: DisplacementIntensity<'a>,
+pub struct LCG {
+    displacement_intensity: Rc<DisplacementIntensity>,
+    ship_dimensions: ShipDimensions,
 }
 
-impl<'a> LCG<'a> {
-    pub fn new(displacement_intensity: DisplacementIntensity<'a>) -> Self {
+impl LCG {
+    pub fn new(
+        displacement_intensity: Rc<DisplacementIntensity>,
+        ship_dimensions: ShipDimensions,
+    ) -> Self {
         LCG {
             displacement_intensity,
+            ship_dimensions,
         }
     }
 

@@ -1,3 +1,4 @@
+use super::ship_trimming::ShipTrimming;
 use crate::{
     core::{linear_interpolation::LinearInterpolation, water_density::WaterDensity},
     strength::{
@@ -8,23 +9,22 @@ use crate::{
         },
     },
 };
-
-use super::ship_trimming::ShipTrimming;
+use std::rc::Rc;
 
 ///
 /// Интенсивность сил поддержания по длине судна, действующие на погруженную часть корпуса судна.
-pub(crate) struct BuoyancyIntensity<'a> {
-    ship_trimming: ShipTrimming<'a>,
-    bonjean_scale: &'a BonjeanScale,
+pub(crate) struct BuoyancyIntensity {
+    ship_trimming: ShipTrimming,
+    bonjean_scale: Rc<BonjeanScale>,
     water_density: WaterDensity,
 }
 
-impl<'a> BuoyancyIntensity<'a> {
+impl BuoyancyIntensity {
     ///
     /// Основной конструктор.
     pub fn new(
-        ship_trimming: ShipTrimming<'a>,
-        bonjean_scale: &'a BonjeanScale,
+        ship_trimming: ShipTrimming,
+        bonjean_scale: Rc<BonjeanScale>,
         water_density: WaterDensity,
     ) -> Self {
         BuoyancyIntensity {

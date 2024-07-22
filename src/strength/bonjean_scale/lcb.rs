@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use log::error;
 
 use crate::{
@@ -9,15 +11,15 @@ use super::bonjean_scale::BonjeanScale;
 
 ///
 /// Абсцисса центра велечины (центр тяжести погруженного объема судна) LCB.
-pub struct LCB<'a> {
-    bonjean_scale: &'a BonjeanScale,
+pub struct LCB {
+    bonjean_scale: Rc<BonjeanScale>,
     ship_dimensions: ShipDimensions,
 }
 
-impl<'a> LCB<'a> {
+impl LCB {
     ///
     /// Конструктор.
-    pub fn new(bonjean_scale: &'a BonjeanScale, ship_dimensions: ShipDimensions) -> Self {
+    pub fn new(bonjean_scale: Rc<BonjeanScale>, ship_dimensions: ShipDimensions) -> Self {
         LCB {
             bonjean_scale,
             ship_dimensions,

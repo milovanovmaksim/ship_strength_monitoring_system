@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use log::error;
 
 use crate::{
@@ -7,17 +9,17 @@ use crate::{
 
 ///
 /// Объемное водоизмещение судна.
-pub(crate) struct Displacement<'a> {
-    bonjean_scale: &'a BonjeanScale,
+pub(crate) struct Displacement {
+    bonjean_scale: Rc<BonjeanScale>,
     ship_dimensions: ShipDimensions,
     water_density: WaterDensity,
 }
 
-impl<'a> Displacement<'a> {
+impl Displacement {
     ///
     /// Основной конструктор.
     pub fn new(
-        bonjean_scale: &'a BonjeanScale,
+        bonjean_scale: Rc<BonjeanScale>,
         ship_dimensions: ShipDimensions,
         water_density: WaterDensity,
     ) -> Self {

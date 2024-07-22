@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use log::info;
 
 use super::lcg::LCG;
@@ -22,29 +24,29 @@ use crate::{
 ///    displacement_tonnage - весовое водоизмещение судна,
 ///    hydrostatic_curves - гидростатические кривые,
 ///    water_density - плотность воды.
-pub(crate) struct ShipTrimming<'a> {
-    lcb: LCB<'a>,
-    displacement: Displacement<'a>,
-    lcg: LCG<'a>,
-    displacement_tonnage: DisplacementTonnage<'a>,
+pub(crate) struct ShipTrimming {
+    lcb: Rc<LCB>,
+    displacement: Rc<Displacement>,
+    lcg: Rc<LCG>,
+    d_t: Rc<DisplacementTonnage>,
     hydrostatic_curves: HydrostaticCurves,
 }
 
-impl<'a> ShipTrimming<'a> {
+impl ShipTrimming {
     ///
     /// Основной конструктор.
     pub fn new(
-        lcb: LCB<'a>,
-        displacement: Displacement<'a>,
-        lcg: LCG<'a>,
-        displacement_tonnage: DisplacementTonnage<'a>,
+        lcb: Rc<LCB>,
+        displacement: Rc<Displacement>,
+        lcg: Rc<LCG>,
+        d_t: Rc<DisplacementTonnage>,
         hydrostatic_curves: HydrostaticCurves,
     ) -> Self {
         ShipTrimming {
             lcb,
             displacement,
             lcg,
-            displacement_tonnage,
+            d_t,
             hydrostatic_curves,
         }
     }
@@ -55,7 +57,7 @@ impl<'a> ShipTrimming<'a> {
     ///     displacement - водоизмещение судна при текущей схеме загрузки[м^3];
     ///     calc_disp - расчетное объемное водоизмещение судна [м^3].
     fn trim_achieved(&self, calc_disp: f64, lcb: f64, lbp: f64) -> Result<bool, String> {
-        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
+        let displacement_tonnage = self.d_t.displacement_tonnage();
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let lcg = self.lcg.lcg()?;
         Ok(self.error(calc_disp, displacement) <= 0.01
@@ -77,7 +79,7 @@ impl<'a> ShipTrimming<'a> {
         lbp: f64,
         calc_disp: f64,
     ) -> Result<(), String> {
-        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
+        let displacement_tonnage = self.d_t.displacement_tonnage();
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let lcg = self.lcg.lcg()?;
         let lcb = self.lcb.lcb(aft_draft, nose_draft)?;
@@ -177,7 +179,7 @@ impl<'a> ShipTrimming<'a> {
     /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn trim(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
-        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
+        let displacement_tonnage = self.d_t.displacement_tonnage();
         if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
             return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
         }
