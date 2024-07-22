@@ -1,3 +1,5 @@
+use std::{borrow::Borrow, rc::Rc};
+
 use log::info;
 
 use crate::{
@@ -13,20 +15,20 @@ use crate::strength::load::{shipload::Shipload, shiploads::Shiploads};
 ///
 /// Интенсивность дедвейта по длине судна.
 #[derive(Debug)]
-pub struct DeadweightIntensity<'a> {
-    shiploads: &'a Shiploads,
+pub struct DeadweightIntensity {
+    shiploads: Rc<Shiploads>,
 }
 
-impl<'a> DeadweightIntensity<'a> {
+impl DeadweightIntensity {
     ///
     /// Основной конструктор.
-    pub fn new(shiploads: &'a Shiploads) -> Self {
+    pub fn new(shiploads: Rc<Shiploads>) -> Self {
         DeadweightIntensity { shiploads }
     }
 
     ///
     /// Возвращает интенсивность дедвейта по длине судна т/м.
-    pub fn deadweight_intensity(&self, ship_dimensions: &ShipDimensions) -> &SpatiumFunctions {
+    pub fn deadweight_intensity(&self, ship_dimensions: &ShipDimensions) -> SpatiumFunctions {
         let number_spatiums = ship_dimensions.number_spatiums();
         let length_between_perpendiculars = ship_dimensions.lbp();
         let mut spatium_functions =
@@ -40,7 +42,7 @@ impl<'a> DeadweightIntensity<'a> {
                 spatium_functions.add(spatium_function);
             }
         }
-        &spatium_functions
+        spatium_functions
     }
 
     ///

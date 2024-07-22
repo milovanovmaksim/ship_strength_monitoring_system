@@ -1,16 +1,15 @@
+use std::rc::Rc;
+
 use crate::strength::{deadweight::deadweight::Deadweight, lightweight::lightweight::Lightweight};
 
-pub(crate) struct DisplacementTonnage<'a> {
+pub(crate) struct DisplacementTonnage {
     lw: Lightweight,
-    dw: &'a Deadweight<'a>,
+    dw: Rc<Deadweight>,
 }
 
-impl<'a> DisplacementTonnage<'a> {
-    pub fn new(lw: Lightweight, dw: &'a Deadweight<'a>) -> Self {
-        DisplacementTonnage {
-            lw: lw,
-            dw: dw,
-        }
+impl DisplacementTonnage {
+    pub fn new(lw: Lightweight, dw: Rc<Deadweight>) -> Self {
+        DisplacementTonnage { lw: lw, dw: dw }
     }
 
     pub fn displacement_tonnage(&self) -> f64 {

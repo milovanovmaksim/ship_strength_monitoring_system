@@ -13,16 +13,14 @@ use serde::Deserialize;
 /// Интенсивность массы корпуса судна по длине.
 #[derive(Debug, Deserialize)]
 pub struct LightweightIntensity {
-    lightweight_intensity: SpatiumFunctions,
+    lw_i: SpatiumFunctions,
 }
 
 impl LightweightIntensity {
     ///
     /// Основной контсруктор.
-    pub fn new(lightweight_intensity: SpatiumFunctions) -> Self {
-        LightweightIntensity {
-            lightweight_intensity,
-        }
+    pub fn new(lw_i: SpatiumFunctions) -> Self {
+        LightweightIntensity { lw_i }
     }
 
     ///
@@ -30,7 +28,7 @@ impl LightweightIntensity {
     /// Создает объект из данных о судне [Прочность корабля Курдюмов А.А.].
     pub fn from_ship_input_data(
         ship_dimensions: &ShipDimensions,
-        lightweight: &Lightweight,
+        lw: Lightweight,
     ) -> LightweightIntensity {
         let mut lightweight_intensity: Vec<SpatiumFunction> = vec![];
         let half_length_spatium = ship_dimensions.length_spatium() / 2.0;
@@ -39,7 +37,7 @@ impl LightweightIntensity {
             ship_dimensions.completeness_coefficient(),
         );
         let intensity_load = |ratio: f64| {
-            ((lightweight.lightweight() / ship_dimensions.number_spatiums() as f64) * ratio)
+            ((lw.lightweight() / ship_dimensions.number_spatiums() as f64) * ratio)
                 / ship_dimensions.length_spatium()
         };
         let mut ratio: f64;
@@ -97,7 +95,7 @@ impl LightweightIntensity {
     ///
     /// Интенсивность массы корпуса судна по длине [т/м].
     pub fn lightweight_intensity(&self) -> &SpatiumFunctions {
-        &self.lightweight_intensity
+        &self.lw_i
     }
 
     ///

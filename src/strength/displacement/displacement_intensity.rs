@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::strength::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     lightweight::lightweight_intensity::LightweightIntensity,
@@ -6,15 +8,15 @@ use crate::strength::{
 
 ///
 /// Интенсивность водоизмещения судна по его длине.
-pub struct DisplacementIntensity<'a> {
-    dw_i: &'a DeadweightIntensity<'a>,
-    lw_i: &'a LightweightIntensity,
+pub struct DisplacementIntensity {
+    dw_i: Rc<DeadweightIntensity>,
+    lw_i: Rc<LightweightIntensity>,
 }
 
-impl<'a> DisplacementIntensity<'a> {
+impl DisplacementIntensity {
     ///
     /// Основной конструктор.
-    pub fn new(dw_i: &'a DeadweightIntensity<'a>, lw_i: &'a LightweightIntensity) -> Self {
+    pub fn new(dw_i: Rc<DeadweightIntensity>, lw_i: Rc<LightweightIntensity>) -> Self {
         DisplacementIntensity { dw_i, lw_i }
     }
 
