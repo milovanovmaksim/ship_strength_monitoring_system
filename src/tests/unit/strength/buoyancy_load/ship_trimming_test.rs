@@ -16,7 +16,7 @@ mod tests {
             ship::ship_dimensions::ShipDimensions,
         },
     };
-    use std::{env, sync::Once};
+    use std::{env, rc::Rc, sync::Once};
 
     static INIT: Once = Once::new();
 
@@ -34,27 +34,37 @@ mod tests {
         call_once();
         // Удифферентовка судна в порожнем состоянии.
 
-        let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
+        let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file =
             "src/tests/unit/strength/buoyancy_load/test_data/empty_ship.json".to_string();
-        let frames = Frames::from_json_file(file_path).unwrap();
+        let frames = Frames::from_json_file(frames_file).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
-        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
+        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let lightweight = Lightweight::new(13550.0);
         let ship_trimming = ShipTrimming::new(
-            LCB::new(&bonjean_scale, ship_dimensions.clone()),
-            Displacement::new(
-                &bonjean_scale,
-                ship_dimensions.clone(),
+            Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
+            Rc::new(Displacement::new(
+                bonjean_scale,
+                ship_dimensions,
                 WaterDensity::new(1.025),
-            ),
-            LCG::new(DisplacementIntensity::new(
-                DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
-                LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
             )),
-            DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
+            Rc::new(LCG::new(
+                Rc::new(DisplacementIntensity::new(
+                    Rc::new(DeadweightIntensity::new(shiploads.clone(), ship_dimensions)),
+                    Rc::new(LightweightIntensity::from_ship_input_data(
+                        ship_dimensions,
+                        lightweight,
+                    )),
+                    ship_dimensions,
+                )),
+                ship_dimensions,
+            )),
+            Rc::new(DisplacementTonnage::new(
+                lightweight,
+                Rc::new(Deadweight::new(shiploads)),
+            )),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
         );
         let (aft_draft, nose_draft) = ship_trimming.trim(&ship_dimensions).unwrap();
@@ -71,23 +81,33 @@ mod tests {
             "src/tests/unit/strength/buoyancy_load/test_data/full_ship.json".to_string();
         let frames = Frames::from_json_file(frames_file).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
-        let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
-        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
-        let hsc_file = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
+        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let lightweight = Lightweight::new(13550.0);
         let ship_trimming = ShipTrimming::new(
-            LCB::new(&bonjean_scale, ship_dimensions.clone()),
-            Displacement::new(
-                &bonjean_scale,
-                ship_dimensions.clone(),
+            Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
+            Rc::new(Displacement::new(
+                bonjean_scale,
+                ship_dimensions,
                 WaterDensity::new(1.025),
-            ),
-            LCG::new(DisplacementIntensity::new(
-                DeadweightIntensity::new(&shiploads, ship_dimensions.clone()),
-                LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight),
             )),
-            DisplacementTonnage::new(lightweight, Deadweight::new(&shiploads)),
-            HydrostaticCurves::from_json_file(hsc_file).unwrap(),
+            Rc::new(LCG::new(
+                Rc::new(DisplacementIntensity::new(
+                    Rc::new(DeadweightIntensity::new(shiploads.clone(), ship_dimensions)),
+                    Rc::new(LightweightIntensity::from_ship_input_data(
+                        ship_dimensions,
+                        lightweight,
+                    )),
+                    ship_dimensions,
+                )),
+                ship_dimensions,
+            )),
+            Rc::new(DisplacementTonnage::new(
+                lightweight,
+                Rc::new(Deadweight::new(shiploads)),
+            )),
+            HydrostaticCurves::from_json_file(file_path).unwrap(),
         );
         let (aft_draft, nose_draft) = ship_trimming.trim(&ship_dimensions).unwrap();
         assert_eq!(
