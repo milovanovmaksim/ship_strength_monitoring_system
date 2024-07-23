@@ -27,7 +27,7 @@ impl LightweightIntensity {
     /// Вспомогательный конструктор.
     /// Создает объект из данных о судне [Прочность корабля Курдюмов А.А.].
     pub fn from_ship_input_data(
-        ship_dimensions: &ShipDimensions,
+        ship_dimensions: ShipDimensions,
         lw: Lightweight,
     ) -> LightweightIntensity {
         let mut lightweight_intensity: Vec<SpatiumFunction> = vec![];

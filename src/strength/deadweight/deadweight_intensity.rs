@@ -68,15 +68,15 @@ impl DeadweightIntensity {
                     let spatium_function = SpatiumFunction::from_id(
                         index,
                         &self.ship_dimensions,
-                        f_x_max_intensity,
-                        f_x_max_intensity,
+                        f_x_max_intensity.my_round(2),
+                        f_x_max_intensity.my_round(2),
                     );
                     spatium_functions.push(spatium_function);
                     let spatium_function = SpatiumFunction::from_id(
                         next_index,
                         &self.ship_dimensions,
-                        f_x_min_intensity,
-                        f_x_min_intensity,
+                        f_x_min_intensity.my_round(2),
+                        f_x_min_intensity.my_round(2),
                     );
                     spatium_functions.push(spatium_function);
                     spatium_functions
@@ -113,8 +113,12 @@ impl DeadweightIntensity {
             } else {
                 info!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                 let f_x = shipload.value() / self.ship_dimensions.length_spatium();
-                let spatium_function =
-                    SpatiumFunction::from_id(spatium_start_index, &self.ship_dimensions, f_x, f_x);
+                let spatium_function = SpatiumFunction::from_id(
+                    spatium_start_index,
+                    &self.ship_dimensions,
+                    f_x.my_round(2),
+                    f_x.my_round(2),
+                );
                 let spatium_functions = vec![spatium_function];
                 info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
@@ -140,15 +144,23 @@ impl DeadweightIntensity {
                 * shipload.value())
                 / self.ship_dimensions.length_spatium();
             let mut spatium_functions: Vec<SpatiumFunction> = vec![];
-            let spatium_function =
-                SpatiumFunction::from_id(spatium_id, &self.ship_dimensions, f_x, f_x);
+            let spatium_function = SpatiumFunction::from_id(
+                spatium_id,
+                &self.ship_dimensions,
+                f_x.my_round(2),
+                f_x.my_round(2),
+            );
             spatium_functions.push(spatium_function);
 
             let f_x = -((0.5 + (distance / self.ship_dimensions.length_spatium()))
                 * shipload.value())
                 / self.ship_dimensions.length_spatium();
-            let spatium_function =
-                SpatiumFunction::from_id(next_spatium_id, &self.ship_dimensions, f_x, f_x);
+            let spatium_function = SpatiumFunction::from_id(
+                next_spatium_id,
+                &self.ship_dimensions,
+                f_x.my_round(2),
+                f_x.my_round(2),
+            );
             spatium_functions.push(spatium_function);
             info!("Saptiums are under the load {:#?}", spatium_functions);
             spatium_functions

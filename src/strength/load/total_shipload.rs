@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::strength::{
     buoyancy_intensity::buoyancy_intensity::BuoyancyIntensity,
     displacement::displacement_intensity::DisplacementIntensity,
@@ -6,16 +8,16 @@ use crate::strength::{
 
 ///
 /// Интенсивность суммарной нагрузки по длине судна, действующей на корпус судна.
-pub(crate) struct TotalShipload<'a> {
-    disp_i: DisplacementIntensity<'a>,
-    b_i: BuoyancyIntensity<'a>,
+pub(crate) struct TotalShipload {
+    disp_i: Rc<DisplacementIntensity>,
+    b_i: Rc<BuoyancyIntensity>,
 }
 
-impl<'a> TotalShipload<'a> {
+impl TotalShipload {
     ///
     /// Основной конструктор.
-    pub fn new(d_i: DisplacementIntensity<'a>, b_i: BuoyancyIntensity<'a>) -> Self {
-        TotalShipload { disp_i: d_i, b_i }
+    pub fn new(disp_i: Rc<DisplacementIntensity>, b_i: Rc<BuoyancyIntensity>) -> Self {
+        TotalShipload { disp_i, b_i }
     }
 
     ///

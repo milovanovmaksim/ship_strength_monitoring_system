@@ -1,21 +1,23 @@
+use std::rc::Rc;
+
 use super::{internal_force::InternalForce, share_force::ShareForce};
 use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions};
 
 ///
 /// Изгибающий момент.
-pub(crate) struct BendingMoment<'a> {
-    share_force: ShareForce<'a>,
+pub(crate) struct BendingMoment {
+    share_force: Rc<ShareForce>,
 }
 
-impl<'a> BendingMoment<'a> {
+impl BendingMoment {
     ///
     /// Основной конструктор.
-    pub fn new(share_force: ShareForce<'a>) -> Self {
+    pub fn new(share_force: Rc<ShareForce>) -> Self {
         BendingMoment { share_force }
     }
 }
 
-impl<'a> InternalForce for BendingMoment<'a> {
+impl InternalForce for BendingMoment {
     ///
     /// Возвращает подинтегральную функцию изгибающего момента,
     /// т.е распределение перерезывающей силы по длине корпуса судна.
