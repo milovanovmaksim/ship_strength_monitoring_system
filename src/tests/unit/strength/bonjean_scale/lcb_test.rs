@@ -21,14 +21,14 @@ mod tests {
     }
 
     #[test]
-    fn lcb_test() {
+    fn lcb_ok_test() {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(125.2, 20, 0.5);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
         let lcb = LCB::new(bonjean_scale, ship_dimensions);
-        assert_eq!(-2.04, lcb.lcb(3.2, 3.24).unwrap().my_round(2));
+        assert_eq!(-4.23, lcb.lcb(2.34, 4.07).unwrap().my_round(2));
     }
 
     #[test]
@@ -36,11 +36,14 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
         let lcb = LCB::new(bonjean_scale, ship_dimensions);
         let xc = lcb.lcb(2.61, 20.61);
         assert!(xc.is_err());
-        assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), xc)
+        assert_eq!(
+            Err("Осадка превысила осадку судна в грузу.".to_string()),
+            xc
+        )
     }
 }

@@ -35,10 +35,9 @@ mod tests {
     #[test]
     fn empty_ship_buoyancy_intensity_ok_test() {
         // Силы поддержания судна в порожнем состоянии.
-
+        call_once();
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
-        let shiploads_file =
-            "src/tests/unit/strength/buoyancy_load/test_data/empty_ship.json".to_string();
+        let shiploads_file = "src/tests/unit/strength/test_data/empty_ship.json".to_string();
         let frames = Frames::from_json_file(frames_file).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
@@ -47,7 +46,7 @@ mod tests {
         let lightweight = Lightweight::new(13550.0);
         let d_t = Rc::new(DisplacementTonnage::new(
             lightweight,
-            Rc::new(Deadweight::new(shiploads)),
+            Rc::new(Deadweight::new(shiploads.clone())),
         ));
         let ship_trimming = ShipTrimming::new(
             Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
@@ -58,7 +57,7 @@ mod tests {
             )),
             Rc::new(LCG::new(
                 Rc::new(DisplacementIntensity::new(
-                    Rc::new(DeadweightIntensity::new(shiploads.clone(), ship_dimensions)),
+                    Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
                     Rc::new(LightweightIntensity::from_ship_input_data(
                         ship_dimensions,
                         lightweight,
@@ -75,10 +74,7 @@ mod tests {
         let buoyancy_intensity_v = buoyancy_intensity
             .buoyancy_intensity(&ship_dimensions)
             .unwrap();
-        let mut total_buoyancy = 0.0;
-        for value in buoyancy_intensity_v.as_ref() {
-            total_buoyancy += value.integral();
-        }
+        let total_buoyancy = buoyancy_intensity_v.integral();
         let d_t_v = d_t.displacement_tonnage();
         let error = (((total_buoyancy.abs() - d_t_v).abs() / d_t_v.min(total_buoyancy.abs()))
             * 100.0)
@@ -92,10 +88,9 @@ mod tests {
     #[test]
     fn full_ship_buoyancy_intensity_ok_test() {
         // Силы поддержания судна в полном грузу.
-
+        call_once();
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
-        let shiploads_file =
-            "src/tests/unit/strength/buoyancy_load/test_data/full_ship.json".to_string();
+        let shiploads_file = "src/tests/unit/strength/test_data/full_ship.json".to_string();
         let frames = Frames::from_json_file(frames_file).unwrap();
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
@@ -104,7 +99,7 @@ mod tests {
         let lightweight = Lightweight::new(13550.0);
         let d_t = Rc::new(DisplacementTonnage::new(
             lightweight,
-            Rc::new(Deadweight::new(shiploads)),
+            Rc::new(Deadweight::new(shiploads.clone())),
         ));
         let ship_trimming = ShipTrimming::new(
             Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
@@ -115,7 +110,7 @@ mod tests {
             )),
             Rc::new(LCG::new(
                 Rc::new(DisplacementIntensity::new(
-                    Rc::new(DeadweightIntensity::new(shiploads.clone(), ship_dimensions)),
+                    Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
                     Rc::new(LightweightIntensity::from_ship_input_data(
                         ship_dimensions,
                         lightweight,
@@ -132,10 +127,7 @@ mod tests {
         let buoyancy_intensity_v = buoyancy_intensity
             .buoyancy_intensity(&ship_dimensions)
             .unwrap();
-        let mut total_buoyancy = 0.0;
-        for value in buoyancy_intensity_v.as_ref() {
-            total_buoyancy += value.integral();
-        }
+        let total_buoyancy = buoyancy_intensity_v.integral();
         let d_t_v = d_t.displacement_tonnage();
         let error = (((total_buoyancy.abs() - d_t_v).abs() / d_t_v.min(total_buoyancy.abs()))
             * 100.0)

@@ -26,12 +26,12 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/frames.json".to_string();
         let frames = Frames::from_json_file(file_path).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.74);
+        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
         let displacement =
             Displacement::new(bonjean_scale, ship_dimensions, WaterDensity::new(1.025));
         assert_eq!(
-            14329.62,
+            80300.85,
             displacement
                 .displacement_by_drafts(13.3, 13.3)
                 .unwrap()
@@ -50,6 +50,9 @@ mod tests {
             Displacement::new(bonjean_scale, ship_dimensions, WaterDensity::new(1.0));
         let ship_underwater_volume = displacement.displacement_by_drafts(2.61, 20.61);
         assert!(ship_underwater_volume.is_err());
-        assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), ship_underwater_volume)
+        assert_eq!(
+            Err("Осадка превысила осадку судна в грузу.".to_string()),
+            ship_underwater_volume
+        )
     }
 }

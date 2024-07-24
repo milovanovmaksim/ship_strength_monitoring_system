@@ -3,7 +3,10 @@ use super::{
     displacement::displacement_intensity::DisplacementIntensity,
     lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
     load::shiploads::Shiploads,
-    ship::ship_dimensions::ShipDimensions,
+    ship::{
+        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
+        spatium_functions::SpatiumFunctions,
+    },
 };
 use crate::{
     core::water_density::WaterDensity,
@@ -152,5 +155,9 @@ impl Strength {
             water_density,
             ship_dimensions,
         ))
+    }
+
+    pub fn lightweight_intensity(&self) -> &SpatiumFunctions {
+        self.lw_i.lightweight_intensity()
     }
 }

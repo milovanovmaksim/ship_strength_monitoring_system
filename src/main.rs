@@ -12,7 +12,8 @@ fn main() {
     let input_path = "./input_data/input_data.json".to_string();
     let shiploads_file = "input_data/empty_ship.json".to_string();
     let frames_file = "./input_data/frames.json".to_string();
-    let hydrostatic_curves = "./input_data/hydrostatic_curves".to_string();
+    let hydrostatic_curves = "./input_data/hydrostatic_curves.json".to_string();
     let strength =
-        Strength::new_project(input_path, shiploads_file, frames_file, hydrostatic_curves);
+        Strength::new_project(input_path, shiploads_file, frames_file, hydrostatic_curves).unwrap();
+    strength.lightweight_intensity();
 }

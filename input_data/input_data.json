@@ -1,7 +1,8 @@
 {
     "lightweight": 13550,
-    "length_between_perpendiculars": 235,
+    "lbp": 235,
     "number_spatiums": 20,
     "completeness_coefficient": 0.74,
     "ship_name": "Сухогруз ТКЗ",
+    "water_density": 1.025
 }

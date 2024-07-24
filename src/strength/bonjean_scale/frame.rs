@@ -108,9 +108,7 @@ impl Frame {
         if draft < self.min_draft() {
             return Ok(0.0);
         } else if draft > self.max_draft() {
-            return Err(format!(
-                "Осадка превысила максимальную осадку судна в грузу."
-            ));
+            return Err(format!("Осадка превысила осадку судна в грузу."));
         }
         match self.drafts.custom_binary_search(draft) {
             (Some(left_point), Some(right_point)) => {

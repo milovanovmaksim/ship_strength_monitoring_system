@@ -51,13 +51,14 @@ mod tests {
     }
 
     #[test]
-    fn get_data_by_draft_error_test() {
+    fn get_data_by_draft_none_test() {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
-        let value = hidrostatic_curves.get_data_by_draft(20.1, HydrostaticTypeData::LCB);
-        assert!(value.is_err());
-        assert_eq!(Err("Осадка превысила осадку судна в полном грузу. Осадка судна в полном грузу составляет: 13.3, передано значение: 20.1".to_string()), value);
+        let value = hidrostatic_curves
+            .get_data_by_draft(20.1, HydrostaticTypeData::LCB)
+            .unwrap();
+        assert!(value.is_none());
     }
 
     #[test]
@@ -69,7 +70,7 @@ mod tests {
         assert_eq!(Some(1.0), value);
 
         let value = hidrostatic_curves.mean_draft(1.0).unwrap();
-        assert_eq!(Some(0.0), value);
+        assert_eq!(None, value);
     }
 
     #[test]
@@ -77,8 +78,7 @@ mod tests {
         call_once();
         let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
         let hidrostatic_curves = HydrostaticCurves::from_json_file(file_path).unwrap();
-        let value = hidrostatic_curves.mean_draft(85365.01);
-        assert!(value.is_err());
-        assert_eq!(Err("Весовое водоизмещение превысило водоизмещение судна в полном грузу. Весовое водоизмещение судна в полном грузу составляет: 85365, передано значение: 85365.01".to_string()), value);
+        let value = hidrostatic_curves.mean_draft(89365.01).unwrap();
+        assert!(value.is_none());
     }
 }
