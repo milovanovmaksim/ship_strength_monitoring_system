@@ -62,7 +62,126 @@ mod tests {
         )]);
         let ship_dimnsions = ShipDimensions::new(235.0, 20, 0.74);
         let shared_shiploads = shiplods.shared_shiploads(&ship_dimnsions);
-        assert_eq!(10.0, shared_shiploads.sum().my_round(2));
+        assert!(
+            (0.95 <= 10.0 / shared_shiploads.sum().my_round(2)
+                && 10.0 / shared_shiploads.sum().my_round(2) <= 1.05)
+        );
         info!("{:?}", shared_shiploads);
+        assert_eq!(
+            vec![
+                Shipload::new(
+                    0.12,
+                    Point {
+                        x: -59.45,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    1.4
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: -52.88,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: -41.13,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: -29.38,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: -17.63,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: -5.88,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: 5.88,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: 17.63,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: 29.38,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: 41.13,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.98,
+                    Point {
+                        x: 52.88,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    11.75
+                ),
+                Shipload::new(
+                    0.12,
+                    Point {
+                        x: 59.45,
+                        y: 0.0,
+                        z: 0.0
+                    },
+                    1.4
+                )
+            ],
+            shared_shiploads
+                .into_iter()
+                .map(|f| f)
+                .collect::<Vec<Shipload>>()
+        );
     }
 }

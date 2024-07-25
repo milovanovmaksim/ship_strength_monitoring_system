@@ -32,18 +32,8 @@ mod tests {
         for spatium in lightweight_intensity.as_ref() {
             computed_weight += spatium.integral();
         }
-
-        let err = {
-            if computed_weight > test_weight {
-                ((computed_weight - test_weight) / test_weight) * 100.0
-            } else if test_weight > computed_weight {
-                ((test_weight - computed_weight) / computed_weight) * 100.0
-            } else {
-                0.0
-            }
-        };
-        debug!("\nОтносительная ошибка численного интегрирования интенсивности веса корпуса корабля = {} %", err);
-        // Lightweight расчитанное, не должно отличаться от заданного более чем на 0.5%.
-        assert!(err < 0.5, "Error more than 0.5% = {}%.", err);
+        assert!(
+            (computed_weight - test_weight).abs() / computed_weight.min(test_weight) * 100.0 < 0.5,
+        );
     }
 }

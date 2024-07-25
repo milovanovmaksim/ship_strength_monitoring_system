@@ -91,6 +91,7 @@ impl Strength {
     ///     input_path - путь к json файлу, содержащему основные данные о судне,
     ///     shiploads_file - путь к json файлу, содержащему нагрузки, действующие на судно,
     ///     frames_file - путь к json файлу, содержащему масштаб Бонжана,
+    ///     hydrostatic_curves - пусть к файлу, содержащему гидростатические кривые судна.
     pub fn new_project(
         input_path: String,
         shiploads_file: String,

@@ -8,7 +8,7 @@ mod tests {
 
     #[test]
     fn from_id_test() {
-        let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
+        let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
         let test_spatium_function = SpatiumFunction::new(0, -62.5, -56.25, 1.5, 1.5);
         let spatium_function = SpatiumFunction::from_id(0, &ship_dimensions, 1.5, 1.5);
         info!("{:#?}", spatium_function);
