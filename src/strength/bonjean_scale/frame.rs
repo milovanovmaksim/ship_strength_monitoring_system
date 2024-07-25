@@ -12,7 +12,7 @@ use serde::Deserialize;
 ///     masses - вектор, содержащий массы погруженной части шпангоута от осадки,
 ///     abscissa - абсцисса шпангоута относительно центра корабля.
 /// Длина всех векторов должна быть одинакова и не равна нулю, в проивном случая будет возвращена ошибка.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub struct Frame {
     id: u64,
     drafts: Vec<f64>,

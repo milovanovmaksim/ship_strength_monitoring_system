@@ -5,6 +5,7 @@ use super::frame::Frame;
 
 ///
 /// Шпангоуты судна.
+#[derive(Debug, PartialEq)]
 pub struct Frames {
     frames: Vec<Frame>,
 }
@@ -72,7 +73,7 @@ impl Frames {
     /// искомый шпангоут ```(Some(left_frame), Some(right_frame))```. Если абсцисса вышла за пределы корабля,
     /// возвращает (None, None).
     pub fn frame_by_abscissa(&self, abscissa: f64) -> (Option<&Frame>, Option<&Frame>) {
-        if abscissa > self.last().abscissa() && abscissa < self.first().abscissa() {
+        if abscissa > self.last().abscissa() || abscissa < self.first().abscissa() {
             return (None, None);
         }
         let mut left_point = 0;

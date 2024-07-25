@@ -36,7 +36,7 @@ pub(crate) struct Strength {
     disp: Rc<Displacement>,
     disp_i: Rc<DisplacementIntensity>,
     d_t: Rc<DisplacementTonnage>,
-    lcb: Rc<LCB>,
+    lcb_: Rc<LCB>,
     lcg: Rc<LCG>,
     b_i: Rc<BuoyancyIntensity>,
     total_shipload: Rc<TotalShipload>,
@@ -57,7 +57,7 @@ impl Strength {
         disp: Rc<Displacement>,
         disp_i: Rc<DisplacementIntensity>,
         d_t: Rc<DisplacementTonnage>,
-        lcb: Rc<LCB>,
+        lcb_: Rc<LCB>,
         lcg: Rc<LCG>,
         b_i: Rc<BuoyancyIntensity>,
         total_shipload: Rc<TotalShipload>,
@@ -74,7 +74,7 @@ impl Strength {
             disp,
             disp_i,
             d_t,
-            lcb,
+            lcb_,
             lcg,
             b_i,
             total_shipload,
@@ -160,5 +160,33 @@ impl Strength {
 
     pub fn lightweight_intensity(&self) -> &SpatiumFunctions {
         self.lw_i.lightweight_intensity()
+    }
+
+    pub fn lightweight(&self) -> f64 {
+        self.lw.lightweight()
+    }
+
+    pub fn deadweight(&self) -> f64 {
+        self.dw.deadweight()
+    }
+
+    pub fn deadweight_intensity(&self) -> SpatiumFunctions {
+        self.dw_i.deadweight_intensity()
+    }
+
+    pub fn displacement(&self) -> Result<f64, String> {
+        self.disp.displacement_by_drafts(2.0, 3.0)
+    }
+
+    pub fn displacement_intensity(&self) -> Result<SpatiumFunctions, String> {
+        self.disp_i.displacement_intensity()
+    }
+
+    pub fn displacemnt_tonnage(&self) -> f64 {
+        self.d_t.displacement_tonnage()
+    }
+
+    pub fn lcb(&self) -> Result<f64, String> {
+        self.lcb_.lcb(2.0, 2.0)
     }
 }
