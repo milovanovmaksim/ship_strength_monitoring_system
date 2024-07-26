@@ -83,6 +83,7 @@ impl SpatiumFunction {
         self.f_x2
     }
 
+    ///
     /// Сложение шпаций с одинаковыми id.
     /// Возвращает новый объект.
     pub fn add(&self, term: SpatiumFunction) -> Result<SpatiumFunction, String> {

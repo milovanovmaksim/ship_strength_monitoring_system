@@ -3,6 +3,9 @@ use serde::Deserialize;
 
 use crate::core::json_file::JsonFile;
 
+///
+/// Масса судна, когда оно было построено на верфи.
+///Не включает массу любого расходного материала, такого как топливо, вода, масло или другие расходные материалы.
 #[derive(Deserialize, Debug, Clone, Copy)]
 pub struct Lightweight {
     lightweight: f64,
