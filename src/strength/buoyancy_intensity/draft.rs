@@ -124,6 +124,9 @@ impl Draft {
         b / a
     }
 
+    ///
+    /// Удифферентовка судна методом последовательных приближений.
+    /// Возвращает осадки кормы и носа судна (aft_draft, nose_draft).
     fn trim(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
         let mut max_draft = self.hydrostatic_curves.max_draft();
         let mut min_draft = self.hydrostatic_curves.min_draft();
@@ -172,7 +175,6 @@ impl Draft {
     }
 
     ///
-    /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
     pub fn draft(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.d_t.displacement_tonnage();
