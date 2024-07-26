@@ -60,7 +60,7 @@ impl Draft {
         let displacement_tonnage = self.d_t.displacement_tonnage();
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let lcg = self.lcg.lcg()?;
-        Ok(self.error(calc_disp, displacement) <= 0.01
+        Ok((calc_disp - displacement).abs() <= 0.004 * displacement
             && (lcg.abs() - lcb.abs()).abs() <= (0.001 * lbp))
     }
     ///
@@ -98,16 +98,12 @@ impl Draft {
         }
         info!("Заданное водоизмещение: {displacement} м^3.");
         info!("Расчетное водоизмещение: {calc_disp} м^3.");
-        if self.error(displacement, calc_disp) <= 0.01 {
+        if (calc_disp - displacement).abs() <= 0.004 * displacement {
             info!(
-                "Процентная разница между расчетным и заданным водоизмещением судна = {} % - Условие удифферентовки судна для водоизмещения выполняется.",
-                self.error(displacement, calc_disp)
-            );
+                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
         } else {
             info!(
-                "Процентная разница между расчетным и заданным водоизмещением судна = {} % - Условие удифферентовки судна для водоизмещения не выполняется.",
-                self.error(displacement, calc_disp)
-            );
+                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
         }
         Ok(())
     }
