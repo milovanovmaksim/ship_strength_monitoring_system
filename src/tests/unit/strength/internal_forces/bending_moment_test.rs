@@ -5,9 +5,7 @@ mod tests {
         core::water_density::WaterDensity,
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
-            buoyancy_intensity::{
-                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, draft::Draft,
-            },
+            buoyancy_intensity::{buoyancy_intensity::BuoyancyIntensity, draft::Draft, lcg::LCG},
             deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
             displacement::{
                 displacement::Displacement, displacement_intensity::DisplacementIntensity,
@@ -65,7 +63,7 @@ mod tests {
             BendingMoment::new(Rc::new(ShareForce::new(Rc::new(TotalShipload::new(
                 d_i.clone(),
                 Rc::new(BuoyancyIntensity::new(
-                    Draft::new(
+                    Rc::new(Draft::new(
                         Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
                         Rc::new(Displacement::new(
                             bonjean_scale.clone(),
@@ -75,7 +73,7 @@ mod tests {
                         Rc::new(LCG::new(d_i, ship_dimensions)),
                         d_t,
                         HydrostaticCurves::from_json_file(file_path).unwrap(),
-                    ),
+                    )),
                     bonjean_scale,
                     WaterDensity::new(1.025),
                 )),
@@ -117,7 +115,7 @@ mod tests {
             BendingMoment::new(Rc::new(ShareForce::new(Rc::new(TotalShipload::new(
                 d_i.clone(),
                 Rc::new(BuoyancyIntensity::new(
-                    Draft::new(
+                    Rc::new(Draft::new(
                         Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
                         Rc::new(Displacement::new(
                             bonjean_scale.clone(),
@@ -127,7 +125,7 @@ mod tests {
                         Rc::new(LCG::new(d_i, ship_dimensions)),
                         d_t,
                         HydrostaticCurves::from_json_file(file_path).unwrap(),
-                    ),
+                    )),
                     bonjean_scale,
                     WaterDensity::new(1.025),
                 )),

@@ -4,9 +4,7 @@ mod tests {
         core::{round::Round, water_density::WaterDensity},
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
-            buoyancy_intensity::{
-                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, draft::Draft,
-            },
+            buoyancy_intensity::{buoyancy_intensity::BuoyancyIntensity, draft::Draft, lcg::LCG},
             deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
             displacement::{
                 displacement::Displacement, displacement_intensity::DisplacementIntensity,
@@ -48,7 +46,7 @@ mod tests {
             lightweight,
             Rc::new(Deadweight::new(shiploads.clone())),
         ));
-        let ship_trimming = Draft::new(
+        let draft = Rc::new(Draft::new(
             Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
             Rc::new(Displacement::new(
                 bonjean_scale.clone(),
@@ -68,9 +66,9 @@ mod tests {
             )),
             d_t.clone(),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
-        );
+        ));
         let buoyancy_intensity =
-            BuoyancyIntensity::new(ship_trimming, bonjean_scale, WaterDensity::new(1.025));
+            BuoyancyIntensity::new(draft, bonjean_scale, WaterDensity::new(1.025));
         let buoyancy_intensity_v = buoyancy_intensity
             .buoyancy_intensity(&ship_dimensions)
             .unwrap();
@@ -101,7 +99,7 @@ mod tests {
             lightweight,
             Rc::new(Deadweight::new(shiploads.clone())),
         ));
-        let ship_trimming = Draft::new(
+        let draft = Rc::new(Draft::new(
             Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
             Rc::new(Displacement::new(
                 bonjean_scale.clone(),
@@ -121,9 +119,9 @@ mod tests {
             )),
             d_t.clone(),
             HydrostaticCurves::from_json_file(file_path).unwrap(),
-        );
+        ));
         let buoyancy_intensity =
-            BuoyancyIntensity::new(ship_trimming, bonjean_scale, WaterDensity::new(1.025));
+            BuoyancyIntensity::new(draft, bonjean_scale, WaterDensity::new(1.025));
         let buoyancy_intensity_v = buoyancy_intensity
             .buoyancy_intensity(&ship_dimensions)
             .unwrap();
