@@ -16,7 +16,7 @@ use crate::{
 };
 
 ///
-/// Удифферентовка судна на тихой воде.
+/// Осадка судна.
 /// Parameters:
 ///    lcb - абсцисса центра велечины,
 ///    displacement - объемное водоизмещение,
@@ -24,7 +24,7 @@ use crate::{
 ///    displacement_tonnage - весовое водоизмещение судна,
 ///    hydrostatic_curves - гидростатические кривые,
 ///    water_density - плотность воды.
-pub(crate) struct ShipTrimming {
+pub(crate) struct Draft {
     lcb: Rc<LCB>,
     displacement: Rc<Displacement>,
     lcg: Rc<LCG>,
@@ -32,7 +32,7 @@ pub(crate) struct ShipTrimming {
     hydrostatic_curves: HydrostaticCurves,
 }
 
-impl ShipTrimming {
+impl Draft {
     ///
     /// Основной конструктор.
     pub fn new(
@@ -42,7 +42,7 @@ impl ShipTrimming {
         d_t: Rc<DisplacementTonnage>,
         hydrostatic_curves: HydrostaticCurves,
     ) -> Self {
-        ShipTrimming {
+        Draft {
             lcb,
             displacement,
             lcg,
@@ -128,7 +128,7 @@ impl ShipTrimming {
         b / a
     }
 
-    fn trimming(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
+    fn trim(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
         let mut max_draft = self.hydrostatic_curves.max_draft();
         let mut min_draft = self.hydrostatic_curves.min_draft();
         let mut nose_draft = mean_draft;
@@ -178,7 +178,7 @@ impl ShipTrimming {
     ///
     /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
-    pub fn trim(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
+    pub fn draft(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.d_t.displacement_tonnage();
         if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
             return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
@@ -196,7 +196,7 @@ impl ShipTrimming {
         let mut min_draft_d = self.hydrostatic_curves.min_draft();
         let lbp = ship_dimensions.lbp();
         for i in 0..50 {
-            let (aft_draft, nose_draft) = self.trimming(lbp, mean_draft, lcf)?;
+            let (aft_draft, nose_draft) = self.trim(lbp, mean_draft, lcf)?;
             let calc_disp = self
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;

@@ -6,7 +6,7 @@ mod tests {
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_intensity::{
-                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, ship_trimming::ShipTrimming,
+                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, draft::Draft,
             },
             deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
             displacement::{
@@ -61,7 +61,7 @@ mod tests {
         let share_force = ShareForce::new(Rc::new(TotalShipload::new(
             d_i.clone(),
             Rc::new(BuoyancyIntensity::new(
-                ShipTrimming::new(
+                Draft::new(
                     Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
                     Rc::new(Displacement::new(
                         bonjean_scale.clone(),
@@ -111,7 +111,7 @@ mod tests {
         let share_force = ShareForce::new(Rc::new(TotalShipload::new(
             d_i.clone(),
             Rc::new(BuoyancyIntensity::new(
-                ShipTrimming::new(
+                Draft::new(
                     Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
                     Rc::new(Displacement::new(
                         bonjean_scale.clone(),

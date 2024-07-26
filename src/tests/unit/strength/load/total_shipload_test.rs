@@ -7,7 +7,7 @@ mod tests {
         strength::{
             bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
             buoyancy_intensity::{
-                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, ship_trimming::ShipTrimming,
+                buoyancy_intensity::BuoyancyIntensity, lcg::LCG, draft::Draft,
             },
             deadweight::{deadweight::Deadweight, deadweight_intensity::DeadweightIntensity},
             displacement::{
@@ -58,7 +58,7 @@ mod tests {
             )),
             ship_dimensions,
         ));
-        let ship_trimming = ShipTrimming::new(
+        let ship_trimming = Draft::new(
             Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
             Rc::new(Displacement::new(
                 bonjean_scale.clone(),
@@ -114,7 +114,7 @@ mod tests {
             )),
             ship_dimensions,
         ));
-        let ship_trimming = ShipTrimming::new(
+        let ship_trimming = Draft::new(
             Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
             Rc::new(Displacement::new(
                 bonjean_scale.clone(),

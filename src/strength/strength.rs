@@ -3,21 +3,17 @@ use super::{
     displacement::displacement_intensity::DisplacementIntensity,
     lightweight::{lightweight::Lightweight, lightweight_intensity::LightweightIntensity},
     load::shiploads::Shiploads,
-    ship::{
-        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
-        spatium_functions::SpatiumFunctions,
-    },
+    ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions},
 };
 use crate::{
     core::water_density::WaterDensity,
     strength::{
         bonjean_scale::{bonjean_scale::BonjeanScale, frames::Frames, lcb::LCB},
-        buoyancy_intensity::{
-            buoyancy_intensity::BuoyancyIntensity, lcg::LCG, ship_trimming::ShipTrimming,
-        },
+        buoyancy_intensity::{buoyancy_intensity::BuoyancyIntensity, draft::Draft, lcg::LCG},
         deadweight::deadweight::Deadweight,
         displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
         hydrostatic_curves::hydrostatic_curves::HydrostaticCurves,
+        internal_forces::internal_force::InternalForce,
         internal_forces::{bending_moment::BendingMoment, share_force::ShareForce},
         load::total_shipload::TotalShipload,
     },
@@ -37,13 +33,14 @@ pub(crate) struct Strength {
     disp_i: Rc<DisplacementIntensity>,
     d_t: Rc<DisplacementTonnage>,
     lcb_: Rc<LCB>,
-    lcg: Rc<LCG>,
+    lcg_: Rc<LCG>,
     b_i: Rc<BuoyancyIntensity>,
-    total_shipload: Rc<TotalShipload>,
-    share_force: Rc<ShareForce>,
-    bending_moment: Rc<BendingMoment>,
+    total_shipload_: Rc<TotalShipload>,
+    share_force_: Rc<ShareForce>,
+    bending_moment_: Rc<BendingMoment>,
     water_density: WaterDensity,
     ship_dimensions: ShipDimensions,
+    draft_: Rc<Draft>,
 }
 
 impl Strength {
@@ -58,13 +55,14 @@ impl Strength {
         disp_i: Rc<DisplacementIntensity>,
         d_t: Rc<DisplacementTonnage>,
         lcb_: Rc<LCB>,
-        lcg: Rc<LCG>,
+        lcg_: Rc<LCG>,
         b_i: Rc<BuoyancyIntensity>,
-        total_shipload: Rc<TotalShipload>,
-        share_force: Rc<ShareForce>,
-        bending_moment: Rc<BendingMoment>,
+        total_shipload_: Rc<TotalShipload>,
+        share_force_: Rc<ShareForce>,
+        bending_moment_: Rc<BendingMoment>,
         water_density: WaterDensity,
         ship_dimensions: ShipDimensions,
+        draft_: Rc<Draft>,
     ) -> Strength {
         Strength {
             lw,
@@ -75,13 +73,14 @@ impl Strength {
             disp_i,
             d_t,
             lcb_,
-            lcg,
+            lcg_,
             b_i,
-            total_shipload,
-            share_force,
-            bending_moment,
+            total_shipload_,
+            share_force_,
+            bending_moment_,
             water_density,
             ship_dimensions,
+            draft_,
         }
     }
 
@@ -124,15 +123,15 @@ impl Strength {
         let lcb = Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions));
         let lcg = Rc::new(LCG::new(disp_i.clone(), ship_dimensions));
         let hydrostatic_curves = HydrostaticCurves::from_json_file(hydrostatic_curves)?;
-        let ship_trimming = ShipTrimming::new(
+        let draft = Rc::new(Draft::new(
             lcb.clone(),
             disp.clone(),
             lcg.clone(),
             d_t.clone(),
             hydrostatic_curves,
-        );
+        ));
         let b_i = Rc::new(BuoyancyIntensity::new(
-            ship_trimming,
+            draft.clone(),
             bonjean_scale,
             water_density,
         ));
@@ -155,6 +154,7 @@ impl Strength {
             bending_moment,
             water_density,
             ship_dimensions,
+            draft,
         ))
     }
 
@@ -175,7 +175,8 @@ impl Strength {
     }
 
     pub fn displacement(&self) -> Result<f64, String> {
-        self.disp.displacement_by_drafts(2.0, 3.0)
+        let (aft_draft, nose_draft) = self.draft_.draft(&self.ship_dimensions)?;
+        self.disp.displacement_by_drafts(aft_draft, nose_draft)
     }
 
     pub fn displacement_intensity(&self) -> Result<SpatiumFunctions, String> {
@@ -186,7 +187,32 @@ impl Strength {
         self.d_t.displacement_tonnage()
     }
 
+    pub fn draft(&self) -> Result<(f64, f64), String> {
+        self.draft_.draft(&self.ship_dimensions)
+    }
+
     pub fn lcb(&self) -> Result<f64, String> {
-        self.lcb_.lcb(2.0, 2.0)
+        let (aft_draft, nose_draft) = self.draft_.draft(&self.ship_dimensions)?;
+        self.lcb_.lcb(aft_draft, nose_draft)
+    }
+
+    pub fn lcg(&self) -> Result<f64, String> {
+        self.lcg_.lcg()
+    }
+
+    pub fn buoyancy_intensity(&self) -> Result<SpatiumFunctions, String> {
+        self.b_i.buoyancy_intensity(&self.ship_dimensions)
+    }
+
+    pub fn total_shipload(&self) -> Result<SpatiumFunctions, String> {
+        self.total_shipload_.total_shipload(&self.ship_dimensions)
+    }
+
+    pub fn share_force(&self) -> Result<SpatiumFunctions, String> {
+        self.share_force_.internal_force(&self.ship_dimensions)
+    }
+
+    pub fn bending_moment(&self) -> Result<SpatiumFunctions, String> {
+        self.bending_moment_.internal_force(&self.ship_dimensions)
     }
 }
