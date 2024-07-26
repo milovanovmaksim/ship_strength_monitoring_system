@@ -12,7 +12,7 @@ use crate::{
 use std::rc::Rc;
 
 ///
-/// Интенсивность сил поддержания по длине судна, действующие на погруженную часть корпуса судна.
+/// Интенсивность сил поддержания по длине судна, действующих на погруженную часть корпуса судна.
 pub(crate) struct BuoyancyIntensity {
     draft: Rc<Draft>,
     bonjean_scale: Rc<BonjeanScale>,
@@ -35,7 +35,7 @@ impl BuoyancyIntensity {
     }
 
     ///
-    /// Возвращает интенсивность сил поддержания судна [т/м].
+    /// Возвращает интенсивность сил поддержания судна. Размерность: [т/м].
     pub fn buoyancy_intensity(
         &self,
         ship_dimensions: &ShipDimensions,

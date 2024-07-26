@@ -212,7 +212,7 @@ impl Strength {
     }
 
     ///
-    /// Весовое водоизмещение судна по его длине. Размерность: [т/м].
+    /// Весовое водоизмещение судна. Размерность: [т].
     pub fn displacemnt_tonnage(&self) -> f64 {
         self.d_t.displacement_tonnage()
     }
@@ -226,6 +226,7 @@ impl Strength {
 
     ///
     /// Абсцисса центра велечины (центр тяжести погруженного объема судна). Размерность: [м].
+    /// Отсчитывается от мидель шпангоута. Имеет положительный знак от мидель шпангоута в нос судна.
     pub fn lcb(&self) -> Result<f64, String> {
         let (aft_draft, nose_draft) = self.draft_.draft(&self.ship_dimensions)?;
         self.lcb_.lcb(aft_draft, nose_draft)
@@ -233,22 +234,31 @@ impl Strength {
 
     ///
     /// Абсцисса центра тяжести судна. Размерность: [м].
+    /// Отсчитывается от мидель шпангоута. Имеет положительный знак от мидель шпангоута в нос судна.
     pub fn lcg(&self) -> Result<f64, String> {
         self.lcg_.lcg()
     }
 
+    ///
+    /// Интенсивность сил поддержания судна. Размерность: [т/м].
     pub fn buoyancy_intensity(&self) -> Result<SpatiumFunctions, String> {
         self.b_i.buoyancy_intensity(&self.ship_dimensions)
     }
 
+    ///
+    /// Интенсивность суммарной нагрузки по длине судна, действующей на корпус судна. Размерность [т/м].
     pub fn total_shipload(&self) -> Result<SpatiumFunctions, String> {
         self.total_shipload_.total_shipload(&self.ship_dimensions)
     }
 
+    ///
+    /// Эпюра перерезывающих сил. Размерность: [т].
     pub fn share_force(&self) -> Result<SpatiumFunctions, String> {
         self.share_force_.internal_force(&self.ship_dimensions)
     }
 
+    ///
+    /// Эпюра изгибающих моментов. Результат: [т * м].
     pub fn bending_moment(&self) -> Result<SpatiumFunctions, String> {
         self.bending_moment_.internal_force(&self.ship_dimensions)
     }
