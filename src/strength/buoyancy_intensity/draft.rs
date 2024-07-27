@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{cell::RefCell, rc::Rc};
 
 use log::info;
 
@@ -24,9 +24,10 @@ use crate::strength::{
 pub struct Draft {
     lcb: Rc<LCB>,
     displacement: Rc<Displacement>,
-    lcg: Rc<LCG>,
-    d_t: Rc<DisplacementTonnage>,
+    lcg: LCG,
+    d_t: DisplacementTonnage,
     hydrostatic_curves: HydrostaticCurves,
+    draft_: RefCell<Option<(f64, f64)>>,
 }
 
 impl Draft {
@@ -35,8 +36,8 @@ impl Draft {
     pub fn new(
         lcb: Rc<LCB>,
         displacement: Rc<Displacement>,
-        lcg: Rc<LCG>,
-        d_t: Rc<DisplacementTonnage>,
+        lcg: LCG,
+        d_t: DisplacementTonnage,
         hydrostatic_curves: HydrostaticCurves,
     ) -> Self {
         Draft {
@@ -45,6 +46,7 @@ impl Draft {
             lcg,
             d_t,
             hydrostatic_curves,
+            draft_: RefCell::new(None),
         }
     }
 
@@ -60,7 +62,7 @@ impl Draft {
     ) -> Result<(), String> {
         let displacement_tonnage = self.d_t.displacement_tonnage();
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
-        let lcg = self.lcg.lcg()?;
+        let lcg = self.lcg.lcg();
         let lcb = self.lcb.lcb(aft_draft, nose_draft)?;
         info!("---------- Итерация № {i} ---------- ");
         info!("aft_draft = {} м, nose_draft = {} м", aft_draft, nose_draft);
@@ -112,7 +114,7 @@ impl Draft {
         let mut nose_draft = mean_draft;
         let mut aft_draft = mean_draft;
         let mut lcb = self.lcb.lcb(aft_draft, nose_draft)?;
-        let lcg = self.lcg.lcg()?;
+        let lcg = self.lcg.lcg();
         let mut j = 0;
         let similarity_coefficient = self.similarity_coefficient(lcf, lbp);
         while (lcg.abs() - lcb.abs()).abs() > 0.001 * lbp && j < 100 {
@@ -155,44 +157,49 @@ impl Draft {
 
     ///
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
-    pub fn draft(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
-        let displacement_tonnage = self.d_t.displacement_tonnage();
-        if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
-            return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
-        }
-        let mut mean_draft = self
-            .hydrostatic_curves
-            .mean_draft(displacement_tonnage)?
-            .unwrap();
-        let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
-        let lcf = self
-            .hydrostatic_curves
-            .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?
-            .unwrap();
-        let mut max_draft_d = self.hydrostatic_curves.max_draft();
-        let mut min_draft_d = self.hydrostatic_curves.min_draft();
-        let lbp = ship_dimensions.lbp();
-        for i in 0..50 {
-            let (aft_draft, nose_draft) = self.trim(lbp, mean_draft, lcf)?;
-            let calc_disp = self
-                .displacement
-                .displacement_by_drafts(aft_draft, nose_draft)?;
-            self.solution_information(i, aft_draft, nose_draft, lbp, calc_disp)?;
-            if (calc_disp - displacement).abs() <= 0.004 * displacement {
-                return Ok((aft_draft, nose_draft));
-            } else {
-                if calc_disp < displacement {
-                    min_draft_d = mean_draft;
-                    mean_draft = (max_draft_d + min_draft_d) / 2.0;
+    pub fn draft(&self, ship_dimensions: ShipDimensions) -> Result<(f64, f64), String> {
+        if let Some((aft_draft, nose_draft)) = self.draft_.borrow().as_ref() {
+            return Ok((*aft_draft, *nose_draft));
+        } else {
+            let displacement_tonnage = self.d_t.displacement_tonnage();
+            if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
+                return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
+            }
+            let mut mean_draft = self
+                .hydrostatic_curves
+                .mean_draft(displacement_tonnage)?
+                .unwrap();
+            let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
+            let lcf = self
+                .hydrostatic_curves
+                .get_data_by_draft(mean_draft, HydrostaticTypeData::LCF)?
+                .unwrap();
+            let mut max_draft_d = self.hydrostatic_curves.max_draft();
+            let mut min_draft_d = self.hydrostatic_curves.min_draft();
+            let lbp = ship_dimensions.lbp();
+            for i in 0..50 {
+                let (aft_draft, nose_draft) = self.trim(lbp, mean_draft, lcf)?;
+                let calc_disp = self
+                    .displacement
+                    .displacement_by_drafts(aft_draft, nose_draft)?;
+                self.solution_information(i, aft_draft, nose_draft, lbp, calc_disp)?;
+                if (calc_disp - displacement).abs() <= 0.004 * displacement {
+                    *self.draft_.borrow_mut() = Some((aft_draft, nose_draft));
+                    return Ok((aft_draft, nose_draft));
                 } else {
-                    max_draft_d = mean_draft;
-                    mean_draft = (max_draft_d + min_draft_d) / 2.0;
+                    if calc_disp < displacement {
+                        min_draft_d = mean_draft;
+                        mean_draft = (max_draft_d + min_draft_d) / 2.0;
+                    } else {
+                        max_draft_d = mean_draft;
+                        mean_draft = (max_draft_d + min_draft_d) / 2.0;
+                    }
                 }
             }
+            Err(
+                "Удифферентовка судна не достигнута. Прeвышение максимального количества итераций."
+                    .to_string(),
+            )
         }
-        Err(
-            "Удифферентовка судна не достигнута. Прeвышение максимального количества итераций."
-                .to_string(),
-        )
     }
 }

@@ -47,7 +47,7 @@ impl DeadweightIntensity {
     }
 
     ///
-    /// Интенсивность силы, действующей на корпус судна т/м.
+    /// Интенсивность силы для теоретической шпации [т/м].
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
             && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_nose()

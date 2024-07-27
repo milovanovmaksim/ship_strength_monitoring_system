@@ -1,14 +1,13 @@
-use std::rc::Rc;
-
 use crate::strength::{deadweight::deadweight::Deadweight, lightweight::lightweight::Lightweight};
 
+#[derive(Clone, Copy)]
 pub struct DisplacementTonnage {
     lw: Lightweight,
-    dw: Rc<Deadweight>,
+    dw: Deadweight,
 }
 
 impl DisplacementTonnage {
-    pub fn new(lw: Lightweight, dw: Rc<Deadweight>) -> Self {
+    pub fn new(lw: Lightweight, dw: Deadweight) -> Self {
         DisplacementTonnage { lw: lw, dw: dw }
     }
 

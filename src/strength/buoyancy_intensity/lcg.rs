@@ -1,31 +1,20 @@
-use std::rc::Rc;
-
-use crate::strength::{
-    displacement::displacement_intensity::DisplacementIntensity,
-    ship::ship_dimensions::ShipDimensions,
-};
+use crate::strength::displacement::displacement_intensity::DisplacementIntensity;
 
 ///
 /// Абcцисса центр тяжести судна. Англ.: Longitudinal Center of Gravity (LCG).
 /// Отсчитывается от мидель шпангоута. Имеет положительный знак от мидель шпангоута в нос судна.
+#[derive(Clone, Copy)]
 pub struct LCG {
-    displacement_intensity: Rc<DisplacementIntensity>,
-    ship_dimensions: ShipDimensions,
+    lcg: f64,
 }
 
 impl LCG {
-    pub fn new(
-        displacement_intensity: Rc<DisplacementIntensity>,
-        ship_dimensions: ShipDimensions,
-    ) -> Self {
-        LCG {
-            displacement_intensity,
-            ship_dimensions,
-        }
+    pub fn new(lcg: f64) -> Self {
+        LCG { lcg }
     }
 
-    pub fn lcg(&self) -> Result<f64, String> {
-        let displacement_intensity = self.displacement_intensity.displacement_intensity()?;
+    pub fn from_disp_i(disp_i: &DisplacementIntensity) -> LCG {
+        let displacement_intensity = disp_i.displacement_intensity();
         let mut moment = 0.0;
         let mut displacement_tonnage = 0.0;
         for spatium in displacement_intensity.as_ref() {
@@ -33,6 +22,10 @@ impl LCG {
             displacement_tonnage += integral;
             moment += integral * spatium.abscissa();
         }
-        Ok(moment / displacement_tonnage)
+        LCG::new(moment / displacement_tonnage)
+    }
+
+    pub fn lcg(&self) -> f64 {
+        self.lcg
     }
 }
