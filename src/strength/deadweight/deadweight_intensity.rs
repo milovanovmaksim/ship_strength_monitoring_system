@@ -18,6 +18,7 @@ use crate::strength::load::{shipload::Shipload, shiploads::Shiploads};
 pub struct DeadweightIntensity {
     shiploads: Rc<Shiploads>,
     ship_dimensions: ShipDimensions,
+    d: Option<SpatiumFunctions>,
 }
 
 impl DeadweightIntensity {
@@ -27,23 +28,29 @@ impl DeadweightIntensity {
         DeadweightIntensity {
             shiploads,
             ship_dimensions,
+            d: None,
         }
     }
 
     ///
     /// Возвращает интенсивность дедвейта по длине судна т/м.
-    pub fn deadweight_intensity(&self) -> SpatiumFunctions {
-        let number_spatiums = self.ship_dimensions.number_spatiums();
-        let length_between_perpendiculars = self.ship_dimensions.lbp();
-        let mut spatium_functions =
-            SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
-        let shiploads = self.shiploads.shared_shiploads(&self.ship_dimensions);
-        for shipload in shiploads.into_iter() {
-            for spatium_function in self.shipload_intensity(shipload).into_iter() {
-                spatium_functions.add(spatium_function);
+    pub fn deadweight_intensity(&mut self) -> &SpatiumFunctions {
+        if let Some(ref v) = self.d {
+            return v;
+        } else {
+            let number_spatiums = self.ship_dimensions.number_spatiums();
+            let length_between_perpendiculars = self.ship_dimensions.lbp();
+            let mut spatium_functions =
+                SpatiumFunctions::filled_zeros(number_spatiums, length_between_perpendiculars);
+            let shiploads = self.shiploads.shared_shiploads(&self.ship_dimensions);
+            for shipload in shiploads.into_iter() {
+                for spatium_function in self.shipload_intensity(shipload).into_iter() {
+                    spatium_functions.add(spatium_function);
+                }
             }
+            self.d = Some(spatium_functions);
+            self.d.as_ref().unwrap()
         }
-        spatium_functions
     }
 
     ///
