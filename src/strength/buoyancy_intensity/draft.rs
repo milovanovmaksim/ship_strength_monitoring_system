@@ -1,20 +1,19 @@
+use std::rc::Rc;
+
 use log::info;
 
 use super::lcg::LCG;
-use crate::{
-    core::round::Round,
-    strength::{
-        bonjean_scale::lcb::LCB,
-        displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
-        hydrostatic_curves::{
-            hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
-        },
-        ship::ship_dimensions::ShipDimensions,
+use crate::strength::{
+    bonjean_scale::lcb::LCB,
+    displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
+    hydrostatic_curves::{
+        hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
     },
+    ship::ship_dimensions::ShipDimensions,
 };
 
 ///
-/// Удифферентовка судна на тихой воде.
+/// Осадка судна.
 /// Parameters:
 ///    lcb - абсцисса центра велечины,
 ///    displacement - объемное водоизмещение,
@@ -22,49 +21,31 @@ use crate::{
 ///    displacement_tonnage - весовое водоизмещение судна,
 ///    hydrostatic_curves - гидростатические кривые,
 ///    water_density - плотность воды.
-pub(crate) struct ShipTrimming<'a> {
-    lcb: LCB<'a>,
-    displacement: Displacement<'a>,
-    lcg: LCG<'a>,
-    displacement_tonnage: DisplacementTonnage<'a>,
+pub struct Draft {
+    lcb: Rc<LCB>,
+    displacement: Rc<Displacement>,
+    lcg: Rc<LCG>,
+    d_t: Rc<DisplacementTonnage>,
     hydrostatic_curves: HydrostaticCurves,
 }
 
-impl<'a> ShipTrimming<'a> {
+impl Draft {
     ///
     /// Основной конструктор.
     pub fn new(
-        lcb: LCB<'a>,
-        displacement: Displacement<'a>,
-        lcg: LCG<'a>,
-        displacement_tonnage: DisplacementTonnage<'a>,
+        lcb: Rc<LCB>,
+        displacement: Rc<Displacement>,
+        lcg: Rc<LCG>,
+        d_t: Rc<DisplacementTonnage>,
         hydrostatic_curves: HydrostaticCurves,
     ) -> Self {
-        ShipTrimming {
+        Draft {
             lcb,
             displacement,
             lcg,
-            displacement_tonnage,
+            d_t,
             hydrostatic_curves,
         }
-    }
-
-    ///
-    /// Проверяет достигнута ли удифферентовка судна.
-    /// Parameters:
-    ///     displacement - водоизмещение судна при текущей схеме загрузки[м^3];
-    ///     calc_disp - расчетное объемное водоизмещение судна [м^3].
-    fn trim_achieved(&self, calc_disp: f64, lcb: f64, lbp: f64) -> Result<bool, String> {
-        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
-        let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
-        let lcg = self.lcg.lcg()?;
-        Ok(self.error(calc_disp, displacement) <= 0.01
-            && (lcg.abs() - lcb.abs()).abs() <= (0.001 * lbp))
-    }
-    ///
-    /// Расчет процентного различия между двумя числами.
-    fn error(&self, x_1: f64, x_2: f64) -> f64 {
-        (((x_1.abs() - x_2.abs()).abs() / x_1.abs().min(x_2.abs())) * 100.0).my_round(2)
     }
 
     ///
@@ -77,7 +58,7 @@ impl<'a> ShipTrimming<'a> {
         lbp: f64,
         calc_disp: f64,
     ) -> Result<(), String> {
-        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
+        let displacement_tonnage = self.d_t.displacement_tonnage();
         let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
         let lcg = self.lcg.lcg()?;
         let lcb = self.lcb.lcb(aft_draft, nose_draft)?;
@@ -96,16 +77,12 @@ impl<'a> ShipTrimming<'a> {
         }
         info!("Заданное водоизмещение: {displacement} м^3.");
         info!("Расчетное водоизмещение: {calc_disp} м^3.");
-        if self.error(displacement, calc_disp) <= 0.01 {
+        if (calc_disp - displacement).abs() <= 0.004 * displacement {
             info!(
-                "Процентная разница между расчетным и заданным водоизмещением судна = {} % - Условие удифферентовки судна для водоизмещения выполняется.",
-                self.error(displacement, calc_disp)
-            );
+                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
         } else {
             info!(
-                "Процентная разница между расчетным и заданным водоизмещением судна = {} % - Условие удифферентовки судна для водоизмещения не выполняется.",
-                self.error(displacement, calc_disp)
-            );
+                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
         }
         Ok(())
     }
@@ -126,7 +103,10 @@ impl<'a> ShipTrimming<'a> {
         b / a
     }
 
-    fn trimming(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
+    ///
+    /// Удифферентовка судна методом последовательных приближений.
+    /// Возвращает осадки кормы и носа судна (aft_draft, nose_draft).
+    fn trim(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
         let mut max_draft = self.hydrostatic_curves.max_draft();
         let mut min_draft = self.hydrostatic_curves.min_draft();
         let mut nose_draft = mean_draft;
@@ -174,10 +154,9 @@ impl<'a> ShipTrimming<'a> {
     }
 
     ///
-    /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
-    pub fn trim(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
-        let displacement_tonnage = self.displacement_tonnage.displacement_tonnage();
+    pub fn draft(&self, ship_dimensions: &ShipDimensions) -> Result<(f64, f64), String> {
+        let displacement_tonnage = self.d_t.displacement_tonnage();
         if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
             return Err(format!("Весовое водоизмещение {displacement_tonnage} тонн превысило весовое водоизмещение судна в грузу."));
         }
@@ -194,7 +173,7 @@ impl<'a> ShipTrimming<'a> {
         let mut min_draft_d = self.hydrostatic_curves.min_draft();
         let lbp = ship_dimensions.lbp();
         for i in 0..50 {
-            let (aft_draft, nose_draft) = self.trimming(lbp, mean_draft, lcf)?;
+            let (aft_draft, nose_draft) = self.trim(lbp, mean_draft, lcf)?;
             let calc_disp = self
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;

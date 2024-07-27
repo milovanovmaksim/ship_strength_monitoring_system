@@ -30,11 +30,11 @@ mod tests {
         call_once();
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 6.0);
         assert_eq!(
-            Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()),
+            Err("Значение аргумента 'x' функции 'interpolated_value' должно лежать в диапазоне 'x_0 <= x <= x_1'.".to_owned()),
             interpolation.interpolated_value(1.0)
         );
         assert_eq!(
-            Err("Function argument 'x' should be x_0 < x < x_1.".to_owned()),
+            Err("Значение аргумента 'x' функции 'interpolated_value' должно лежать в диапазоне 'x_0 <= x <= x_1'.".to_owned()),
             interpolation.interpolated_value(7.0)
         );
         let interpolation = LinearInterpolation::new(5.0, 1.0, 2.0, 2.0);
@@ -43,6 +43,9 @@ mod tests {
             interpolation.interpolated_value(1.0)
         );
         let interpolation = LinearInterpolation::new(5.0, 1.0, 3.0, 1.0);
-        assert_eq!(3.0, interpolation.interpolated_value(2.0).unwrap());
+        assert_eq!(
+            Err("Значение аргумента x_0 должно быть меньше x_1.".to_owned()),
+            interpolation.interpolated_value(2.0)
+        );
     }
 }

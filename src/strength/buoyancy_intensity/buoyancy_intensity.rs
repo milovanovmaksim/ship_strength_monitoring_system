@@ -1,3 +1,4 @@
+use super::draft::Draft;
 use crate::{
     core::{linear_interpolation::LinearInterpolation, water_density::WaterDensity},
     strength::{
@@ -8,34 +9,33 @@ use crate::{
         },
     },
 };
-
-use super::ship_trimming::ShipTrimming;
+use std::rc::Rc;
 
 ///
-/// Интенсивность сил поддержания по длине судна, действующие на погруженную часть корпуса судна.
-pub(crate) struct BuoyancyIntensity<'a> {
-    ship_trimming: ShipTrimming<'a>,
-    bonjean_scale: &'a BonjeanScale,
+/// Интенсивность сил поддержания по длине судна, действующих на погруженную часть корпуса судна.
+pub struct BuoyancyIntensity {
+    draft: Rc<Draft>,
+    bonjean_scale: Rc<BonjeanScale>,
     water_density: WaterDensity,
 }
 
-impl<'a> BuoyancyIntensity<'a> {
+impl BuoyancyIntensity {
     ///
     /// Основной конструктор.
     pub fn new(
-        ship_trimming: ShipTrimming<'a>,
-        bonjean_scale: &'a BonjeanScale,
+        draft: Rc<Draft>,
+        bonjean_scale: Rc<BonjeanScale>,
         water_density: WaterDensity,
     ) -> Self {
         BuoyancyIntensity {
-            ship_trimming,
+            draft,
             bonjean_scale,
             water_density,
         }
     }
 
     ///
-    /// Возвращает интенсивность сил поддержания судна [т/м].
+    /// Возвращает интенсивность сил поддержания судна. Размерность: [т/м].
     pub fn buoyancy_intensity(
         &self,
         ship_dimensions: &ShipDimensions,
@@ -47,7 +47,7 @@ impl<'a> BuoyancyIntensity<'a> {
         let number_spatiums = ship_dimensions.number_spatiums();
         let mut start_coord = coordinate_aft;
         let mut end_coord = start_coord + ship_dimensions.length_spatium();
-        let (aft_draft, nose_draft) = self.ship_trimming.trim(ship_dimensions)?;
+        let (aft_draft, nose_draft) = self.draft.draft(ship_dimensions)?;
         let li = LinearInterpolation::new(aft_draft, nose_draft, coordinate_aft, coordinate_nose);
         let mut buoyancy_intensity =
             SpatiumFunctions::filled_zeros(number_spatiums, ship_dimensions.lbp());

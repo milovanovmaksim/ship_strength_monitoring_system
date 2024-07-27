@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::strength::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     lightweight::lightweight_intensity::LightweightIntensity,
@@ -6,21 +8,24 @@ use crate::strength::{
 
 ///
 /// Интенсивность водоизмещения судна по его длине.
-pub struct DisplacementIntensity<'a> {
-    deadweight_intensity: DeadweightIntensity<'a>,
-    lightweight_intnesity: LightweightIntensity,
+pub struct DisplacementIntensity {
+    dw_i: Rc<DeadweightIntensity>,
+    lw_i: Rc<LightweightIntensity>,
+    ship_dimensions: ShipDimensions,
 }
 
-impl<'a> DisplacementIntensity<'a> {
+impl DisplacementIntensity {
     ///
     /// Основной конструктор.
     pub fn new(
-        deadweight_intensity: DeadweightIntensity<'a>,
-        lightweight_intensity: LightweightIntensity,
+        dw_i: Rc<DeadweightIntensity>,
+        lw_i: Rc<LightweightIntensity>,
+        ship_dimensions: ShipDimensions,
     ) -> Self {
         DisplacementIntensity {
-            deadweight_intensity,
-            lightweight_intnesity: lightweight_intensity,
+            dw_i,
+            lw_i,
+            ship_dimensions,
         }
     }
 
@@ -30,8 +35,8 @@ impl<'a> DisplacementIntensity<'a> {
     /// интенсивностей дедвейта и массы корпуса судна по его длине.
     pub fn displacement_intensity(&self) -> Result<SpatiumFunctions, String> {
         let mut s_fs = vec![];
-        let dw_i = self.deadweight_intensity.deadweight_intensity();
-        let l_i = self.lightweight_intnesity.lightweight_intensity();
+        let dw_i = self.dw_i.deadweight_intensity();
+        let l_i = self.lw_i.lightweight_intensity();
         for dwi_v in dw_i.as_ref() {
             let li_v = l_i.get(dwi_v.id()).unwrap();
             s_fs.push(li_v.add(dwi_v.clone())?);

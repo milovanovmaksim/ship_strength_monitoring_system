@@ -26,14 +26,6 @@ impl Shipload {
         }
     }
 
-    pub(crate) fn from_id(id: u64, ship_dimensions: &ShipDimensions, value: f64) -> Shipload {
-        let spatium_start_coordinate = ship_dimensions.spatium_start_coordinate(id).my_round(2);
-        let length_spatium = ship_dimensions.length_spatium();
-        let x = spatium_start_coordinate + length_spatium / 2.0;
-        let center_gravity = Point::new(x, 0.0, 0.0);
-        Shipload::new(value, center_gravity, length_spatium)
-    }
-
     ///
     /// Return the coordinate of the start of the load relative to the amidships(the middle of a ship).
     pub fn load_start_coordinate(&self) -> f64 {
@@ -85,8 +77,13 @@ impl Shipload {
         let load_length = (load_end_coordinate - load_start_coordinate).abs();
         let load_value = (load_length / self.length) * self.value;
         let x = load_start_coordinate + (load_length / 2.0);
-        let center_gravity = Point::new(x, self.center_gravity.y, self.center_gravity.z);
-        Shipload::new(load_value, center_gravity, load_length)
+        let center_gravity =
+            Point::new(x.my_round(2), self.center_gravity.y, self.center_gravity.z);
+        Shipload::new(
+            load_value.my_round(2),
+            center_gravity,
+            load_length.my_round(2),
+        )
     }
 
     pub fn moment(&self) -> f64 {

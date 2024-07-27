@@ -12,7 +12,7 @@ use serde::Deserialize;
 ///     masses - вектор, содержащий массы погруженной части шпангоута от осадки,
 ///     abscissa - абсцисса шпангоута относительно центра корабля.
 /// Длина всех векторов должна быть одинакова и не равна нулю, в проивном случая будет возвращена ошибка.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub struct Frame {
     id: u64,
     drafts: Vec<f64>,
@@ -108,9 +108,7 @@ impl Frame {
         if draft < self.min_draft() {
             return Ok(0.0);
         } else if draft > self.max_draft() {
-            return Err(format!(
-                "Осадка превысила максимальную осадку судна в грузу."
-            ));
+            return Err(format!("Осадка превысила осадку судна в грузу."));
         }
         match self.drafts.custom_binary_search(draft) {
             (Some(left_point), Some(right_point)) => {

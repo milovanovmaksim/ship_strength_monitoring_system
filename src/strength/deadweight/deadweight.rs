@@ -1,11 +1,13 @@
+use std::rc::Rc;
+
 use crate::strength::load::shiploads::Shiploads;
 
-pub struct Deadweight<'a> {
-    shiploads: &'a Shiploads,
+pub struct Deadweight {
+    shiploads: Rc<Shiploads>,
 }
 
-impl<'a> Deadweight<'a> {
-    pub fn new(shiploads: &'a Shiploads) -> Self {
+impl Deadweight {
+    pub fn new(shiploads: Rc<Shiploads>) -> Self {
         Deadweight { shiploads }
     }
 

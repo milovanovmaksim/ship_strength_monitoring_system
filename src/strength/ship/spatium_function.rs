@@ -83,13 +83,20 @@ impl SpatiumFunction {
         self.f_x2
     }
 
+    ///
     /// Сложение шпаций с одинаковыми id.
     /// Возвращает новый объект.
     pub fn add(&self, term: SpatiumFunction) -> Result<SpatiumFunction, String> {
         if term.id == self.id {
             let f_x1 = self.f_x1 + term.f_x1();
             let f_x2 = self.f_x2 + term.f_x2();
-            return Ok(SpatiumFunction::new(self.id, self.x1, self.x2, f_x1, f_x2));
+            return Ok(SpatiumFunction::new(
+                self.id,
+                self.x1,
+                self.x2,
+                f_x1.my_round(2),
+                f_x2.my_round(2),
+            ));
         }
         Err("Сложение шпаций с разными id".to_string())
     }

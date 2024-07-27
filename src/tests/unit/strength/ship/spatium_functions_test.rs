@@ -1,8 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::strength::ship::{
-        ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
-        spatium_functions::SpatiumFunctions,
+        spatium_function::SpatiumFunction, spatium_functions::SpatiumFunctions,
     };
 
     #[test]

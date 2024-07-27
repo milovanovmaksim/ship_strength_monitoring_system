@@ -17,10 +17,10 @@ pub struct BonjeanScale {
 }
 
 impl BonjeanScale {
-    pub fn new(frames: Frames, shipdimensions: ShipDimensions) -> Self {
+    pub fn new(frames: Frames, ship_dimensions: ShipDimensions) -> Self {
         BonjeanScale {
             frames,
-            ship_dimensions: shipdimensions,
+            ship_dimensions,
         }
     }
 

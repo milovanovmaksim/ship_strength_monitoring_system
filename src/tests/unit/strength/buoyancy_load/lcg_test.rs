@@ -11,6 +11,7 @@ mod tests {
             load::{shipload::Shipload, shiploads::Shiploads},
         },
     };
+    use std::rc::Rc;
     use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
@@ -28,21 +29,26 @@ mod tests {
     fn lcg_ok_test() {
         call_once();
         let lightweight = Lightweight::new(13567.0);
-        let shiploads = Shiploads::new(vec![
+        let shiploads = Rc::new(Shiploads::new(vec![
             Shipload::new(140.2, Point::new(40.23, 0.0, 0.0), 15.21),
             Shipload::new(150.0, Point::new(40.0, 0.0, 0.0), 25.0),
             Shipload::new(150.0, Point::new(40.0, 0.0, 0.0), 20.0),
             Shipload::new(140.2, Point::new(30.23, 0.0, 0.0), 15.21),
             Shipload::new(150.0, Point::new(20.0, 0.0, 0.0), 25.0),
             Shipload::new(150.0, Point::new(10.0, 0.0, 0.0), 20.0),
-        ]);
+        ]));
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
-        let lightweight_intensity =
-            LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lightweight);
-        let deadweight_intensity = DeadweightIntensity::new(&shiploads, ship_dimensions);
-        let displacement_intensity =
-            DisplacementIntensity::new(deadweight_intensity, lightweight_intensity);
-        let lcb = LCG::new(displacement_intensity);
+        let lightweight_intensity = Rc::new(LightweightIntensity::from_ship_input_data(
+            ship_dimensions.clone(),
+            lightweight,
+        ));
+        let deadweight_intensity = Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions));
+        let displacement_intensity = Rc::new(DisplacementIntensity::new(
+            deadweight_intensity,
+            lightweight_intensity,
+            ship_dimensions,
+        ));
+        let lcb = LCG::new(displacement_intensity, ship_dimensions);
         assert_eq!(0.69, lcb.lcg().unwrap().my_round(2));
     }
 }

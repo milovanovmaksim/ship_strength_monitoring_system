@@ -20,7 +20,7 @@ use super::hydrostatic_typedata::HydrostaticTypeData;
 ///     x_f: абсцисса центра тяжести ватерлиниии,
 ///     lmr - продольный(большой) метацентрический радиус.
 #[derive(Deserialize, Debug)]
-pub(crate) struct HydrostaticCurves {
+pub struct HydrostaticCurves {
     drafts: Vec<f64>,
     displacement_tonnage: Vec<f64>,
     x_c: Vec<f64>,

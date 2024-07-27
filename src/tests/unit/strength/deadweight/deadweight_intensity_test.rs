@@ -11,7 +11,7 @@ mod tests {
             },
         },
     };
-    use std::{env, sync::Once};
+    use std::{env, rc::Rc, sync::Once};
 
     static INIT: Once = Once::new();
 
@@ -25,15 +25,15 @@ mod tests {
     }
 
     #[test]
-    fn spatium_functions_test() {
+    fn deadweight_intensity_test() {
         call_once();
-        let shiploads = Shiploads::new(vec![
+        let shiploads = Rc::new(Shiploads::new(vec![
             Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21),
             Shipload::new(5.0, Point::new(64.0, 0.0, 0.0), 1.0),
             Shipload::new(5.0, Point::new(-64.0, 0.0, 0.0), 1.0),
-        ]);
+        ]));
         let ship_dimensions = ShipDimensions::new(125.0, 20, 0.6);
-        let deadweight_intensity = DeadweightIntensity::new(&shiploads, ship_dimensions);
+        let deadweight_intensity = DeadweightIntensity::new(shiploads, ship_dimensions);
         let test_spatium_functions = SpatiumFunctions::new(vec![
             SpatiumFunction::new(0, -62.5, -56.25, 1.39, 1.39),
             SpatiumFunction::new(1, -56.25, -50.0, -0.59, -0.59),
@@ -48,7 +48,7 @@ mod tests {
             SpatiumFunction::new(10, 0.0, 6.25, 0.0, 0.0),
             SpatiumFunction::new(11, 6.25, 12.5, 0.0, 0.0),
             SpatiumFunction::new(12, 12.5, 18.75, 0.0, 0.0),
-            SpatiumFunction::new(13, 18.75, 25.0, 0.31999999999999995, 0.31999999999999995),
+            SpatiumFunction::new(13, 18.75, 25.0, 0.32, 0.32),
             SpatiumFunction::new(14, 25.0, 31.25, 0.36, 0.36),
             SpatiumFunction::new(15, 31.25, 37.5, 0.0, 0.0),
             SpatiumFunction::new(16, 37.5, 43.75, 0.0, 0.0),

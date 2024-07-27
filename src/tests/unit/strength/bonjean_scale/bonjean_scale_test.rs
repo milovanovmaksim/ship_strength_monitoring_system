@@ -57,7 +57,10 @@ mod tests {
         let bonjean_scale = BonjeanScale::new(frames, ship_dimensions);
         let frame_underwater_volume = bonjean_scale.frame_underwater_volume(-58.75, 20.61);
         assert!(frame_underwater_volume.is_err());
-        assert_eq!(Err("Осадка превысила максимально допустимое значение для данного судна. Максимальная осадка: 13.3 [м].".to_string()), frame_underwater_volume)
+        assert_eq!(
+            Err("Осадка превысила осадку судна в грузу.".to_string()),
+            frame_underwater_volume
+        )
     }
 
     #[test]

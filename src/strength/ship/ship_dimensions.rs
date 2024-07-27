@@ -10,19 +10,15 @@ use crate::core::json_file::JsonFile;
 /// - number_spatiums - количество теоретических шпаций,
 #[derive(Deserialize, Debug, Clone, Copy)]
 pub struct ShipDimensions {
-    length_between_perpendiculars: f64,
+    lbp: f64,
     number_spatiums: u64,
     completeness_coefficient: f64,
 }
 
 impl ShipDimensions {
-    pub fn new(
-        length_between_perpendiculars: f64,
-        number_spatiums: u64,
-        completeness_coefficient: f64,
-    ) -> Self {
+    pub fn new(lbp: f64, number_spatiums: u64, completeness_coefficient: f64) -> Self {
         ShipDimensions {
-            length_between_perpendiculars,
+            lbp,
             number_spatiums,
             completeness_coefficient,
         }
@@ -60,7 +56,7 @@ impl ShipDimensions {
     ///
     /// Return length spatium
     pub fn length_spatium(&self) -> f64 {
-        self.length_between_perpendiculars / self.number_spatiums as f64
+        self.lbp / self.number_spatiums as f64
     }
 
     ///
@@ -71,13 +67,13 @@ impl ShipDimensions {
     ///
     /// Returns the bow (nose) cordinate of the ship
     pub fn coordinate_nose(&self) -> f64 {
-        self.length_between_perpendiculars / 2.0
+        self.lbp / 2.0
     }
 
     ///
     /// Returns the aft cordinate of the ship
     pub fn coordinate_aft(&self) -> f64 {
-        -self.length_between_perpendiculars / 2.0
+        -self.lbp / 2.0
     }
 
     ///
@@ -89,7 +85,7 @@ impl ShipDimensions {
     ///
     /// Return length bettwen perpendiculars
     pub fn lbp(&self) -> f64 {
-        self.length_between_perpendiculars
+        self.lbp
     }
 
     ///
@@ -108,7 +104,7 @@ impl ShipDimensions {
     /// Define the spatium index by coordinate.
     pub fn spatium_index_by_coordinate(&self, x: f64) -> u64 {
         // Если координата x выходит за пределы корабля(кормы или носа) необходимо выдывать соответствующую ошибку.
-        let mut spatium_start_coordinate = -self.length_between_perpendiculars / 2.0;
+        let mut spatium_start_coordinate = -self.lbp / 2.0;
         let mut spatium_end_coordinate = spatium_start_coordinate + self.length_spatium();
         let mut index = 0;
         for id in 0..self.number_spatiums {

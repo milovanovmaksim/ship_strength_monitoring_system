@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use super::internal_force::InternalForce;
 use crate::strength::{
     load::total_shipload::TotalShipload,
@@ -6,19 +8,19 @@ use crate::strength::{
 
 ///
 /// Перерезывающая (касательная) сила.
-pub(crate) struct ShareForce<'a> {
-    total_shipload: TotalShipload<'a>,
+pub struct ShareForce {
+    total_shipload: Rc<TotalShipload>,
 }
 
-impl<'a> ShareForce<'a> {
+impl ShareForce {
     ///
     /// Основной конструктор.
-    pub fn new(total_shipload: TotalShipload<'a>) -> Self {
+    pub fn new(total_shipload: Rc<TotalShipload>) -> Self {
         ShareForce { total_shipload }
     }
 }
 
-impl<'a> InternalForce for ShareForce<'a> {
+impl InternalForce for ShareForce {
     ///
     /// Возвращает подинтегральную функцию перерезывающей силы,
     /// т.е распределение интенсивности суммарной нагрузки, действующей на корпус судна.

@@ -51,6 +51,14 @@ impl SpatiumFunctions {
         max_value
     }
 
+    pub fn integral(&self) -> f64 {
+        let mut integral = 0.0;
+        for s_f in &self.spatium_functions {
+            integral += s_f.integral();
+        }
+        integral
+    }
+
     ///
     /// Вычисляет интеграл с переменным верхним пределом.
     pub fn integral_vul(&self) -> SpatiumFunctions {
