@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use crate::strength::{deadweight::deadweight::Deadweight, lightweight::lightweight::Lightweight};
 
-pub(crate) struct DisplacementTonnage {
+pub struct DisplacementTonnage {
     lw: Lightweight,
     dw: Rc<Deadweight>,
 }

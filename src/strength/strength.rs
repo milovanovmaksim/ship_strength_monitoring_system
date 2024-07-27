@@ -40,7 +40,7 @@ use std::rc::Rc;
 ///    water_density - плотность воды, [т/м^3],
 ///    ship_dimensions - размерения судна,
 ///    draft - осадка судна при текущей схеме загрузки.
-pub(crate) struct Strength {
+pub struct Strength {
     lw: Lightweight,
     lw_i: Rc<LightweightIntensity>,
     dw: Rc<Deadweight>,
@@ -246,7 +246,7 @@ impl Strength {
     }
 
     ///
-    /// Интенсивность суммарной нагрузки по длине судна, действующей на корпус судна. Размерность [т/м].
+    /// Интенсивность суммарной нагрузки, действующей на корпус судна. Размерность [т/м].
     pub fn total_shipload(&self) -> Result<SpatiumFunctions, String> {
         self.total_shipload_.total_shipload(&self.ship_dimensions)
     }
@@ -258,7 +258,7 @@ impl Strength {
     }
 
     ///
-    /// Эпюра изгибающих моментов. Результат: [т * м].
+    /// Эпюра изгибающих моментов. Размерность: [т * м].
     pub fn bending_moment(&self) -> Result<SpatiumFunctions, String> {
         self.bending_moment_.internal_force(&self.ship_dimensions)
     }

@@ -5,7 +5,7 @@
 ///     WaterlineArea: площадь ватерлинии,
 ///     LCF: абсцисса центра тяжести ватерлиниии,
 ///     LMR - продольный(большой) метацентрический радиус.
-pub(crate) enum HydrostaticTypeData {
+pub enum HydrostaticTypeData {
     LCB,
     LCF,
     WaterlineArea,

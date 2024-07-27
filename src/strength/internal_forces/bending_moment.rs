@@ -5,7 +5,7 @@ use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_functions::
 
 ///
 /// Изгибающий момент.
-pub(crate) struct BendingMoment {
+pub struct BendingMoment {
     share_force: Rc<ShareForce>,
 }
 

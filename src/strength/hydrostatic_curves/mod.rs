@@ -1,2 +1,2 @@
-pub(crate) mod hydrostatic_curves;
-pub(crate) mod hydrostatic_typedata;
+pub mod hydrostatic_curves;
+pub mod hydrostatic_typedata;

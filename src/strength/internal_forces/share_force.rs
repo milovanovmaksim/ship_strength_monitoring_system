@@ -8,7 +8,7 @@ use crate::strength::{
 
 ///
 /// Перерезывающая (касательная) сила.
-pub(crate) struct ShareForce {
+pub struct ShareForce {
     total_shipload: Rc<TotalShipload>,
 }
 

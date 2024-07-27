@@ -13,7 +13,7 @@ use std::rc::Rc;
 
 ///
 /// Интенсивность сил поддержания по длине судна, действующих на погруженную часть корпуса судна.
-pub(crate) struct BuoyancyIntensity {
+pub struct BuoyancyIntensity {
     draft: Rc<Draft>,
     bonjean_scale: Rc<BonjeanScale>,
     water_density: WaterDensity,

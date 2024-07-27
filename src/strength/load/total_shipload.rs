@@ -8,7 +8,7 @@ use crate::strength::{
 
 ///
 /// Интенсивность суммарной нагрузки по длине судна, действующей на корпус судна.
-pub(crate) struct TotalShipload {
+pub struct TotalShipload {
     disp_i: Rc<DisplacementIntensity>,
     b_i: Rc<BuoyancyIntensity>,
 }

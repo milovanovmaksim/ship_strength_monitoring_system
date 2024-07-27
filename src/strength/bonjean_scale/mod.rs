@@ -1,4 +1,4 @@
-pub(crate) mod bonjean_scale;
-pub(crate) mod frame;
-pub(crate) mod frames;
-pub(crate) mod lcb;
+pub mod bonjean_scale;
+pub mod frame;
+pub mod frames;
+pub mod lcb;

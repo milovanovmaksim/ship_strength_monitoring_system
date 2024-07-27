@@ -3,16 +3,13 @@ use std::rc::Rc;
 use log::info;
 
 use super::lcg::LCG;
-use crate::{
-    core::round::Round,
-    strength::{
-        bonjean_scale::lcb::LCB,
-        displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
-        hydrostatic_curves::{
-            hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
-        },
-        ship::ship_dimensions::ShipDimensions,
+use crate::strength::{
+    bonjean_scale::lcb::LCB,
+    displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
+    hydrostatic_curves::{
+        hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
     },
+    ship::ship_dimensions::ShipDimensions,
 };
 
 ///
@@ -24,7 +21,7 @@ use crate::{
 ///    displacement_tonnage - весовое водоизмещение судна,
 ///    hydrostatic_curves - гидростатические кривые,
 ///    water_density - плотность воды.
-pub(crate) struct Draft {
+pub struct Draft {
     lcb: Rc<LCB>,
     displacement: Rc<Displacement>,
     lcg: Rc<LCG>,
@@ -49,24 +46,6 @@ impl Draft {
             d_t,
             hydrostatic_curves,
         }
-    }
-
-    ///
-    /// Проверяет достигнута ли удифферентовка судна.
-    /// Parameters:
-    ///     displacement - водоизмещение судна при текущей схеме загрузки[м^3];
-    ///     calc_disp - расчетное объемное водоизмещение судна [м^3].
-    fn trim_achieved(&self, calc_disp: f64, lcb: f64, lbp: f64) -> Result<bool, String> {
-        let displacement_tonnage = self.d_t.displacement_tonnage();
-        let displacement = self.displacement.displacement_by_mass(displacement_tonnage);
-        let lcg = self.lcg.lcg()?;
-        Ok((calc_disp - displacement).abs() <= 0.004 * displacement
-            && (lcg.abs() - lcb.abs()).abs() <= (0.001 * lbp))
-    }
-    ///
-    /// Расчет процентного различия между двумя числами.
-    fn error(&self, x_1: f64, x_2: f64) -> f64 {
-        (((x_1.abs() - x_2.abs()).abs() / x_1.abs().min(x_2.abs())) * 100.0).my_round(2)
     }
 
     ///
