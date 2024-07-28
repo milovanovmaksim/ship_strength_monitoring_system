@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use log::info;
+use log::{debug, info};
 
 use crate::{
     core::round::Round,
@@ -86,7 +86,7 @@ impl DeadweightIntensity {
                 .spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
             let (distance_left, distance_right) =
                 shipload.distances_to_frames(&self.ship_dimensions);
-            if (distance_left > distance_right)
+            if (distance_left / distance_right >= 1.05)
                 && (shipload.longitudinal_center_gravity() + self.ship_dimensions.length_spatium()
                     < self.ship_dimensions.coordinate_nose())
             {
@@ -98,7 +98,7 @@ impl DeadweightIntensity {
                 );
                 info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
-            } else if (distance_right > distance_left)
+            } else if (distance_left / distance_right <= 0.95)
                 && (shipload.longitudinal_center_gravity() - self.ship_dimensions.length_spatium())
                     > self.ship_dimensions.coordinate_aft()
             {
@@ -113,9 +113,10 @@ impl DeadweightIntensity {
             } else {
                 info!("Shipload.shipload_intensity | Вес груза распределяем на всю теоретическую шпацию. c_right = {}, c_left = {}", distance_right, distance_left);
                 let f_x = shipload.value() / self.ship_dimensions.length_spatium();
-                let spatium_function = SpatiumFunction::from_id(
+                let spatium_function = SpatiumFunction::new(
                     spatium_start_index,
-                    &self.ship_dimensions,
+                    shipload.load_start_coordinate(),
+                    shipload.load_end_coordinate(),
                     f_x.my_round(2),
                     f_x.my_round(2),
                 );

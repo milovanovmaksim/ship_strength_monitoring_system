@@ -2,6 +2,7 @@ mod core;
 mod cross_section_properties;
 mod strength;
 mod tests;
+use core::visualisation::{DiagrammType, Visualisation};
 use std::env;
 use strength::strength::Strength;
 
@@ -16,4 +17,12 @@ fn main() {
     let strength =
         Strength::new_project(input_path, shiploads_file, frames_file, hydrostatic_curves).unwrap();
     strength.bending_moment();
+    let vis = Visualisation::new(11.75, &strength);
+    vis.plot(DiagrammType::LightweightIntensity);
+    vis.plot(DiagrammType::DeadweightIntensity);
+    vis.plot(DiagrammType::DisplacementIntensity);
+    vis.plot(DiagrammType::BuoyancyIntensity);
+    vis.plot(DiagrammType::TotalShipload);
+    vis.plot(DiagrammType::ShareForce);
+    vis.plot(DiagrammType::BendingMoment);
 }
