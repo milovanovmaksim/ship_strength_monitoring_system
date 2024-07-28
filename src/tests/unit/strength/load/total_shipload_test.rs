@@ -36,50 +36,39 @@ mod tests {
         // Судно порожнем.
 
         call_once();
+
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file = "src/tests/unit/strength/test_data/empty_ship.json".to_string();
-        let frames = Frames::from_json_file(frames_file).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 40, 0.8);
-        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let hydrostatic_curves_file =
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let lw = Lightweight::new(13550.0);
+        let ship_dimensions = ShipDimensions::new(235.0, 200, 0.74);
+        let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
         let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
-        let lightweight = Lightweight::new(13550.0);
-        let d_t = Rc::new(DisplacementTonnage::new(
-            lightweight,
-            Rc::new(Deadweight::new(shiploads.clone())),
-        ));
-        let d_i = Rc::new(DisplacementIntensity::new(
-            Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
-            Rc::new(LightweightIntensity::from_ship_input_data(
-                ship_dimensions,
-                lightweight,
-            )),
+        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
+        let dw = Deadweight::from_shiplods(&shiploads);
+        let d_t = DisplacementTonnage::new(lw, dw);
+        let water_density = WaterDensity::new(1.025);
+        let frames = Frames::from_json_file(frames_file).unwrap();
+        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let disp = Rc::new(Displacement::new(
+            bonjean_scale.clone(),
             ship_dimensions,
+            water_density,
         ));
-        let draft = Rc::new(Draft::new(
-            Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
-            Rc::new(Displacement::new(
-                bonjean_scale.clone(),
-                ship_dimensions,
-                WaterDensity::new(1.025),
-            )),
-            Rc::new(LCG::new(d_i.clone(), ship_dimensions)),
-            d_t.clone(),
-            HydrostaticCurves::from_json_file(file_path).unwrap(),
-        ));
-        let b_i = Rc::new(BuoyancyIntensity::new(
-            draft,
-            bonjean_scale,
-            WaterDensity::new(1.025),
-        ));
-        let b_i_v = b_i.buoyancy_intensity(&ship_dimensions).unwrap();
-        let total_buoyancy = b_i_v.integral();
-        let d_t_v = d_t.displacement_tonnage();
-        let total_shipload = TotalShipload::new(d_i, b_i)
-            .total_shipload(&ship_dimensions)
+        let lcb = Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions));
+        let lcg = LCG::from_disp_i(&disp_i);
+        let hydrostatic_curves =
+            HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
+        let draft = Draft::new(lcb.clone(), disp.clone(), lcg, d_t, hydrostatic_curves);
+        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
-        let tested_integral_total_shipload = total_shipload.integral();
-        let integral_total_shipload = (total_buoyancy.abs() - d_t_v).abs();
+        let total_shipload = TotalShipload::from_disp_i_and_b_i(&disp_i, &b_i).unwrap();
+
+        let tested_integral_total_shipload = total_shipload.total_shipload().integral();
+        let integral_total_shipload =
+            (b_i.buoyancy_intensity().integral().abs() - d_t.displacement_tonnage()).abs();
         let error = ((integral_total_shipload - tested_integral_total_shipload.abs()).abs()
             / integral_total_shipload.min(tested_integral_total_shipload.abs()))
             * 100.0;
@@ -92,50 +81,39 @@ mod tests {
         // Судно в полном грузу.
 
         call_once();
+
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file = "src/tests/unit/strength/test_data/full_ship.json".to_string();
-        let frames = Frames::from_json_file(frames_file).unwrap();
-        let ship_dimensions = ShipDimensions::new(235.0, 50, 0.8);
-        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let hydrostatic_curves_file =
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let lw = Lightweight::new(13550.0);
+        let ship_dimensions = ShipDimensions::new(235.0, 200, 0.74);
+        let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
         let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
-        let lightweight = Lightweight::new(13550.0);
-        let d_t = Rc::new(DisplacementTonnage::new(
-            lightweight,
-            Rc::new(Deadweight::new(shiploads.clone())),
-        ));
-        let d_i = Rc::new(DisplacementIntensity::new(
-            Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
-            Rc::new(LightweightIntensity::from_ship_input_data(
-                ship_dimensions,
-                lightweight,
-            )),
+        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
+        let dw = Deadweight::from_shiplods(&shiploads);
+        let d_t = DisplacementTonnage::new(lw, dw);
+        let water_density = WaterDensity::new(1.025);
+        let frames = Frames::from_json_file(frames_file).unwrap();
+        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let disp = Rc::new(Displacement::new(
+            bonjean_scale.clone(),
             ship_dimensions,
+            water_density,
         ));
-        let draft = Rc::new(Draft::new(
-            Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
-            Rc::new(Displacement::new(
-                bonjean_scale.clone(),
-                ship_dimensions,
-                WaterDensity::new(1.025),
-            )),
-            Rc::new(LCG::new(d_i.clone(), ship_dimensions)),
-            d_t.clone(),
-            HydrostaticCurves::from_json_file(file_path).unwrap(),
-        ));
-        let b_i = Rc::new(BuoyancyIntensity::new(
-            draft,
-            bonjean_scale,
-            WaterDensity::new(1.025),
-        ));
-        let b_i_v = b_i.buoyancy_intensity(&ship_dimensions).unwrap();
-        let total_buoyancy = b_i_v.integral();
-        let d_t_v = d_t.displacement_tonnage();
-        let total_shipload = TotalShipload::new(d_i, b_i)
-            .total_shipload(&ship_dimensions)
+        let lcb = Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions));
+        let lcg = LCG::from_disp_i(&disp_i);
+        let hydrostatic_curves =
+            HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
+        let draft = Draft::new(lcb.clone(), disp.clone(), lcg, d_t, hydrostatic_curves);
+        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
-        let tested_integral_total_shipload = total_shipload.integral();
-        let integral_total_shipload = (total_buoyancy.abs() - d_t_v).abs();
+        let total_shipload = TotalShipload::from_disp_i_and_b_i(&disp_i, &b_i).unwrap();
+
+        let tested_integral_total_shipload = total_shipload.total_shipload().integral();
+        let integral_total_shipload =
+            (b_i.buoyancy_intensity().integral().abs() - d_t.displacement_tonnage()).abs();
         let error = ((integral_total_shipload - tested_integral_total_shipload.abs()).abs()
             / integral_total_shipload.min(tested_integral_total_shipload.abs()))
             * 100.0;

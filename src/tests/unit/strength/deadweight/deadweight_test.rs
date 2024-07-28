@@ -4,12 +4,10 @@ mod tests {
         core::point::Point,
         strength::{
             deadweight::deadweight::Deadweight,
-            displacement::displacement_tonnage::DisplacementTonnage,
-            lightweight::lightweight::Lightweight,
             load::{shipload::Shipload, shiploads::Shiploads},
         },
     };
-    use std::{env, rc::Rc, sync::Once};
+    use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
 
@@ -25,11 +23,11 @@ mod tests {
     #[test]
     fn deadweight_test() {
         call_once();
-        let dw = Rc::new(Deadweight::new(Rc::new(Shiploads::new(vec![
+        let dw = Deadweight::from_shiplods(&Shiploads::new(vec![
             Shipload::new(4.2, Point::new(25.23, 0.0, 0.0), 10.21),
             Shipload::new(5.0, Point::new(64.0, 0.0, 0.0), 1.0),
             Shipload::new(5.0, Point::new(-64.0, 0.0, 0.0), 1.0),
-        ]))));
+        ]));
         assert_eq!(14.2, dw.deadweight())
     }
 }

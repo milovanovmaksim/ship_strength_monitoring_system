@@ -36,43 +36,32 @@ mod tests {
         call_once();
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file = "src/tests/unit/strength/test_data/empty_ship.json".to_string();
-        let frames = Frames::from_json_file(frames_file).unwrap();
+        let hydrostatic_curves_file =
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let lw = Lightweight::new(13550.0);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
-        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
         let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
-        let lightweight = Lightweight::new(13550.0);
-        let d_t = Rc::new(DisplacementTonnage::new(
-            lightweight,
-            Rc::new(Deadweight::new(shiploads.clone())),
+        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
+        let dw = Deadweight::from_shiplods(&shiploads);
+        let d_t = DisplacementTonnage::new(lw, dw);
+        let water_density = WaterDensity::new(1.025);
+        let frames = Frames::from_json_file(frames_file).unwrap();
+        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let disp = Rc::new(Displacement::new(
+            bonjean_scale.clone(),
+            ship_dimensions,
+            water_density,
         ));
-        let draft = Rc::new(Draft::new(
-            Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
-            Rc::new(Displacement::new(
-                bonjean_scale.clone(),
-                ship_dimensions,
-                WaterDensity::new(1.025),
-            )),
-            Rc::new(LCG::new(
-                Rc::new(DisplacementIntensity::new(
-                    Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
-                    Rc::new(LightweightIntensity::from_ship_input_data(
-                        ship_dimensions,
-                        lightweight,
-                    )),
-                    ship_dimensions,
-                )),
-                ship_dimensions,
-            )),
-            d_t.clone(),
-            HydrostaticCurves::from_json_file(file_path).unwrap(),
-        ));
-        let buoyancy_intensity =
-            BuoyancyIntensity::new(draft, bonjean_scale, WaterDensity::new(1.025));
-        let buoyancy_intensity_v = buoyancy_intensity
-            .buoyancy_intensity(&ship_dimensions)
+        let lcb = Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions));
+        let lcg = LCG::from_disp_i(&disp_i);
+        let hydrostatic_curves =
+            HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
+        let draft = Draft::new(lcb, disp, lcg, d_t, hydrostatic_curves);
+        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
-        let total_buoyancy = buoyancy_intensity_v.integral();
+        let total_buoyancy = b_i.buoyancy_intensity().integral();
         let d_t_v = d_t.displacement_tonnage();
         let error = (((total_buoyancy.abs() - d_t_v).abs() / d_t_v.min(total_buoyancy.abs()))
             * 100.0)
@@ -89,43 +78,32 @@ mod tests {
         call_once();
         let frames_file = "src/tests/unit/strength/test_data/frames.json".to_string();
         let shiploads_file = "src/tests/unit/strength/test_data/full_ship.json".to_string();
-        let frames = Frames::from_json_file(frames_file).unwrap();
+        let hydrostatic_curves_file =
+            "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
+        let lw = Lightweight::new(13550.0);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
-        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
         let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let file_path = "src/tests/unit/strength/test_data/hydrostatic_curves.json".to_string();
-        let lightweight = Lightweight::new(13550.0);
-        let d_t = Rc::new(DisplacementTonnage::new(
-            lightweight,
-            Rc::new(Deadweight::new(shiploads.clone())),
+        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
+        let dw = Deadweight::from_shiplods(&shiploads);
+        let d_t = DisplacementTonnage::new(lw, dw);
+        let water_density = WaterDensity::new(1.025);
+        let frames = Frames::from_json_file(frames_file).unwrap();
+        let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        let disp = Rc::new(Displacement::new(
+            bonjean_scale.clone(),
+            ship_dimensions,
+            water_density,
         ));
-        let draft = Rc::new(Draft::new(
-            Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions)),
-            Rc::new(Displacement::new(
-                bonjean_scale.clone(),
-                ship_dimensions,
-                WaterDensity::new(1.025),
-            )),
-            Rc::new(LCG::new(
-                Rc::new(DisplacementIntensity::new(
-                    Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
-                    Rc::new(LightweightIntensity::from_ship_input_data(
-                        ship_dimensions,
-                        lightweight,
-                    )),
-                    ship_dimensions,
-                )),
-                ship_dimensions,
-            )),
-            d_t.clone(),
-            HydrostaticCurves::from_json_file(file_path).unwrap(),
-        ));
-        let buoyancy_intensity =
-            BuoyancyIntensity::new(draft, bonjean_scale, WaterDensity::new(1.025));
-        let buoyancy_intensity_v = buoyancy_intensity
-            .buoyancy_intensity(&ship_dimensions)
+        let lcb = Rc::new(LCB::new(bonjean_scale.clone(), ship_dimensions));
+        let lcg = LCG::from_disp_i(&disp_i);
+        let hydrostatic_curves =
+            HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
+        let draft = Draft::new(lcb, disp, lcg, d_t, hydrostatic_curves);
+        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
-        let total_buoyancy = buoyancy_intensity_v.integral();
+        let total_buoyancy = b_i.buoyancy_intensity().integral();
         let d_t_v = d_t.displacement_tonnage();
         let error = (((total_buoyancy.abs() - d_t_v).abs() / d_t_v.min(total_buoyancy.abs()))
             * 100.0)

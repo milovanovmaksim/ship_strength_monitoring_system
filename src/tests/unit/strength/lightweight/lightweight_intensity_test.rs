@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use log::debug;
     use std::{env, sync::Once};
 
     use crate::strength::{

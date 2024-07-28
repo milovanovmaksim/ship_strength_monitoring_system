@@ -1,9 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use std::{env, rc::Rc, sync::Once};
-
-    use log::info;
-
     use crate::{
         core::point::Point,
         strength::{
@@ -17,6 +13,7 @@ mod tests {
             },
         },
     };
+    use std::{env, rc::Rc, sync::Once};
 
     static INIT: Once = Once::new();
 
@@ -39,14 +36,11 @@ mod tests {
             Shipload::new(10.0, Point::new(23.5, 0.0, 0.0), 11.75),
             Shipload::new(10.0, Point::new(35.25, 0.0, 0.0), 11.75),
         ]));
-        let d_i = DisplacementIntensity::new(
-            Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions)),
-            Rc::new(LightweightIntensity::from_ship_input_data(
-                ship_dimensions,
-                Lightweight::new(15350.0),
-            )),
-            ship_dimensions,
-        );
+        let d_i = DisplacementIntensity::from_dw_i_and_lw_i(
+            &DeadweightIntensity::new(shiploads, ship_dimensions),
+            &LightweightIntensity::from_ship_input_data(ship_dimensions, Lightweight::new(15350.0)),
+        )
+        .unwrap();
         let tested_d_i = SpatiumFunctions::new(vec![
             SpatiumFunction::new(0, -117.5, -105.75, 49.23, 49.23),
             SpatiumFunction::new(1, -105.75, -94.0, 53.64, 53.64),
@@ -69,7 +63,7 @@ mod tests {
             SpatiumFunction::new(18, 94.0, 105.75, 47.57, 47.57),
             SpatiumFunction::new(19, 105.75, 117.5, 41.98, 41.98),
         ]);
-        let d_i = d_i.displacement_intensity().unwrap();
-        assert_eq!(tested_d_i, d_i);
+        let d_i = d_i.displacement_intensity();
+        assert_eq!(&tested_d_i, d_i);
     }
 }

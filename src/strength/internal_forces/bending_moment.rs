@@ -1,8 +1,5 @@
 use super::{share_force::ShareForce, with_correction};
-use crate::strength::ship::{
-    ship_dimensions::ShipDimensions, spatium_function::SpatiumFunction,
-    spatium_functions::SpatiumFunctions,
-};
+use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_functions::SpatiumFunctions};
 
 ///
 /// Изгибающий момент.

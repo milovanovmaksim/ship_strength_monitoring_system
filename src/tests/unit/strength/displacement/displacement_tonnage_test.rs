@@ -6,7 +6,7 @@ mod tests {
         lightweight::lightweight::Lightweight,
         load::{shipload::Shipload, shiploads::Shiploads},
     };
-    use std::{env, rc::Rc, sync::Once};
+    use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
 
@@ -22,20 +22,19 @@ mod tests {
     #[test]
     fn displacement_tonnage_test() {
         call_once();
-        let d_t = Rc::new(DisplacementTonnage::new(
+        let d_t = DisplacementTonnage::new(
             Lightweight::new(10.0),
-            Rc::new(Deadweight::new(Rc::new(Shiploads::new(vec![
-                Shipload::new(
-                    10.0,
-                    crate::core::point::Point {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                    10.0,
-                ),
-            ])))),
-        ));
+            Deadweight::from_shiplods(&Shiploads::new(vec![Shipload::new(
+                10.0,
+                crate::core::point::Point {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                10.0,
+            )])),
+        );
+
         assert_eq!(20.0, d_t.displacement_tonnage());
     }
 }
