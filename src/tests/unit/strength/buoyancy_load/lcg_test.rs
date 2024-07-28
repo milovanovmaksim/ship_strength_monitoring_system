@@ -42,13 +42,13 @@ mod tests {
             ship_dimensions.clone(),
             lightweight,
         ));
-        let deadweight_intensity = Rc::new(DeadweightIntensity::new(shiploads, ship_dimensions));
-        let displacement_intensity = Rc::new(DisplacementIntensity::new(
-            deadweight_intensity,
-            lightweight_intensity,
-            ship_dimensions,
-        ));
-        let lcb = LCG::new(displacement_intensity, ship_dimensions);
-        assert_eq!(0.69, lcb.lcg().unwrap().my_round(2));
+        let deadweight_intensity = DeadweightIntensity::new(shiploads, ship_dimensions);
+        let displacement_intensity = DisplacementIntensity::from_dw_i_and_lw_i(
+            &deadweight_intensity,
+            &lightweight_intensity,
+        )
+        .unwrap();
+        let lcb = LCG::from_disp_i(&displacement_intensity);
+        assert_eq!(0.69, lcb.lcg().my_round(2));
     }
 }

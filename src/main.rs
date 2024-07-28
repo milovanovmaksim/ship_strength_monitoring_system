@@ -15,6 +15,5 @@ fn main() {
     let hydrostatic_curves = "./input_data/hydrostatic_curves.json".to_string();
     let strength =
         Strength::new_project(input_path, shiploads_file, frames_file, hydrostatic_curves).unwrap();
-    strength.lightweight_intensity();
-    strength.share_force().unwrap();
+    strength.bending_moment();
 }
