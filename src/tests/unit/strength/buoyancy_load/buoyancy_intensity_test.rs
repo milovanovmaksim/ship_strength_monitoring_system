@@ -59,7 +59,7 @@ mod tests {
         let hydrostatic_curves =
             HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
         let draft = Draft::new(lcb, disp, lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
+        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
         let total_buoyancy = b_i.buoyancy_intensity().integral();
         let d_t_v = d_t.displacement_tonnage();
@@ -101,7 +101,7 @@ mod tests {
         let hydrostatic_curves =
             HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
         let draft = Draft::new(lcb, disp, lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
+        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
         let total_buoyancy = b_i.buoyancy_intensity().integral();
         let d_t_v = d_t.displacement_tonnage();

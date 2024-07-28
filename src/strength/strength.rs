@@ -132,12 +132,10 @@ impl Strength {
         let lcg = LCG::from_disp_i(&disp_i);
         let hydrostatic_curves = HydrostaticCurves::from_json_file(hydrostatic_curves)?;
         let draft = Draft::new(lcb.clone(), disp.clone(), lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)?;
+        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)?;
         let total_shipload = TotalShipload::from_disp_i_and_b_i(&disp_i, &b_i)?;
-        let share_force =
-            ShareForce::from_total_ship_load(&total_shipload).with_correction(ship_dimensions);
-        let bending_moment =
-            BendingMoment::from_share_force(&share_force).with_correction(ship_dimensions);
+        let share_force = ShareForce::from_total_ship_load(&total_shipload);
+        let bending_moment = BendingMoment::from_share_force(&share_force);
         Ok(Strength::new(
             lw,
             lw_i,

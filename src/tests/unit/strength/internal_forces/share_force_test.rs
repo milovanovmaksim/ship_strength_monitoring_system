@@ -61,7 +61,7 @@ mod tests {
         let hydrostatic_curves =
             HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
         let draft = Draft::new(lcb.clone(), disp.clone(), lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
+        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
         let total_shipload = TotalShipload::from_disp_i_and_b_i(&disp_i, &b_i).unwrap();
         let share_force =
@@ -101,7 +101,7 @@ mod tests {
         let hydrostatic_curves =
             HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
         let draft = Draft::new(lcb.clone(), disp.clone(), lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::build(ship_dimensions, &draft, &bonjean_scale, water_density)
+        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
             .unwrap();
         let total_shipload = TotalShipload::from_disp_i_and_b_i(&disp_i, &b_i).unwrap();
         let share_force =

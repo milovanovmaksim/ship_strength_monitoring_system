@@ -23,7 +23,7 @@ impl BuoyancyIntensity {
         BuoyancyIntensity { b_i }
     }
 
-    pub fn build(
+    pub fn constructor(
         ship_dimensions: ShipDimensions,
         draft: &Draft,
         bonjean_scale: &BonjeanScale,
