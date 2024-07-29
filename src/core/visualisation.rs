@@ -4,7 +4,7 @@ use plotly::{
     Layout, Plot, Scatter,
 };
 
-use crate::strength::strength::Strength;
+use crate::strength::{ship::spatium_functions::SpatiumFunctions, strength::Strength};
 
 pub enum DiagrammType {
     LightweightIntensity,
@@ -13,7 +13,9 @@ pub enum DiagrammType {
     BuoyancyIntensity,
     TotalShipload,
     ShareForce,
+    ShareForceWithCorrection,
     BendingMoment,
+    BendingMomentWithCorrection,
 }
 
 impl std::fmt::Display for DiagrammType {
@@ -25,7 +27,11 @@ impl std::fmt::Display for DiagrammType {
             DiagrammType::BuoyancyIntensity => write!(f, "Buoyancy intensity, [т / м]"),
             DiagrammType::TotalShipload => write!(f, "Total shipload, [т / м]"),
             DiagrammType::ShareForce => write!(f, "Share force, [т]"),
+            DiagrammType::ShareForceWithCorrection => write!(f, "Share force with correction, [т]"),
             DiagrammType::BendingMoment => write!(f, "Bending moment, [т * м]"),
+            DiagrammType::BendingMomentWithCorrection => {
+                write!(f, "Bending moment with correction, [т * м]")
+            }
         }
     }
 }
@@ -43,26 +49,74 @@ impl<'a> Visualisation<'a> {
         }
     }
 
-    pub fn plot(&self, diagramm_type: DiagrammType) {
-        let mut x = vec![];
-        let mut y = vec![];
-        let results = {
-            match diagramm_type {
-                DiagrammType::LightweightIntensity => self.strength.lightweight_intensity(),
-                DiagrammType::DeadweightIntensity => &self.strength.deadweight_intensity(),
-                DiagrammType::DisplacementIntensity => self.strength.displacement_intensity(),
-                DiagrammType::TotalShipload => self.strength.total_shipload(),
-                DiagrammType::BuoyancyIntensity => self.strength.buoyancy_intensity(),
-                DiagrammType::ShareForce => self.strength.share_force(),
-                DiagrammType::BendingMoment => self.strength.bending_moment(),
+    pub fn show(&self, diagramm_type: DiagrammType) {
+        match diagramm_type {
+            DiagrammType::LightweightIntensity => {
+                self.plot(
+                    self.strength.lightweight_intensity(),
+                    diagramm_type.to_string(),
+                )
+                .show();
+            }
+            DiagrammType::DeadweightIntensity => {
+                self.plot(
+                    &self.strength.deadweight_intensity(),
+                    diagramm_type.to_string(),
+                )
+                .show();
+            }
+            DiagrammType::DisplacementIntensity => {
+                self.plot(
+                    self.strength.displacement_intensity(),
+                    diagramm_type.to_string(),
+                )
+                .show();
+            }
+            DiagrammType::TotalShipload => self
+                .plot(self.strength.total_shipload(), diagramm_type.to_string())
+                .show(),
+            DiagrammType::BuoyancyIntensity => self
+                .plot(
+                    self.strength.buoyancy_intensity(),
+                    diagramm_type.to_string(),
+                )
+                .show(),
+            DiagrammType::ShareForce => self
+                .plot(self.strength.share_force(), diagramm_type.to_string())
+                .show(),
+            DiagrammType::ShareForceWithCorrection => {
+                match self.strength.share_force_with_correction() {
+                    Some(share_force) => {
+                        self.plot(share_force, diagramm_type.to_string()).show();
+                    }
+                    _ => (),
+                }
+            }
+            DiagrammType::BendingMoment => {
+                self.plot(self.strength.bending_moment(), diagramm_type.to_string())
+                    .show();
+            }
+            DiagrammType::BendingMomentWithCorrection => {
+                match self.strength.share_force_with_correction() {
+                    Some(bending_moment) => {
+                        self.plot(bending_moment, diagramm_type.to_string()).show();
+                    }
+                    _ => (),
+                }
             }
         };
-        for spatium in results.as_ref() {
+    }
+
+    pub fn plot(&self, s_fs: &SpatiumFunctions, diagramm_type: String) -> Plot {
+        let mut x = vec![];
+        let mut y = vec![];
+        for spatium in s_fs.as_ref() {
             x.push(spatium.x1());
             x.push(spatium.x2());
             y.push(spatium.f_x1());
             y.push(spatium.f_x2());
         }
+
         let trace1 = Scatter::new(x, y)
             .mode(Mode::LinesMarkers)
             .line(Line::new().shape(LineShape::Linear));
@@ -70,10 +124,10 @@ impl<'a> Visualisation<'a> {
         let layout = Layout::new()
             .x_axis(Axis::new().dtick(self.spatium_length))
             .legend(Legend::new().font(Font::new().size(16)))
-            .title(Title::new(&diagramm_type.to_string()))
+            .title(Title::new(&diagramm_type))
             .y_axis(Axis::new().range_mode(RangeMode::ToZero));
         plot.add_trace(trace1);
         plot.set_layout(layout);
-        plot.show();
+        plot
     }
 }

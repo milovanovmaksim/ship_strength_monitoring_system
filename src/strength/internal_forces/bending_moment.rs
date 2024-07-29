@@ -32,7 +32,7 @@ impl BendingMoment {
         &self.bending_moment_
     }
 
-    pub fn bending_moment_with_correction(&self) -> &Option<SpatiumFunctions> {
-        &self.bending_moment_with_correction_
+    pub fn bending_moment_with_correction(&self) -> Option<&SpatiumFunctions> {
+        self.bending_moment_with_correction_.as_ref()
     }
 }

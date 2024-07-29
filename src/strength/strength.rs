@@ -132,10 +132,13 @@ impl Strength {
         let lcg = LCG::from_disp_i(&disp_i);
         let hydrostatic_curves = HydrostaticCurves::from_json_file(hydrostatic_curves)?;
         let draft = Draft::new(lcb.clone(), disp.clone(), lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)?;
+        let b_i =
+            BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)?;
         let total_shipload = TotalShipload::from_disp_i_and_b_i(&disp_i, &b_i)?;
-        let share_force = ShareForce::from_total_ship_load(&total_shipload);
-        let bending_moment = BendingMoment::from_share_force(&share_force);
+        let share_force =
+            ShareForce::from_total_ship_load(&total_shipload).with_correction(ship_dimensions);
+        let bending_moment =
+            BendingMoment::from_share_force(&share_force).with_correction(ship_dimensions);
         Ok(Strength::new(
             lw,
             lw_i,
@@ -238,10 +241,20 @@ impl Strength {
     pub fn share_force(&self) -> &SpatiumFunctions {
         self.share_force_.share_force()
     }
+    ///
+    /// Эпюра перерезывающих сил c поправкой, т.е перерезывающая
+    /// сила в нсосовом и кормовом шпангоутах равна нулю. Размерность: [т].
+    pub fn share_force_with_correction(&self) -> Option<&SpatiumFunctions> {
+        self.share_force_.share_force_with_correction()
+    }
 
     ///
     /// Эпюра изгибающих моментов. Размерность: [т * м].
     pub fn bending_moment(&self) -> &SpatiumFunctions {
         self.bending_moment_.bending_momant()
+    }
+
+    pub fn bending_moment_with_correction(&self) -> Option<&SpatiumFunctions> {
+        self.bending_moment_.bending_moment_with_correction()
     }
 }

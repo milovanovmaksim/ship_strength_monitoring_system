@@ -9,6 +9,7 @@ use super::with_correction;
 /// Перерезывающая (касательная) сила.
 pub struct ShareForce {
     share_force_: SpatiumFunctions,
+    share_force_with_correction_: Option<SpatiumFunctions>,
 }
 
 impl ShareForce {
@@ -17,6 +18,7 @@ impl ShareForce {
     pub fn new(share_force: SpatiumFunctions) -> Self {
         ShareForce {
             share_force_: share_force,
+            share_force_with_correction_: None,
         }
     }
 
@@ -25,10 +27,16 @@ impl ShareForce {
         ShareForce::new(share_force)
     }
 
-    pub fn with_correction(self, ship_dimensions: ShipDimensions) -> ShareForce {
-        ShareForce::new(with_correction(&self.share_force_, ship_dimensions))
+    pub fn with_correction(mut self, ship_dimensions: ShipDimensions) -> ShareForce {
+        self.share_force_with_correction_ =
+            Some(with_correction(&self.share_force_, ship_dimensions));
+        self
     }
     pub fn share_force(&self) -> &SpatiumFunctions {
         &self.share_force_
+    }
+
+    pub fn share_force_with_correction(&self) -> Option<&SpatiumFunctions> {
+        self.share_force_with_correction_.as_ref()
     }
 }
