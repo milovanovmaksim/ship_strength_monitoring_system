@@ -46,25 +46,25 @@ impl DeadweightIntensity {
         spatium_functions
     }
 
+    fn max_intensity(&self, c_min: f64, shipload: Shipload) -> f64 {
+        shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium()))
+            / self.ship_dimensions.length_spatium()
+    }
+    fn min_intensity(&self, c_min: f64, shipload: Shipload) -> f64 {
+        shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium()))
+            / self.ship_dimensions.length_spatium()
+    }
     ///
     /// Интенсивность силы для теоретической шпации [т/м].
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
             && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_nose()
         {
-            let max_intensity = |c_min: f64| {
-                shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium()))
-                    / self.ship_dimensions.length_spatium()
-            };
-            let min_intensity = |c_min: f64| {
-                shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium()))
-                    / self.ship_dimensions.length_spatium()
-            };
             let shipload_intensity_closure =
                 |distance: f64, index: u64, next_index: u64| -> Vec<SpatiumFunction> {
                     let mut spatium_functions = vec![];
-                    let f_x_max_intensity = max_intensity(distance).my_round(2);
-                    let f_x_min_intensity = min_intensity(distance).my_round(2);
+                    let f_x_max_intensity = self.max_intensity(distance, shipload).my_round(2);
+                    let f_x_min_intensity = self.min_intensity(distance, shipload).my_round(2);
                     let spatium_function = SpatiumFunction::from_id(
                         index,
                         &self.ship_dimensions,
