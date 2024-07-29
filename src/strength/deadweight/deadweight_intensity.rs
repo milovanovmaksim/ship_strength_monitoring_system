@@ -62,24 +62,22 @@ impl DeadweightIntensity {
         {
             let shipload_intensity_closure =
                 |distance: f64, index: u64, next_index: u64| -> Vec<SpatiumFunction> {
-                    let mut spatium_functions = vec![];
                     let f_x_max_intensity = self.max_intensity(distance, shipload).my_round(2);
                     let f_x_min_intensity = self.min_intensity(distance, shipload).my_round(2);
-                    let spatium_function = SpatiumFunction::from_id(
-                        index,
-                        &self.ship_dimensions,
-                        f_x_max_intensity.my_round(2),
-                        f_x_max_intensity.my_round(2),
-                    );
-                    spatium_functions.push(spatium_function);
-                    let spatium_function = SpatiumFunction::from_id(
-                        next_index,
-                        &self.ship_dimensions,
-                        f_x_min_intensity.my_round(2),
-                        f_x_min_intensity.my_round(2),
-                    );
-                    spatium_functions.push(spatium_function);
-                    spatium_functions
+                    vec![
+                        SpatiumFunction::from_id(
+                            index,
+                            &self.ship_dimensions,
+                            f_x_max_intensity.my_round(2),
+                            f_x_max_intensity.my_round(2),
+                        ),
+                        SpatiumFunction::from_id(
+                            next_index,
+                            &self.ship_dimensions,
+                            f_x_min_intensity.my_round(2),
+                            f_x_min_intensity.my_round(2),
+                        ),
+                    ]
                 };
             let spatium_start_index = self
                 .ship_dimensions
