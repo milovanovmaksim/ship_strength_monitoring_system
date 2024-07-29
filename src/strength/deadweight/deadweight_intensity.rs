@@ -54,51 +54,65 @@ impl DeadweightIntensity {
         shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium()))
             / self.ship_dimensions.length_spatium()
     }
+
+    ///
+    /// Интенсивность нагрузки, расположенной в пределах одной шпации асимметрично.
+    fn intensity_asymmetric_load(
+        &self,
+        index: u64,
+        next_index: u64,
+        distance: f64,
+        shipload: Shipload,
+    ) -> Vec<SpatiumFunction> {
+        let f_x_max_intensity = self.max_intensity(distance, shipload).my_round(2);
+        let f_x_min_intensity = self.min_intensity(distance, shipload).my_round(2);
+        vec![
+            SpatiumFunction::from_id(
+                index,
+                &self.ship_dimensions,
+                f_x_max_intensity.my_round(2),
+                f_x_max_intensity.my_round(2),
+            ),
+            SpatiumFunction::from_id(
+                next_index,
+                &self.ship_dimensions,
+                f_x_min_intensity.my_round(2),
+                f_x_min_intensity.my_round(2),
+            ),
+        ]
+    }
+
     ///
     /// Интенсивность силы для теоретической шпации [т/м].
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
             && shipload.longitudinal_center_gravity() < self.ship_dimensions.coordinate_nose()
         {
-            let shipload_intensity_closure =
-                |distance: f64, index: u64, next_index: u64| -> Vec<SpatiumFunction> {
-                    let f_x_max_intensity = self.max_intensity(distance, shipload).my_round(2);
-                    let f_x_min_intensity = self.min_intensity(distance, shipload).my_round(2);
-                    vec![
-                        SpatiumFunction::from_id(
-                            index,
-                            &self.ship_dimensions,
-                            f_x_max_intensity.my_round(2),
-                            f_x_max_intensity.my_round(2),
-                        ),
-                        SpatiumFunction::from_id(
-                            next_index,
-                            &self.ship_dimensions,
-                            f_x_min_intensity.my_round(2),
-                            f_x_min_intensity.my_round(2),
-                        ),
-                    ]
-                };
             let spatium_start_index = self
                 .ship_dimensions
                 .spatium_index_by_coordinate(shipload.longitudinal_center_gravity());
             let (distance_left, distance_right) =
                 shipload.distances_to_frames(&self.ship_dimensions);
+
+            // Груз расположен в пределах одной теоретической шпации несимметрично ближе к правому шпангоуту теоретической шпации.
             if distance_left / distance_right >= 1.05 {
                 info!("Shipload.shipload_intensity | Центр тяжести груза ближе к правому шпангоуту теоретической шпации. c_right={}, c_left={}", distance_right, distance_left);
-                let spatium_functions = shipload_intensity_closure(
-                    distance_right,
+                let spatium_functions = self.intensity_asymmetric_load(
                     spatium_start_index,
                     spatium_start_index + 1,
+                    distance_right,
+                    shipload,
                 );
                 info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
+            // Груз расположен в пределах одной теоретической шпации несимметрично ближе к левому шпангоуту теоретической шпации.
             } else if distance_left / distance_right <= 0.95 {
                 info!("Load.shipload_intensity | Центр тяжести груза ближе к левому шпангоуту теоретической шпации. c_right = {}, c_left = {}", distance_right, distance_left);
-                let spatium_functions = shipload_intensity_closure(
-                    distance_left,
+                let spatium_functions = self.intensity_asymmetric_load(
                     spatium_start_index,
                     spatium_start_index - 1,
+                    distance_left,
+                    shipload,
                 );
                 info!("Saptiums are under the load {:#?}", spatium_functions);
                 spatium_functions
