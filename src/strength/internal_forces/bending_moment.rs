@@ -5,6 +5,7 @@ use crate::strength::ship::{ship_dimensions::ShipDimensions, spatium_functions::
 /// Изгибающий момент.
 pub struct BendingMoment {
     bending_moment_: SpatiumFunctions,
+    bending_moment_with_correction_: Option<SpatiumFunctions>,
 }
 
 impl BendingMoment {
@@ -13,6 +14,7 @@ impl BendingMoment {
     pub fn new(bending_moment: SpatiumFunctions) -> Self {
         BendingMoment {
             bending_moment_: bending_moment,
+            bending_moment_with_correction_: None,
         }
     }
 
@@ -20,11 +22,17 @@ impl BendingMoment {
         BendingMoment::new(share_force.share_force().integral_vul())
     }
 
-    pub fn with_correction(self, ship_dimensions: ShipDimensions) -> BendingMoment {
-        BendingMoment::new(with_correction(&self.bending_moment_, ship_dimensions))
+    pub fn with_correction(mut self, ship_dimensions: ShipDimensions) -> BendingMoment {
+        self.bending_moment_with_correction_ =
+            Some(with_correction(&self.bending_moment_, ship_dimensions));
+        self
     }
 
     pub fn bending_momant(&self) -> &SpatiumFunctions {
         &self.bending_moment_
+    }
+
+    pub fn bending_moment_with_correction(&self) -> &Option<SpatiumFunctions> {
+        &self.bending_moment_with_correction_
     }
 }
