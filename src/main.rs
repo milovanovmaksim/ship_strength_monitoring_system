@@ -1,5 +1,4 @@
 mod core;
-mod cross_section_properties;
 mod strength;
 mod tests;
 use core::visualisation::{DiagrammType, Visualisation};
