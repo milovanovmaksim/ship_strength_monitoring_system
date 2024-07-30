@@ -147,7 +147,7 @@ impl Strength {
             disp,
             disp_i,
             d_t,
-            lcb.clone(),
+            lcb,
             lcg,
             b_i,
             total_shipload,
@@ -254,6 +254,9 @@ impl Strength {
         self.bending_moment_.bending_momant()
     }
 
+    ///
+    /// Эпюра изгибающих моментов c поправкой, т.е изгибающий момент
+    /// в нсосовом и кормовом шпангоутах равен нулю. Размерность: [т].
     pub fn bending_moment_with_correction(&self) -> Option<&SpatiumFunctions> {
         self.bending_moment_.bending_moment_with_correction()
     }
