@@ -11,7 +11,7 @@ mod tests {
             },
         },
     };
-    use std::{env, rc::Rc, sync::Once};
+    use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
 
