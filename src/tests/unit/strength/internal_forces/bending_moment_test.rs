@@ -43,8 +43,8 @@ mod tests {
         let lw = Lightweight::new(13550.0);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.74);
         let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
-        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
+        let dw_i = DeadweightIntensity::builder(&shiploads, ship_dimensions).build();
         let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
         let dw = Deadweight::from_shiplods(&shiploads);
         let d_t = DisplacementTonnage::new(lw, dw);
@@ -86,8 +86,8 @@ mod tests {
         let lw = Lightweight::new(13550.0);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.74);
         let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
-        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
+        let dw_i = DeadweightIntensity::builder(&shiploads, ship_dimensions).build();
         let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
         let dw = Deadweight::from_shiplods(&shiploads);
         let d_t = DisplacementTonnage::new(lw, dw);

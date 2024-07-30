@@ -29,20 +29,21 @@ mod tests {
     fn lcg_ok_test() {
         call_once();
         let lightweight = Lightweight::new(13567.0);
-        let shiploads = Rc::new(Shiploads::new(vec![
+        let shiploads = Shiploads::new(vec![
             Shipload::new(140.2, Point::new(40.23, 0.0, 0.0), 15.21),
             Shipload::new(150.0, Point::new(40.0, 0.0, 0.0), 25.0),
             Shipload::new(150.0, Point::new(40.0, 0.0, 0.0), 20.0),
             Shipload::new(140.2, Point::new(30.23, 0.0, 0.0), 15.21),
             Shipload::new(150.0, Point::new(20.0, 0.0, 0.0), 25.0),
             Shipload::new(150.0, Point::new(10.0, 0.0, 0.0), 20.0),
-        ]));
+        ]);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.6);
         let lightweight_intensity = Rc::new(LightweightIntensity::from_ship_input_data(
             ship_dimensions.clone(),
             lightweight,
         ));
-        let deadweight_intensity = DeadweightIntensity::new(shiploads, ship_dimensions);
+        let deadweight_intensity =
+            DeadweightIntensity::builder(&shiploads, ship_dimensions).build();
         let displacement_intensity = DisplacementIntensity::from_dw_i_and_lw_i(
             &deadweight_intensity,
             &lightweight_intensity,

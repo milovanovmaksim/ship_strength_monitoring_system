@@ -37,7 +37,7 @@ mod tests {
             Shipload::new(10.0, Point::new(35.25, 0.0, 0.0), 11.75),
         ]));
         let d_i = DisplacementIntensity::from_dw_i_and_lw_i(
-            &DeadweightIntensity::new(shiploads, ship_dimensions),
+            &DeadweightIntensity::builder(&shiploads, ship_dimensions).build(),
             &LightweightIntensity::from_ship_input_data(ship_dimensions, Lightweight::new(15350.0)),
         )
         .unwrap();

@@ -115,8 +115,8 @@ impl Strength {
         let lw = Lightweight::from_json_file(input_path.clone())?;
         let ship_dimensions = ShipDimensions::from_json_file(input_path.clone())?;
         let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
-        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file)?);
-        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let shiploads = Shiploads::from_json_file(shiploads_file)?;
+        let dw_i = DeadweightIntensity::builder(&shiploads, ship_dimensions).build();
         let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i)?;
         let dw = Deadweight::from_shiplods(&shiploads);
         let d_t = DisplacementTonnage::new(lw, dw);
@@ -147,7 +147,7 @@ impl Strength {
             disp,
             disp_i,
             d_t,
-            lcb,
+            lcb.clone(),
             lcg,
             b_i,
             total_shipload,
@@ -179,7 +179,7 @@ impl Strength {
 
     ///
     /// Интенсивность дедвейта по длине судна. Размерность: [т/м].
-    pub fn deadweight_intensity(&self) -> SpatiumFunctions {
+    pub fn deadweight_intensity(&self) -> &SpatiumFunctions {
         self.dw_i.deadweight_intensity()
     }
 

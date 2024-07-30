@@ -41,8 +41,8 @@ mod tests {
         let lw = Lightweight::new(13550.0);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
-        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
+        let dw_i = DeadweightIntensity::builder(&shiploads, ship_dimensions).build();
         let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
         let dw = Deadweight::from_shiplods(&shiploads);
         let d_t = DisplacementTonnage::new(lw, dw);
@@ -59,8 +59,9 @@ mod tests {
         let hydrostatic_curves =
             HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
         let draft = Draft::new(lcb, disp, lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
-            .unwrap();
+        let b_i =
+            BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
+                .unwrap();
         let total_buoyancy = b_i.buoyancy_intensity().integral();
         let d_t_v = d_t.displacement_tonnage();
         let error = (((total_buoyancy.abs() - d_t_v).abs() / d_t_v.min(total_buoyancy.abs()))
@@ -83,8 +84,8 @@ mod tests {
         let lw = Lightweight::new(13550.0);
         let ship_dimensions = ShipDimensions::new(235.0, 20, 0.8);
         let lw_i = LightweightIntensity::from_ship_input_data(ship_dimensions.clone(), lw);
-        let shiploads = Rc::new(Shiploads::from_json_file(shiploads_file).unwrap());
-        let dw_i = DeadweightIntensity::new(shiploads.clone(), ship_dimensions);
+        let shiploads = Shiploads::from_json_file(shiploads_file).unwrap();
+        let dw_i = DeadweightIntensity::builder(&shiploads, ship_dimensions).build();
         let disp_i = DisplacementIntensity::from_dw_i_and_lw_i(&dw_i, &lw_i).unwrap();
         let dw = Deadweight::from_shiplods(&shiploads);
         let d_t = DisplacementTonnage::new(lw, dw);
@@ -101,8 +102,9 @@ mod tests {
         let hydrostatic_curves =
             HydrostaticCurves::from_json_file(hydrostatic_curves_file).unwrap();
         let draft = Draft::new(lcb, disp, lcg, d_t, hydrostatic_curves);
-        let b_i = BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
-            .unwrap();
+        let b_i =
+            BuoyancyIntensity::constructor(ship_dimensions, &draft, &bonjean_scale, water_density)
+                .unwrap();
         let total_buoyancy = b_i.buoyancy_intensity().integral();
         let d_t_v = d_t.displacement_tonnage();
         let error = (((total_buoyancy.abs() - d_t_v).abs() / d_t_v.min(total_buoyancy.abs()))

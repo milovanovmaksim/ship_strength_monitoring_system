@@ -60,7 +60,7 @@ impl<'a> Visualisation<'a> {
             }
             DiagrammType::DeadweightIntensity => {
                 self.plot(
-                    &self.strength.deadweight_intensity(),
+                    self.strength.deadweight_intensity(),
                     diagramm_type.to_string(),
                 )
                 .show();
@@ -97,7 +97,7 @@ impl<'a> Visualisation<'a> {
                     .show();
             }
             DiagrammType::BendingMomentWithCorrection => {
-                match self.strength.share_force_with_correction() {
+                match self.strength.bending_moment_with_correction() {
                     Some(bending_moment) => {
                         self.plot(bending_moment, diagramm_type.to_string()).show();
                     }
