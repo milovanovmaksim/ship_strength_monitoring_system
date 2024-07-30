@@ -13,7 +13,7 @@ use crate::strength::load::{shipload::Shipload, shiploads::Shiploads};
 use super::deadweight_intensity::DeadweightIntensity;
 
 ///
-/// Интенсивность дедвейта по длине судна.
+/// Строитель для создания объекта DeadweightIntensity.
 #[derive(Debug)]
 pub struct DeadweightIntensityBuilder<'a> {
     shiploads: &'a Shiploads,
@@ -31,7 +31,7 @@ impl<'a> DeadweightIntensityBuilder<'a> {
     }
 
     ///
-    /// Возвращает интенсивность дедвейта по длине судна т/м.
+    /// Возвращает объект DeadweightIntensity.
     pub fn build(&self) -> DeadweightIntensity {
         let number_spatiums = self.ship_dimensions.number_spatiums();
         let length_between_perpendiculars = self.ship_dimensions.lbp();
@@ -87,6 +87,8 @@ impl<'a> DeadweightIntensityBuilder<'a> {
         ]
     }
 
+    ///
+    /// Интенсивность от нагрузки, расположенной за пределами крайних шпангоутов судна.
     fn intensity_load_located_outside_outer_frames(
         &self,
         shipload: Shipload,
