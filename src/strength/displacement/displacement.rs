@@ -1,6 +1,5 @@
 use std::rc::Rc;
-
-use log::error;
+use tracing::instrument;
 
 use crate::{
     core::{linear_interpolation::LinearInterpolation, water_density::WaterDensity},
@@ -32,6 +31,7 @@ impl Displacement {
 
     ///
     /// Возвращает объемное водоизмещение судна от осадки. [м^3]
+    #[instrument(skip(self), target = "Displacement::displacement_by_drafts")]
     pub fn displacement_by_drafts(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let coordinate_aft = self.ship_dimensions.coordinate_aft();
@@ -41,21 +41,11 @@ impl Displacement {
             LinearInterpolation::new(aft_draft, nose_draft, coordinate_aft, coordinate_bow);
         let mut ship_underwater_volume = 0.0;
         for _ in 0..self.ship_dimensions.number_spatiums() {
-            match linear_interpolation.interpolated_value(abscissa) {
-                Ok(draft) => match self.bonjean_scale.frame_underwater_volume(abscissa, draft) {
-                    Ok(frame_underwater_volume) => {
-                        ship_underwater_volume += frame_underwater_volume;
-                    }
-                    Err(err) => {
-                        error!("Displacement::displacement | error: {}", err);
-                        return Err(err);
-                    }
-                },
-                Err(err) => {
-                    error!("Displacement::displacement | error: {}", err);
-                    return Err(err);
-                }
-            }
+            let draft = linear_interpolation.interpolated_value(abscissa)?;
+            let frame_underwater_volume = self
+                .bonjean_scale
+                .frame_underwater_volume(abscissa, draft)?;
+            ship_underwater_volume += frame_underwater_volume;
             abscissa += length_spatium
         }
         Ok(ship_underwater_volume)
