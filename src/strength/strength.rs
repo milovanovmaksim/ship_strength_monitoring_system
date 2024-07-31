@@ -1,3 +1,5 @@
+use tracing::instrument;
+
 use super::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     displacement::displacement_intensity::DisplacementIntensity,
@@ -106,6 +108,7 @@ impl Strength {
     ///     shiploads_file - путь к json файлу, содержащему нагрузки, действующие на судно,
     ///     frames_file - путь к json файлу, содержащему масштаб Бонжана,
     ///     hydrostatic_curves - пусть к файлу, содержащему гидростатические кривые судна.
+    #[instrument(skip_all, err, target = "Strength::new_project")]
     pub fn new_project(
         input_path: String,
         shiploads_file: String,
@@ -123,6 +126,7 @@ impl Strength {
         let water_density = WaterDensity::from_json_file(input_path.clone())?;
         let frames = Frames::from_json_file(frames_file)?;
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
+        bonjean_scale.frame_underwater_area(1000.0, 2.3)?;
         let disp = Rc::new(Displacement::new(
             bonjean_scale.clone(),
             ship_dimensions,

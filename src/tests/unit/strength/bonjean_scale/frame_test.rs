@@ -1,6 +1,19 @@
 #[cfg(test)]
 mod tests {
+    use std::{env, sync::Once};
+
     use crate::strength::bonjean_scale::frame::Frame;
+
+    static INIT: Once = Once::new();
+
+    fn call_once() {
+        INIT.call_once(|| {
+            env::set_var("RUST_LOG", "debug"); // off / error / warn / info / debug / trace
+                                               // env::set_var("RUST_BACKTRACE", "1");
+            env::set_var("RUST_BACKTRACE", "full");
+            let _ = env_logger::try_init();
+        })
+    }
 
     #[test]
     fn area_by_draft_ok_test() {
@@ -25,6 +38,7 @@ mod tests {
 
     #[test]
     fn area_by_draft_err_test() {
+        call_once();
         let id = 6;
         let drafts = vec![
             1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 13.3,
