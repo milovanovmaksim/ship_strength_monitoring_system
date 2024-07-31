@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 use log::error;
+use tracing::instrument;
 
 use crate::{
     core::linear_interpolation::LinearInterpolation,
@@ -31,6 +32,7 @@ impl LCB {
     /// Parameters:
     ///     aft_draft - осадка кормы [м],
     ///     node_draft - осадка носа [м].
+    #[instrument(skip(self), target = "LCB::lcb")]
     pub fn lcb(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let coordinate_aft = self.ship_dimensions.coordinate_aft();
@@ -41,22 +43,11 @@ impl LCB {
         let mut ship_underwater_area = 0.0;
         let mut moment = 0.0;
         for _ in 0..self.ship_dimensions.number_spatiums() {
-            match linear_interpolation.interpolated_value(abscissa) {
-                Ok(draft) => match self.bonjean_scale.frame_underwater_area(abscissa, draft) {
-                    Ok(frame_underwater_area) => {
-                        moment += frame_underwater_area * abscissa;
-                        ship_underwater_area += frame_underwater_area;
-                    }
-                    Err(err) => {
-                        error!("LCB::lcb | error: {}", err);
-                        return Err(err);
-                    }
-                },
-                Err(err) => {
-                    error!("LCB::lcb | error: {}", err);
-                    return Err(err);
-                }
-            }
+            let draft = linear_interpolation.interpolated_value(abscissa)?;
+            let frame_underwater_area =
+                self.bonjean_scale.frame_underwater_area(abscissa, draft)?;
+            moment += frame_underwater_area * abscissa;
+            ship_underwater_area += frame_underwater_area;
             abscissa += length_spatium
         }
         Ok(moment / ship_underwater_area)
