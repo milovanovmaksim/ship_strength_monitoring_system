@@ -1,5 +1,6 @@
+use tracing::{error, info, instrument, warn};
+
 use crate::core::json_file::JsonFile;
-use log::{debug, error, warn};
 
 use super::frame::Frame;
 
@@ -13,36 +14,19 @@ pub struct Frames {
 impl Frames {
     ///
     /// Основной конструктор.
+    #[instrument(target = "Frames::new")]
     pub fn new(frames: Vec<Frame>) -> Result<Self, String> {
-        match (Frames { frames }).frames_validate() {
-            Ok(frames) => Ok(frames),
-            Err(err) => {
-                error!("Frames::new | error: {}", err);
-                Err(err)
-            }
-        }
+        (Frames { frames }).frames_validate()
     }
 
     ///
     /// Create the object from json file.
+    #[instrument(target = "Frames::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<Frames, String> {
         let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => match serde_json::from_reader(content) {
-                Ok(frames) => {
-                    debug!("Frames::from_json_file | Frames has been created sucessfuly.");
-                    Frames::new(frames)
-                }
-                Err(err) => {
-                    warn!("Frames::from_json_file | error: {:?}.", err);
-                    return Err(err.to_string());
-                }
-            },
-            Err(err) => {
-                warn!("Frames::from_json_file | error: {:?}.", err);
-                return Err(err);
-            }
-        }
+        let contenst = json.content()?;
+        let frames = serde_json::from_reader(contenst).map_err(|e| e.to_string())?;
+        Frames::new(frames)
     }
 
     ///
