@@ -6,8 +6,8 @@ use crate::{
         spatium_functions::SpatiumFunctions,
     },
 };
-use log::{error, info};
 use serde::Deserialize;
+use tracing::instrument;
 
 ///
 /// Интенсивность массы корпуса судна по длине.
@@ -72,24 +72,11 @@ impl LightweightIntensity {
 
     ///
     /// Вспомогательный конструктор.
+    #[instrument(skip_all, target = "LightweightIntensity::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<LightweightIntensity, String> {
         let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => match serde_json::from_reader(content) {
-                Ok(lightweight_intensity) => {
-                    info!("LightweightIntensity::from_json_file | LightweightIntensity has been created sucessfuly.");
-                    return lightweight_intensity;
-                }
-                Err(err) => {
-                    error!("LightweightIntensity::from_json_file | error: {:?}.", err);
-                    return Err(err.to_string());
-                }
-            },
-            Err(err) => {
-                error!("LightweightIntensity::from_json_file | error: {:?}.", err);
-                return Err(err);
-            }
-        }
+        let content = json.content().map_err(|err| err.to_string())?;
+        serde_json::from_reader(content).map_err(|err| err.to_string())
     }
 
     ///

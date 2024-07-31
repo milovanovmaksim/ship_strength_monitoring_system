@@ -1,5 +1,5 @@
-use log::{debug, warn};
 use serde::{Deserialize, Serialize};
+use tracing::instrument;
 
 use crate::core::json_file::JsonFile;
 use crate::strength::load::shipload::Shipload;
@@ -19,28 +19,11 @@ impl Shiploads {
         Shiploads { shiploads }
     }
 
-    ///
-    /// Create the object from json file.
+    #[instrument(skip_all, target = "Shiploads::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
         let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(shiploads) => {
-                        debug!("Shiploads::from_json_file | Shiploads has been created sucessfuly. {:?}", shiploads);
-                        Ok(shiploads)
-                    }
-                    Err(err) => {
-                        warn!("Shiploads::from_json_file | error: {:?}.", err);
-                        return Err(err.to_string());
-                    }
-                }
-            }
-            Err(err) => {
-                warn!("Shiploads::from_json_file | error: {:?}.", err);
-                return Err(err);
-            }
-        }
+        let content = json.content().map_err(|err| err.to_string())?;
+        serde_json::from_reader(content).map_err(|err| err.to_string())
     }
 
     pub fn shared_shiploads(&self, ship_dimensions: &ShipDimensions) -> Shiploads {
