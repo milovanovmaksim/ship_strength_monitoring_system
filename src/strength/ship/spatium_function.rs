@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use tracing::instrument;
 
 use crate::core::round::Round;
 
@@ -86,6 +87,7 @@ impl SpatiumFunction {
     ///
     /// Сложение шпаций с одинаковыми id.
     /// Возвращает новый объект.
+    #[instrument(skip(self), err, target = "SpatiumFunction::add")]
     pub fn add(&self, term: SpatiumFunction) -> Result<SpatiumFunction, String> {
         if term.id == self.id {
             let f_x1 = self.f_x1 + term.f_x1();
