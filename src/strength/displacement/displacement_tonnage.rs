@@ -8,7 +8,7 @@ pub struct DisplacementTonnage {
 
 impl DisplacementTonnage {
     pub fn new(lw: Lightweight, dw: Deadweight) -> Self {
-        DisplacementTonnage { lw: lw, dw: dw }
+        DisplacementTonnage { lw, dw }
     }
 
     pub fn displacement_tonnage(&self) -> f64 {

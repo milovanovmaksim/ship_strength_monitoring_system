@@ -1,15 +1,17 @@
 use std::rc::Rc;
-
-use log::info;
+use tracing::{info, instrument};
 
 use super::lcg::LCG;
-use crate::strength::{
-    bonjean_scale::lcb::LCB,
-    displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
-    hydrostatic_curves::{
-        hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
+use crate::{
+    core::round::Round,
+    strength::{
+        bonjean_scale::lcb::LCB,
+        displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
+        hydrostatic_curves::{
+            hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
+        },
+        ship::ship_dimensions::ShipDimensions,
     },
-    ship::ship_dimensions::ShipDimensions,
 };
 
 ///
@@ -82,7 +84,7 @@ impl Draft {
                 "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
         } else {
             info!(
-                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
+                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения не выполняется.")
         }
         Ok(())
     }
@@ -106,7 +108,8 @@ impl Draft {
     ///
     /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадки кормы и носа судна (aft_draft, nose_draft).
-    fn trim(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
+    #[instrument(skip(self), err, target = "Draft::trimming")]
+    fn trimming(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
         let mut max_draft = self.hydrostatic_curves.max_draft();
         let mut min_draft = self.hydrostatic_curves.min_draft();
         let mut nose_draft = mean_draft;
@@ -150,11 +153,12 @@ impl Draft {
             lcb = self.lcb.lcb(aft_draft, nose_draft)?;
             j += 1;
         }
-        Ok((aft_draft, nose_draft))
+        Ok((aft_draft.my_round(2), nose_draft.my_round(2)))
     }
 
     ///
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
+    #[instrument(skip_all, err, target = "Draft::draft")]
     pub fn draft(&self, ship_dimensions: ShipDimensions) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.d_t.displacement_tonnage();
         if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
@@ -173,7 +177,7 @@ impl Draft {
         let mut min_draft_d = self.hydrostatic_curves.min_draft();
         let lbp = ship_dimensions.lbp();
         for i in 0..50 {
-            let (aft_draft, nose_draft) = self.trim(lbp, mean_draft, lcf)?;
+            let (aft_draft, nose_draft) = self.trimming(lbp, mean_draft, lcf)?;
             let calc_disp = self
                 .displacement
                 .displacement_by_drafts(aft_draft, nose_draft)?;

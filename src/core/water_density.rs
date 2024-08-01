@@ -1,7 +1,7 @@
 use std::ops::Div;
 
-use log::{info, warn};
 use serde::Deserialize;
+use tracing::instrument;
 
 use super::json_file::JsonFile;
 
@@ -22,28 +22,13 @@ impl WaterDensity {
     pub fn water_density(&self) -> f64 {
         self.water_density
     }
-    ///
+
     /// Create the object from json file.
+    #[instrument(skip_all, err, target = "WaterDensity::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
         let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => {
-                match serde_json::from_reader(content) {
-                    Ok(water_density) => {
-                        info!("Shiploads::from_json_file | Shiploads has been created sucessfuly. {:?}", water_density);
-                        Ok(water_density)
-                    }
-                    Err(err) => {
-                        warn!("Shiploads::from_json_file | error: {:?}.", err);
-                        return Err(err.to_string());
-                    }
-                }
-            }
-            Err(err) => {
-                warn!("Shiploads::from_json_file | error: {:?}.", err);
-                return Err(err);
-            }
-        }
+        let content = json.content().map_err(|err| err.to_string())?;
+        serde_json::from_reader(content).map_err(|err| err.to_string())
     }
 }
 

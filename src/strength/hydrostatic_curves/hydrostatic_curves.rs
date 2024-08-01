@@ -1,5 +1,5 @@
-use log::{debug, error};
 use serde::Deserialize;
+use tracing::instrument;
 
 use crate::core::{
     binary_search::BinarySearch, json_file::JsonFile, linear_interpolation::LinearInterpolation,
@@ -32,6 +32,7 @@ pub struct HydrostaticCurves {
 impl HydrostaticCurves {
     ///
     /// Основной конструктор.
+    #[instrument(skip_all, err, target = "HydrostaticCurves::new")]
     pub fn new(
         drafts: Vec<f64>,
         displacement_tonnage: Vec<f64>,
@@ -40,7 +41,7 @@ impl HydrostaticCurves {
         x_f: Vec<f64>,
         r_l: Vec<f64>,
     ) -> Result<Self, String> {
-        match (HydrostaticCurves {
+        (HydrostaticCurves {
             drafts,
             displacement_tonnage,
             x_c,
@@ -49,39 +50,20 @@ impl HydrostaticCurves {
             lmr: r_l,
         })
         .validate_input_data()
-        {
-            Ok(hydrostatic_curves) => Ok(hydrostatic_curves),
-            Err(err) => {
-                error!("HydrostaticCurves::new | error: {}", err);
-                Err(err)
-            }
-        }
     }
 
     ///
-    /// Create the object from json file.
+    /// Вспомогательный конструктор.
+    #[instrument(skip_all, err, target = "HydrostaticCurves::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<HydrostaticCurves, String> {
         let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => match serde_json::from_reader(content) {
-                Ok(value) => {
-                    debug!("HydrostaticCurves::from_json_file | HydrostaticCurves has been created sucessfuly.");
-                    Ok(value)
-                }
-                Err(err) => {
-                    error!("HydrostaticCurves::from_json_file | error: {:?}.", err);
-                    return Err(err.to_string());
-                }
-            },
-            Err(err) => {
-                error!("HydrostaticCurves::from_json_file | error: {:?}.", err);
-                return Err(err);
-            }
-        }
+        let content = json.content()?;
+        serde_json::from_reader(content).map_err(|err| err.to_string())
     }
 
     ///
     /// Валидация входных данных.
+    #[instrument(skip(self), err, target = "HydrostaticCurves::validate_input_data")]
     fn validate_input_data(self) -> Result<HydrostaticCurves, String> {
         if let Err(err) = self.validate_empty_data() {
             return Err(err);
@@ -162,9 +144,12 @@ impl HydrostaticCurves {
     }
 
     ///
-    /// Возвращает среднюю осадку судна по заданному весовому водоизмещению [м].
+    /// Возвращает среднюю осадку судна по весовому водоизмещению [м].
+    /// Если значение весового водоизмещения выходит за определенный диапазон весового водоизмещения
+    /// в гидростатических кривых, возвращает None.
     /// Parameters:
-    ///     dispalcement_tonnage - весовое вододоизмещение.
+    ///     dispalcement_tonnage - весовое вододоизмещение для которого необходимо определить среднюю осадку.
+    #[instrument(skip(self), err, target = "HydrostaticCurves::mean_draft")]
     pub fn mean_draft(&self, displacement_tonnage: f64) -> Result<Option<f64>, String> {
         if displacement_tonnage > *self.displacement_tonnage.last().unwrap()
             || displacement_tonnage < *self.displacement_tonnage.first().unwrap()
@@ -182,16 +167,9 @@ impl HydrostaticCurves {
                     *self.displacement_tonnage.get(left_id).unwrap(),
                     *self.displacement_tonnage.get(right_id).unwrap(),
                 );
-                match linear_interpolation.interpolated_value(displacement_tonnage) {
-                    Ok(draft) => Ok(Some(draft)),
-                    Err(error) => {
-                        error!(
-                            "HydrostaticCurves::draft_by_displacement_tonnage | {}",
-                            error
-                        );
-                        Err(error)
-                    }
-                }
+                Ok(Some(
+                    linear_interpolation.interpolated_value(displacement_tonnage)?,
+                ))
             }
             (Some(id), None) => Ok(self.drafts.get(id).copied()),
             _ => Ok(None),
@@ -203,6 +181,7 @@ impl HydrostaticCurves {
     /// Parameters:
     ///     draft - осадка судна,
     ///     type_data - enum HydrostaticTypeData
+    #[instrument(skip_all, err, target = "HydrostaticCurves::get_data_by_draft")]
     pub fn get_data_by_draft(
         &self,
         draft: f64,
@@ -227,15 +206,7 @@ impl HydrostaticCurves {
                     *self.drafts.get(left_index).unwrap(),
                     *self.drafts.get(right_index).unwrap(),
                 );
-                match linear_interpolation.interpolated_value(draft) {
-                    Ok(value) => {
-                        return Ok(Some(value));
-                    }
-                    Err(error) => {
-                        error!("HydrostaticCurves::get_data_by_draft | {}", error);
-                        return Err(error);
-                    }
-                }
+                Ok(Some(linear_interpolation.interpolated_value(draft)?))
             }
             (Some(index), None) => Ok(data.get(index).copied()),
             _ => Ok(None),

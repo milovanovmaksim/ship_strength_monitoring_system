@@ -1,3 +1,5 @@
+use tracing::instrument;
+
 use crate::strength::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     lightweight::lightweight_intensity::LightweightIntensity,
@@ -17,6 +19,9 @@ impl DisplacementIntensity {
         DisplacementIntensity { disp_i }
     }
 
+    ///
+    /// Вспомогательный конструктор.
+    #[instrument(skip_all, err, target = "DisplacementIntensity::from_dw_i_and_lw_i")]
     pub fn from_dw_i_and_lw_i(
         dw_i: &DeadweightIntensity,
         lw_i: &LightweightIntensity,

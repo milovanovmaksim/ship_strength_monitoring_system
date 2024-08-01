@@ -11,7 +11,7 @@ mod tests {
             },
         },
     };
-    use std::{env, rc::Rc, sync::Once};
+    use std::{env, sync::Once};
 
     static INIT: Once = Once::new();
 
@@ -20,7 +20,7 @@ mod tests {
             env::set_var("RUST_LOG", "debug"); // off / error / warn / info / debug / trace
                                                // env::set_var("RUST_BACKTRACE", "1");
             env::set_var("RUST_BACKTRACE", "full");
-            let _ = env_logger::try_init();
+            let _ = tracing_subscriber::fmt().compact().try_init();
         })
     }
 

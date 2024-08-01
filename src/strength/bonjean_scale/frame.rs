@@ -1,6 +1,6 @@
 use crate::core::{binary_search::BinarySearch, linear_interpolation::LinearInterpolation};
-use log::error;
 use serde::Deserialize;
+use tracing::instrument;
 
 ///
 /// Содержит данные масштба Бонжана для конкретного шпангоута.
@@ -21,21 +21,17 @@ pub struct Frame {
 }
 
 impl Frame {
+    ///
+    /// Основной конструктор.
+    #[instrument(err, target = "Frame::new")]
     pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, abscissa: f64) -> Result<Self, String> {
-        match (Frame {
+        (Frame {
             id,
             drafts,
             areas,
             abscissa,
         })
         .validate_input_data()
-        {
-            Ok(frame) => Ok(frame),
-            Err(err) => {
-                error!("Frame::new | error: {}", err);
-                Err(err)
-            }
-        }
     }
 
     ///
@@ -46,6 +42,7 @@ impl Frame {
 
     //
     // Валидация входных данных.
+    #[instrument(skip(self), err, target = "Frame::validate_input_data")]
     fn validate_input_data(self) -> Result<Frame, String> {
         if let Err(err) = self.empty_data_validate() {
             return Err(err);
@@ -104,6 +101,7 @@ impl Frame {
     /// //Линейно интерполирует погруженную площадь шпангоута между осадками 2.0 и 3.0 метра.
     /// assert_eq!(81.605, frame.data_by_draft(2.5, BonjeanScaleDataType::Area).unwrap());
     /// ```
+    #[instrument(skip(self), err, target = "Frame::area_by_draft")]
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
         if draft < self.min_draft() {
             return Ok(0.0);
@@ -118,13 +116,7 @@ impl Frame {
                     *self.drafts.get(left_point).unwrap(),
                     *self.drafts.get(right_point).unwrap(),
                 );
-                match linear_interpolated.interpolated_value(draft) {
-                    Ok(value) => Ok(value),
-                    Err(error) => {
-                        error!("Frame::area_by_draft | error: {}", error);
-                        Err(error)
-                    }
-                }
+                linear_interpolated.interpolated_value(draft)
             }
             (Some(middle), None) => Ok(*self.areas.get(middle).unwrap()),
             _ => {

@@ -1,3 +1,5 @@
+use tracing::instrument;
+
 use super::{
     deadweight::deadweight_intensity::DeadweightIntensity,
     displacement::displacement_intensity::DisplacementIntensity,
@@ -106,6 +108,7 @@ impl Strength {
     ///     shiploads_file - путь к json файлу, содержащему нагрузки, действующие на судно,
     ///     frames_file - путь к json файлу, содержащему масштаб Бонжана,
     ///     hydrostatic_curves - пусть к файлу, содержащему гидростатические кривые судна.
+    #[instrument(skip_all, err, target = "Strength::new_project")]
     pub fn new_project(
         input_path: String,
         shiploads_file: String,
@@ -147,7 +150,7 @@ impl Strength {
             disp,
             disp_i,
             d_t,
-            lcb.clone(),
+            lcb,
             lcg,
             b_i,
             total_shipload,
@@ -254,6 +257,9 @@ impl Strength {
         self.bending_moment_.bending_momant()
     }
 
+    ///
+    /// Эпюра изгибающих моментов c поправкой, т.е изгибающий момент
+    /// в нсосовом и кормовом шпангоутах равен нулю. Размерность: [т].
     pub fn bending_moment_with_correction(&self) -> Option<&SpatiumFunctions> {
         self.bending_moment_.bending_moment_with_correction()
     }

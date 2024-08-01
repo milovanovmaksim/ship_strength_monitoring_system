@@ -1,3 +1,5 @@
+use tracing::instrument;
+
 use super::draft::Draft;
 use crate::{
     core::{linear_interpolation::LinearInterpolation, water_density::WaterDensity},
@@ -23,6 +25,9 @@ impl BuoyancyIntensity {
         BuoyancyIntensity { b_i }
     }
 
+    ///
+    /// Вспомогательный конструктор.
+    #[instrument(skip_all, err, target = "BuoyancyIntensity::constructor")]
     pub fn constructor(
         ship_dimensions: ShipDimensions,
         draft: &Draft,
