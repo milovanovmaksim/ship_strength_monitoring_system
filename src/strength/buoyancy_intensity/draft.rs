@@ -2,13 +2,16 @@ use std::rc::Rc;
 use tracing::{info, instrument};
 
 use super::lcg::LCG;
-use crate::strength::{
-    bonjean_scale::lcb::LCB,
-    displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
-    hydrostatic_curves::{
-        hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
+use crate::{
+    core::round::Round,
+    strength::{
+        bonjean_scale::lcb::LCB,
+        displacement::{displacement::Displacement, displacement_tonnage::DisplacementTonnage},
+        hydrostatic_curves::{
+            hydrostatic_curves::HydrostaticCurves, hydrostatic_typedata::HydrostaticTypeData,
+        },
+        ship::ship_dimensions::ShipDimensions,
     },
-    ship::ship_dimensions::ShipDimensions,
 };
 
 ///
@@ -81,7 +84,7 @@ impl Draft {
                 "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
         } else {
             info!(
-                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения выполняется.")
+                "|calc_displacement - displacement| <= 0.004 * displacement - Условие удифферентовки судна для водоизмещения не выполняется.")
         }
         Ok(())
     }
@@ -150,7 +153,7 @@ impl Draft {
             lcb = self.lcb.lcb(aft_draft, nose_draft)?;
             j += 1;
         }
-        Ok((aft_draft, nose_draft))
+        Ok((aft_draft.my_round(2), nose_draft.my_round(2)))
     }
 
     ///

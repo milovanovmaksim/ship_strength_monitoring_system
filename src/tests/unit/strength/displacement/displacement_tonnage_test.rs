@@ -15,7 +15,7 @@ mod tests {
             env::set_var("RUST_LOG", "debug"); // off / error / warn / info / debug / trace
                                                // env::set_var("RUST_BACKTRACE", "1");
             env::set_var("RUST_BACKTRACE", "full");
-            let _ = env_logger::try_init();
+            let _ = tracing_subscriber::fmt().compact().try_init();
         })
     }
 
