@@ -1,4 +1,3 @@
-use log::{debug, error};
 use serde::Deserialize;
 use tracing::instrument;
 
@@ -33,7 +32,7 @@ pub struct HydrostaticCurves {
 impl HydrostaticCurves {
     ///
     /// Основной конструктор.
-    #[instrument(skip_all, target = "HydrostaticCurves::new")]
+    #[instrument(skip_all, err, target = "HydrostaticCurves::new")]
     pub fn new(
         drafts: Vec<f64>,
         displacement_tonnage: Vec<f64>,
@@ -55,7 +54,7 @@ impl HydrostaticCurves {
 
     ///
     /// Вспомогательный конструктор.
-    #[instrument(skip_all, target = "HydrostaticCurves::from_json_file")]
+    #[instrument(skip_all, err, target = "HydrostaticCurves::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<HydrostaticCurves, String> {
         let json = JsonFile::new(file_path);
         let content = json.content()?;
@@ -149,7 +148,7 @@ impl HydrostaticCurves {
     /// в гидростатических кривых, возвращает None.
     /// Parameters:
     ///     dispalcement_tonnage - весовое вододоизмещение для которого необходимо определить среднюю осадку.
-    #[instrument(skip(self), target = "HydrostaticCurves::mean_draft")]
+    #[instrument(skip(self), err, target = "HydrostaticCurves::mean_draft")]
     pub fn mean_draft(&self, displacement_tonnage: f64) -> Result<Option<f64>, String> {
         if displacement_tonnage > *self.displacement_tonnage.last().unwrap()
             || displacement_tonnage < *self.displacement_tonnage.first().unwrap()
@@ -181,7 +180,7 @@ impl HydrostaticCurves {
     /// Parameters:
     ///     draft - осадка судна,
     ///     type_data - enum HydrostaticTypeData
-    #[instrument(skip(self), target = "HydrostaticCurves::get_data_by_draft")]
+    #[instrument(skip_all, err, target = "HydrostaticCurves::get_data_by_draft")]
     pub fn get_data_by_draft(
         &self,
         draft: f64,
@@ -206,15 +205,7 @@ impl HydrostaticCurves {
                     *self.drafts.get(left_index).unwrap(),
                     *self.drafts.get(right_index).unwrap(),
                 );
-                match linear_interpolation.interpolated_value(draft) {
-                    Ok(value) => {
-                        return Ok(Some(value));
-                    }
-                    Err(error) => {
-                        error!("HydrostaticCurves::get_data_by_draft | {}", error);
-                        return Err(error);
-                    }
-                }
+                Ok(Some(linear_interpolation.interpolated_value(draft)?))
             }
             (Some(index), None) => Ok(data.get(index).copied()),
             _ => Ok(None),

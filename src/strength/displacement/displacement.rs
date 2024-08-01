@@ -31,7 +31,7 @@ impl Displacement {
 
     ///
     /// Возвращает объемное водоизмещение судна от осадки. [м^3]
-    #[instrument(skip(self), target = "Displacement::displacement_by_drafts")]
+    #[instrument(skip(self), err, target = "Displacement::displacement_by_drafts")]
     pub fn displacement_by_drafts(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let coordinate_aft = self.ship_dimensions.coordinate_aft();

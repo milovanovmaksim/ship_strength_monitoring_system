@@ -17,7 +17,7 @@ impl Lightweight {
     }
 
     /// Create the object from json file.
-    #[instrument(skip_all, target = "Lightweight::from_json_file")]
+    #[instrument(skip_all, err, target = "Lightweight::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
         let json = JsonFile::new(file_path);
         let content = json.content().map_err(|err| err.to_string())?;

@@ -72,7 +72,7 @@ impl LightweightIntensity {
 
     ///
     /// Вспомогательный конструктор.
-    #[instrument(skip_all, target = "LightweightIntensity::from_json_file")]
+    #[instrument(skip_all, err, target = "LightweightIntensity::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<LightweightIntensity, String> {
         let json = JsonFile::new(file_path);
         let content = json.content().map_err(|err| err.to_string())?;

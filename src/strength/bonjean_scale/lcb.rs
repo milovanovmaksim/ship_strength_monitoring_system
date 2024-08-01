@@ -1,6 +1,4 @@
 use std::rc::Rc;
-
-use log::error;
 use tracing::instrument;
 
 use crate::{
@@ -32,7 +30,7 @@ impl LCB {
     /// Parameters:
     ///     aft_draft - осадка кормы [м],
     ///     node_draft - осадка носа [м].
-    #[instrument(skip(self), target = "LCB::lcb")]
+    #[instrument(skip(self), err, target = "LCB::lcb")]
     pub fn lcb(&self, aft_draft: f64, nose_draft: f64) -> Result<f64, String> {
         let length_spatium = self.ship_dimensions.length_spatium();
         let coordinate_aft = self.ship_dimensions.coordinate_aft();

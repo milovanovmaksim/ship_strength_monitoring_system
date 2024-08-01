@@ -21,7 +21,7 @@ impl DisplacementIntensity {
 
     ///
     /// Вспомогательный конструктор.
-    #[instrument(skip_all, target = "DisplacementIntensity::from_dw_i_and_lw_i")]
+    #[instrument(skip_all, err, target = "DisplacementIntensity::from_dw_i_and_lw_i")]
     pub fn from_dw_i_and_lw_i(
         dw_i: &DeadweightIntensity,
         lw_i: &LightweightIntensity,

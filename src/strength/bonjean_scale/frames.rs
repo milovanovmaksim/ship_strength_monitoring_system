@@ -1,4 +1,4 @@
-use tracing::{error, info, instrument, warn};
+use tracing::instrument;
 
 use crate::core::json_file::JsonFile;
 
@@ -21,7 +21,7 @@ impl Frames {
 
     ///
     /// Create the object from json file.
-    #[instrument(target = "Frames::from_json_file")]
+    #[instrument(target = "Frames::from_json_file", err)]
     pub fn from_json_file(file_path: String) -> Result<Frames, String> {
         let json = JsonFile::new(file_path);
         let contenst = json.content()?;

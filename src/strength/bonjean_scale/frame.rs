@@ -23,7 +23,7 @@ pub struct Frame {
 impl Frame {
     ///
     /// Основной конструктор.
-    #[instrument(target = "Frame::new")]
+    #[instrument(err, target = "Frame::new")]
     pub fn new(id: u64, drafts: Vec<f64>, areas: Vec<f64>, abscissa: f64) -> Result<Self, String> {
         (Frame {
             id,
@@ -100,7 +100,7 @@ impl Frame {
     /// //Линейно интерполирует погруженную площадь шпангоута между осадками 2.0 и 3.0 метра.
     /// assert_eq!(81.605, frame.data_by_draft(2.5, BonjeanScaleDataType::Area).unwrap());
     /// ```
-    #[instrument(skip(self), target = "Frame::area_by_draft")]
+    #[instrument(skip(self), err, target = "Frame::area_by_draft")]
     pub fn area_by_draft(&self, draft: f64) -> Result<f64, String> {
         if draft < self.min_draft() {
             return Ok(0.0);

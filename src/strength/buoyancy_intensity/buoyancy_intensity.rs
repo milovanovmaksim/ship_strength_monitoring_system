@@ -27,7 +27,7 @@ impl BuoyancyIntensity {
 
     ///
     /// Вспомогательный конструктор.
-    #[instrument(skip_all, target = "BuoyancyIntensity::constructor")]
+    #[instrument(skip_all, err, target = "BuoyancyIntensity::constructor")]
     pub fn constructor(
         ship_dimensions: ShipDimensions,
         draft: &Draft,

@@ -1,7 +1,5 @@
 use std::rc::Rc;
-
-use log::info;
-use tracing::instrument;
+use tracing::{info, instrument};
 
 use super::lcg::LCG;
 use crate::strength::{
@@ -107,7 +105,7 @@ impl Draft {
     ///
     /// Удифферентовка судна методом последовательных приближений.
     /// Возвращает осадки кормы и носа судна (aft_draft, nose_draft).
-    #[instrument(skip(self), target = "Draft::trimming")]
+    #[instrument(skip(self), err, target = "Draft::trimming")]
     fn trimming(&self, lbp: f64, mean_draft: f64, lcf: f64) -> Result<(f64, f64), String> {
         let mut max_draft = self.hydrostatic_curves.max_draft();
         let mut min_draft = self.hydrostatic_curves.min_draft();
@@ -157,7 +155,7 @@ impl Draft {
 
     ///
     /// Возвращает осадку кормы и носа судна (aft_draft, nose_draft).
-    #[instrument(skip(self), target = "Draft::draft")]
+    #[instrument(skip_all, err, target = "Draft::draft")]
     pub fn draft(&self, ship_dimensions: ShipDimensions) -> Result<(f64, f64), String> {
         let displacement_tonnage = self.d_t.displacement_tonnage();
         if displacement_tonnage > self.hydrostatic_curves.max_displacement_tonnage() {
