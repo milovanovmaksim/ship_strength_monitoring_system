@@ -1,5 +1,5 @@
-use log::{debug, warn};
 use serde::Deserialize;
+use tracing::instrument;
 
 use crate::core::json_file::JsonFile;
 
@@ -26,31 +26,11 @@ impl ShipDimensions {
 
     ///
     /// Create the object from json file.
+    #[instrument(skip_all, err, target = "ShipDimensions::from_json_file")]
     pub fn from_json_file(file_path: String) -> Result<Self, String> {
         let json = JsonFile::new(file_path);
-        match json.content() {
-            Ok(content) => match serde_json::from_reader(content) {
-                Ok(ship_dimensions) => {
-                    debug!("ShipDimensions::from_json_file | ShipDimensions has been created sucessfuly. {:?}", ship_dimensions);
-                    Ok(ship_dimensions)
-                }
-                Err(err) => {
-                    warn!("ShipDimensions::from_json_file | error: {:?}.", err);
-                    return Err(err.to_string());
-                }
-            },
-            Err(err) => {
-                warn!("ShipDimensions::from_json_file | error: {:?}.", err);
-                return Err(err);
-            }
-        }
-    }
-
-    fn validate_number_spatiums(self) -> Result<ShipDimensions, String> {
-        if self.number_spatiums > 200 {
-            return Err("Количество шпаций превысило максимально допустимое значение. Максимальное количество шпаций: 200".to_string());
-        }
-        Ok(self)
+        let content = json.content().map_err(|err| err.to_string())?;
+        serde_json::from_reader(content).map_err(|err| err.to_string())
     }
 
     ///
