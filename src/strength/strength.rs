@@ -126,7 +126,6 @@ impl Strength {
         let water_density = WaterDensity::from_json_file(input_path.clone())?;
         let frames = Frames::from_json_file(frames_file)?;
         let bonjean_scale = Rc::new(BonjeanScale::new(frames, ship_dimensions));
-        bonjean_scale.frame_underwater_area(1000.0, 2.3)?;
         let disp = Rc::new(Displacement::new(
             bonjean_scale.clone(),
             ship_dimensions,
