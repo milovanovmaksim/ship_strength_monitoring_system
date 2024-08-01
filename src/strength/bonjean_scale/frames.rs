@@ -31,6 +31,7 @@ impl Frames {
 
     ///
     /// Валидация входных данных.
+    #[instrument(skip(self), err, target = "Frames::frames_validate")]
     fn frames_validate(self) -> Result<Frames, String> {
         if self.frames.len() == 0 {
             return Err("Шпангоуты не заданы.".to_string());

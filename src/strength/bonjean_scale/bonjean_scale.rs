@@ -29,7 +29,7 @@ impl BonjeanScale {
     /// Абсцисса не должна выходить за пределы координаты кормы или носа судна.
     /// Parameters:
     ///     abscissa - координата шпангоута относительно центра судна [м],
-    #[instrument(err, skip(self), target = "BonjeanScale::validate_abscissa")]
+    #[instrument(err, skip(self), target = "BonjeanScale::validate_abscissa", err)]
     fn validate_abscissa(&self, abscissa: f64) -> Result<(), String> {
         if abscissa < self.frames.first().abscissa() {
             return Err(format!("Абсцисса вышла за пределы координаты кормы судна. Координа кормы: {}. Передано значение: {}",

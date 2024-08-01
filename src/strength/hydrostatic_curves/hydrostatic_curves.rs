@@ -63,6 +63,7 @@ impl HydrostaticCurves {
 
     ///
     /// Валидация входных данных.
+    #[instrument(skip(self), err, target = "HydrostaticCurves::validate_input_data")]
     fn validate_input_data(self) -> Result<HydrostaticCurves, String> {
         if let Err(err) = self.validate_empty_data() {
             return Err(err);

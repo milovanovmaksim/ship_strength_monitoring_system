@@ -42,6 +42,7 @@ impl Frame {
 
     //
     // Валидация входных данных.
+    #[instrument(skip(self), err, target = "Frame::validate_input_data")]
     fn validate_input_data(self) -> Result<Frame, String> {
         if let Err(err) = self.empty_data_validate() {
             return Err(err);
