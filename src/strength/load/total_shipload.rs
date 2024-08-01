@@ -1,3 +1,5 @@
+use tracing::instrument;
+
 use crate::strength::{
     buoyancy_intensity::buoyancy_intensity::BuoyancyIntensity,
     displacement::displacement_intensity::DisplacementIntensity,
@@ -19,6 +21,7 @@ impl TotalShipload {
         }
     }
 
+    #[instrument(skip_all, err, target = "TotalShipload::from_disp_i_and_b_i")]
     pub fn from_disp_i_and_b_i(
         disp_i: &DisplacementIntensity,
         b_i: &BuoyancyIntensity,
