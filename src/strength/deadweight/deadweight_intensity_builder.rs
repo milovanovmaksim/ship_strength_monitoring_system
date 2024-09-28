@@ -47,21 +47,21 @@ impl<'a> DeadweightIntensityBuilder<'a> {
     }
 
     ///
-    /// Максимальная интенсивность на шпацию от нагрузки, расположенной в пределах одной шпации асимметрично.
+    /// Максимальная интенсивность распределенной нагрузки, расположенной в пределах одной шпации асимметрично.
     fn max_intensity(&self, c_min: f64, shipload: Shipload) -> f64 {
         shipload.value() * (0.5 + (c_min / self.ship_dimensions.length_spatium()))
             / self.ship_dimensions.length_spatium()
     }
 
     ///
-    /// Минимальная интенсивность на шпацию от нагрузки, расположенной в пределах одной шпации асимметрично.
+    /// Минимальная интенсивность распределенной нагрузки, расположенной в пределах одной шпации асимметрично.
     fn min_intensity(&self, c_min: f64, shipload: Shipload) -> f64 {
         shipload.value() * (0.5 - (c_min / self.ship_dimensions.length_spatium()))
             / self.ship_dimensions.length_spatium()
     }
 
     ///
-    /// Интенсивность от нагрузки, расположенной в пределах одной шпации асимметрично.
+    /// Интенсивность распределенной нагрузки, расположенной в пределах одной шпации асимметрично.
     fn intensity_asymmetric_load(
         &self,
         index: u64,
@@ -88,7 +88,7 @@ impl<'a> DeadweightIntensityBuilder<'a> {
     }
 
     ///
-    /// Интенсивность от нагрузки, расположенной за пределами крайних шпангоутов судна.
+    /// Интенсивность распределенной нагрузки, расположенной за пределами крайних шпангоутов судна.
     fn intensity_load_located_outside_outer_frames(
         &self,
         shipload: Shipload,
@@ -134,7 +134,7 @@ impl<'a> DeadweightIntensityBuilder<'a> {
     }
 
     ///
-    /// Интенсивность от нагрузки, находящейся в пределах крайних шпангоутов судна и в пределах одной шпации.
+    /// Интенсивность распределенной нагрузки, невоходящей за пределы крайних шпангоутов судна, и расположенной в пределах одной шпации.
     fn intensity_load_located_inside_outer_frames(
         &self,
         shipload: Shipload,
@@ -185,7 +185,7 @@ impl<'a> DeadweightIntensityBuilder<'a> {
     }
 
     ///
-    /// Определяет интенсивность отдельной нагрузки на теоретические шпации [т/м].
+    /// Определяет интенсивность распределенной нагрузки на теоретические шпации судна [т/м].
     fn shipload_intensity(&self, shipload: Shipload) -> Vec<SpatiumFunction> {
         // Нгарузка не выходит за пределы крайних шпангоутов.
         if shipload.longitudinal_center_gravity() > self.ship_dimensions.coordinate_aft()
